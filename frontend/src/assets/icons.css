@@ -1,0 +1,187 @@
+/* Icon fallback styles */
+.fas, .far, .fab, .fal, .fad, .fat, .fass {
+  font-family: "Font Awesome 6 Free", "Font Awesome 6 Pro", "Font Awesome 6 Brands", "bootstrap-icons", monospace !important;
+  font-weight: 900;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Fallback for missing icons using Bootstrap Icons */
+.icon-fallback {
+  display: inline-block;
+  font-family: 'bootstrap-icons' !important;
+  font-style: normal;
+  font-weight: normal;
+  line-height: 1;
+  vertical-align: -.125em;
+}
+
+/* Icon size consistency */
+.fa-xs { font-size: .75em; }
+.fa-sm { font-size: .875em; }
+.fa-lg { font-size: 1.25em; }
+.fa-xl { font-size: 1.5em; }
+.fa-2x { font-size: 2em; }
+.fa-3x { font-size: 3em; }
+
+/* Admin specific icon fixes */
+.admin-layout .fa-tachometer-alt::before,
+.admin-layout .fa-dashboard::before {
+  content: "\f3fd";
+}
+
+.admin-layout .fa-boxes::before {
+  content: "\f468";
+}
+
+.admin-layout .fa-chart-bar::before {
+  content: "\f080";
+}
+
+.admin-layout .fa-user-circle::before {
+  content: "\f2bd";
+}
+
+.admin-layout .fa-sign-out-alt::before {
+  content: "\f2f5";
+}
+
+.admin-layout .fa-angle-double-left::before {
+  content: "\f100";
+}
+
+.admin-layout .fa-angle-double-right::before {
+  content: "\f101";
+}
+
+.admin-layout .fa-angle-left::before {
+  content: "\f104";
+}
+
+.admin-layout .fa-angle-right::before {
+  content: "\f105";
+}
+
+.admin-layout .fa-cloud-upload-alt::before {
+  content: "\f382";
+}
+
+.admin-layout .fa-check-circle::before {
+  content: "\f058";
+}
+
+.admin-layout .fa-exclamation-triangle::before {
+  content: "\f071";
+}
+
+.admin-layout .fa-check-square::before {
+  content: "\f14a";
+}
+
+.admin-layout .fa-inbox::before {
+  content: "\f01c";
+}
+
+/* Icon color enhancements */
+.text-primary .fas,
+.text-primary .far,
+.text-primary .fab { color: #4e73df !important; }
+
+.text-success .fas,
+.text-success .far,
+.text-success .fab { color: #1cc88a !important; }
+
+.text-warning .fas,
+.text-warning .far,
+.text-warning .fab { color: #f6c23e !important; }
+
+.text-danger .fas,
+.text-danger .far,
+.text-danger .fab { color: #e74a3b !important; }
+
+.text-info .fas,
+.text-info .far,
+.text-info .fab { color: #36b9cc !important; }
+
+.text-gray-300 .fas,
+.text-gray-300 .far,
+.text-gray-300 .fab { color: #dddfeb !important; }
+
+/* Loading animation for icons */
+.icon-loading {
+  animation: fa-spin 1s infinite linear;
+}
+
+@keyframes fa-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Responsive icon sizes */
+@media (max-width: 768px) {
+  .admin-layout .fa-2x { font-size: 1.5em; }
+  .admin-layout .fa-3x { font-size: 2em; }
+  
+  .sidebar .nav-link i {
+    font-size: 1.1em;
+  }
+}
+
+/* Icon spacing improvements */
+.btn i + span,
+.nav-link i + span,
+.dropdown-item i + span {
+  margin-left: 0.5rem;
+}
+
+/* Badge positioning for icons */
+.nav-link {
+  position: relative;
+}
+
+.nav-link .badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  font-size: 0.65em;
+  padding: 0.25em 0.4em;
+}
+
+/* Icon hover effects */
+.btn:hover i,
+.nav-link:hover i {
+  transform: scale(1.05);
+  transition: transform 0.2s ease;
+}
+
+/* Admin sidebar icon improvements */
+.sidebar .nav-link i {
+  width: 1.25rem;
+  text-align: center;
+  margin-right: 0.75rem;
+}
+
+.sidebar-toggle i {
+  font-size: 1.1rem;
+}
+
+/* Table action button icons */
+.btn-sm i {
+  font-size: 0.875rem;
+}
+
+/* Modal icon improvements */
+.modal-header i,
+.modal-body i {
+  margin-right: 0.5rem;
+}
+
+/* Icon animation for loading states */
+.spinner-border-sm {
+  width: 1rem;
+  height: 1rem;
+}
