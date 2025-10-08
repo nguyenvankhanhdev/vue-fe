@@ -1,27 +1,85 @@
 <template>
-  <div class="cart-page">
-    <!-- Page Header -->
-    <section class="page-header">
-      <div class="container">
-        <div class="breadcrumb">
-          <router-link to="/">Trang chủ</router-link>
-          <span>/</span>
-          <span>Giỏ hàng</span>
+  <div class="cart-page bg-gray-50 min-h-screen">
+    <!-- Enhanced Page Header -->
+    <section class="page-header bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-700 relative overflow-hidden">
+      <div class="absolute inset-0 bg-black bg-opacity-10"></div>
+      <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <!-- Breadcrumb -->
+        <nav class="flex items-center text-sm mb-6 text-white text-opacity-90">
+          <router-link to="/" class="hover:text-white transition-colors">
+            <i class="fas fa-home mr-2"></i>Trang chủ
+          </router-link>
+          <i class="fas fa-chevron-right mx-3 text-xs"></i>
+          <span class="text-white font-medium">Giỏ hàng</span>
+        </nav>
+        
+        <!-- Header Content -->
+        <div class="flex items-center justify-between">
+          <div>
+            <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">
+              Giỏ hàng của bạn
+            </h1>
+            <p class="text-lg text-white text-opacity-90 max-w-2xl">
+              Xem lại các sản phẩm bạn đã chọn và tiến hành thanh toán một cách nhanh chóng
+            </p>
+          </div>
+          <div class="hidden md:block">
+            <div class="w-24 h-24 bg-white bg-opacity-20 rounded-full flex items-center justify-center backdrop-blur-sm">
+              <i class="fas fa-shopping-cart text-3xl text-white"></i>
+            </div>
+          </div>
         </div>
-        <h1>Giỏ hàng của bạn</h1>
+        
+        <!-- Cart Stats -->
+        <div class="mt-8 flex flex-wrap gap-6">
+          <div class="bg-white bg-opacity-20 backdrop-blur-sm rounded-lg px-6 py-4">
+            <div class="flex items-center">
+              <i class="fas fa-box text-white text-xl mr-3"></i>
+              <div>
+                <div class="text-2xl font-bold text-white">{{ totalItems }}</div>
+                <div class="text-white text-opacity-80 text-sm">Sản phẩm</div>
+              </div>
+            </div>
+          </div>
+          <div class="bg-white bg-opacity-20 backdrop-blur-sm rounded-lg px-6 py-4">
+            <div class="flex items-center">
+              <i class="fas fa-dollar-sign text-white text-xl mr-3"></i>
+              <div>
+                <div class="text-2xl font-bold text-white">${{ formatPrice(finalTotal) }}</div>
+                <div class="text-white text-opacity-80 text-sm">Tổng cộng</div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
+      
+      <!-- Decorative Elements -->
+      <div class="absolute top-0 right-0 w-64 h-64 bg-white bg-opacity-10 rounded-full -translate-y-32 translate-x-32"></div>
+      <div class="absolute bottom-0 left-0 w-48 h-48 bg-white bg-opacity-5 rounded-full translate-y-24 -translate-x-24"></div>
     </section>
 
     <!-- Cart Content -->
     <section class="cart-section py-5">
-      <div class="container">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <!-- Empty Cart -->
-        <div v-if="cartItems.length === 0" class="empty-cart">
-          <div class="empty-cart-content">
-            <i class="fas fa-shopping-cart"></i>
-            <h2>Giỏ hàng trống</h2>
-            <p>Bạn chưa có sản phẩm nào trong giỏ hàng</p>
-            <router-link to="/products" class="btn">Tiếp tục mua sắm</router-link>
+        <div v-if="cartItems.length === 0" class="empty-cart flex items-center justify-center min-h-96">
+          <div class="empty-cart-content text-center max-w-md mx-auto p-8">
+            <div class="mb-8">
+              <div class="w-32 h-32 mx-auto bg-gradient-to-br from-blue-100 to-purple-100 rounded-full flex items-center justify-center mb-6">
+                <i class="fas fa-shopping-cart text-5xl text-gray-400"></i>
+              </div>
+              <h2 class="text-3xl font-bold text-gray-800 mb-4">Giỏ hàng trống</h2>
+              <p class="text-gray-600 text-lg leading-relaxed mb-8">
+                Bạn chưa có sản phẩm nào trong giỏ hàng. 
+                Hãy khám phá các sản phẩm tuyệt vời của chúng tôi!
+              </p>
+              <router-link 
+                to="/products" 
+                class="inline-flex items-center px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-xl hover:from-blue-700 hover:to-purple-700 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl">
+                <i class="fas fa-arrow-right mr-2"></i>
+                Bắt đầu mua sắm
+              </router-link>
+            </div>
           </div>
         </div>
 
@@ -29,201 +87,360 @@
         <div v-else class="cart-content">
           <div class="cart-layout">
             <!-- Cart Items List -->
-            <div class="cart-items">
-              <div class="cart-header">
-                <h2>Sản phẩm trong giỏ hàng ({{ cartItems.length }})</h2>
-                <button @click="clearCart" class="clear-cart-btn">
-                  <i class="fas fa-trash"></i>
-                  Xóa tất cả
-                </button>
+            <div class="cart-items bg-white rounded-2xl shadow-lg border border-gray-100">
+              <div class="cart-header px-8 py-6 border-b border-gray-100">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center">
+                    <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center mr-4">
+                      <i class="fas fa-shopping-bag text-white text-lg"></i>
+                    </div>
+                    <div>
+                      <h2 class="text-2xl font-bold text-gray-900">Sản phẩm trong giỏ hàng</h2>
+                      <p class="text-gray-500 text-sm">{{ cartItems.length }} sản phẩm đã chọn</p>
+                    </div>
+                  </div>
+                  <button @click="clearCart" class="clear-cart-btn flex items-center px-4 py-2 bg-red-50 text-red-600 hover:bg-red-100 rounded-lg transition-colors font-medium">
+                    <i class="fas fa-trash mr-2"></i>
+                    Xóa tất cả
+                  </button>
+                </div>
               </div>
 
-              <div class="items-list">
+              <div class="items-list px-8 py-6 space-y-6">
                 <div 
                   v-for="item in cartItems" 
                   :key="`${item.id}-${item.selectedSize}-${item.selectedColor?.name}`"
-                  class="cart-item"
+                  class="cart-item group bg-gray-50 hover:bg-gray-100 rounded-xl p-6 transition-all duration-300 hover:shadow-md"
                 >
+                  <!-- Product Image -->
                   <div class="item-image">
-                    <img :src="item.image" :alt="item.name" />
+                    <div class="relative overflow-hidden rounded-xl">
+                      <img :src="item.image" :alt="item.name" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"/>
+                      <div v-if="item.discount" class="absolute top-2 left-2 bg-red-500 text-white px-2 py-1 rounded-full text-xs font-bold">
+                        -{{ item.discount }}%
+                      </div>
+                    </div>
                   </div>
                   
-                  <div class="item-details">
-                    <div class="item-info">
-                      <h3>
+                  <!-- Product Details -->
+                  <div class="item-details flex-1">
+                    <div class="item-info mb-4">
+                      <h3 class="text-xl font-bold text-gray-900 mb-2 hover:text-blue-600 transition-colors">
                         <router-link :to="`/products/${item.id}`">
                           {{ item.name }}
                         </router-link>
                       </h3>
-                      <div class="item-meta">
-                        <span class="item-category">{{ item.category }}</span>
-                        <span v-if="item.selectedSize" class="item-option">
-                          Kích thước: {{ item.selectedSize }}
-                        </span>
-                        <span v-if="item.selectedColor" class="item-option">
-                          Màu: {{ item.selectedColor.name }}
-                        </span>
+                      <div class="item-meta space-y-1">
+                        <div class="flex items-center">
+                          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                            {{ item.category }}
+                          </span>
+                        </div>
+                        <div v-if="item.selectedSize || item.selectedColor" class="flex flex-wrap gap-2 mt-2">
+                          <span v-if="item.selectedSize" class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-gray-200 text-gray-800">
+                            <i class="fas fa-ruler mr-1"></i>{{ item.selectedSize }}
+                          </span>
+                          <span v-if="item.selectedColor" class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-gray-200 text-gray-800">
+                            <span class="w-3 h-3 rounded-full mr-1" :style="{ backgroundColor: item.selectedColor.value }"></span>
+                            {{ item.selectedColor.name }}
+                          </span>
+                        </div>
                       </div>
                     </div>
                     
                     <div class="item-price">
-                      <span class="current-price">${{ formatPrice(getItemPrice(item)) }}</span>
-                      <span v-if="item.originalPrice && item.discount" class="original-price">
-                        ${{ formatPrice(item.originalPrice) }}
-                      </span>
+                      <div class="flex items-baseline space-x-2">
+                        <span class="text-2xl font-bold text-red-600">${{ formatPrice(getItemPrice(item)) }}</span>
+                        <span v-if="item.originalPrice && item.discount" class="text-lg text-gray-500 line-through">
+                          ${{ formatPrice(item.originalPrice) }}
+                        </span>
+                      </div>
                     </div>
                   </div>
                   
+                  <!-- Quantity Controls -->
                   <div class="item-quantity">
-                    <div class="quantity-controls">
-                      <button @click="decreaseQuantity(item)" :disabled="item.quantity <= 1">
-                        <i class="fas fa-minus"></i>
+                    <div class="quantity-controls flex items-center bg-white border-2 border-gray-200 rounded-xl overflow-hidden hover:border-blue-300 transition-colors">
+                      <button @click="decreaseQuantity(item)" :disabled="item.quantity <= 1" 
+                              class="w-12 h-12 flex items-center justify-center hover:bg-blue-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+                        <i class="fas fa-minus text-sm"></i>
                       </button>
-                      <span class="quantity">{{ item.quantity }}</span>
-                      <button @click="increaseQuantity(item)" :disabled="item.quantity >= item.stockQuantity">
-                        <i class="fas fa-plus"></i>
+                      <span class="quantity px-6 py-3 font-bold text-gray-900 min-w-16 text-center">{{ item.quantity }}</span>
+                      <button @click="increaseQuantity(item)" :disabled="item.quantity >= item.stockQuantity"
+                              class="w-12 h-12 flex items-center justify-center hover:bg-blue-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+                        <i class="fas fa-plus text-sm"></i>
                       </button>
+                    </div>
+                    <div class="text-xs text-gray-500 text-center mt-1">
+                      Còn {{ item.stockQuantity }} sản phẩm
                     </div>
                   </div>
                   
-                  <div class="item-total">
-                    <span class="total-price">
+                  <!-- Item Total -->
+                  <div class="item-total text-right">
+                    <div class="text-2xl font-bold text-gray-900 mb-1">
                       ${{ formatPrice(getItemTotal(item)) }}
-                    </span>
+                    </div>
+                    <div class="text-sm text-gray-500">
+                      {{ item.quantity }} × ${{ formatPrice(getItemPrice(item)) }}
+                    </div>
                   </div>
                   
-                  <div class="item-actions">
-                    <button @click="removeItem(item)" class="remove-btn">
-                      <i class="fas fa-trash"></i>
-                    </button>
-                    <button @click="addToWishlist(item)" class="wishlist-btn">
+                  <!-- Action Buttons -->
+                  <div class="item-actions flex flex-col space-y-3">
+                    <button @click="addToWishlist(item)" 
+                            class="wishlist-btn w-12 h-12 flex items-center justify-center bg-white border-2 border-gray-200 hover:border-red-300 hover:bg-red-50 hover:text-red-600 rounded-xl transition-all duration-300">
                       <i class="fas fa-heart"></i>
+                    </button>
+                    <button @click="removeItem(item)" 
+                            class="remove-btn w-12 h-12 flex items-center justify-center bg-white border-2 border-gray-200 hover:border-red-500 hover:bg-red-50 hover:text-red-600 rounded-xl transition-all duration-300">
+                      <i class="fas fa-trash"></i>
                     </button>
                   </div>
                 </div>
               </div>
 
               <!-- Continue Shopping -->
-              <div class="continue-shopping">
-                <router-link to="/products" class="btn btn-outline">
-                  <i class="fas fa-arrow-left"></i>
+              <div class="continue-shopping px-8 py-6 border-t border-gray-100">
+                <router-link to="/products" 
+                             class="inline-flex items-center px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-xl transition-all duration-300 hover:shadow-md">
+                  <i class="fas fa-arrow-left mr-3"></i>
                   Tiếp tục mua sắm
                 </router-link>
               </div>
             </div>
 
             <!-- Order Summary -->
-            <div class="order-summary">
-              <div class="summary-card">
-                <h3>Tổng đơn hàng</h3>
+            <div class="order-summary space-y-6">
+              <div class="summary-card bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
+                <div class="px-8 py-6 bg-gradient-to-r from-blue-50 to-purple-50 border-b border-gray-100">
+                  <div class="flex items-center">
+                    <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center mr-3">
+                      <i class="fas fa-receipt text-white"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900">Tổng đơn hàng</h3>
+                  </div>
+                </div>
                 
-                <div class="summary-details">
-                  <div class="summary-row">
-                    <span>Tạm tính ({{ totalItems }} sản phẩm):</span>
-                    <span>${{ formatPrice(subtotal) }}</span>
+                <div class="summary-details px-8 py-6 space-y-4">
+                  <div class="summary-row flex justify-between items-center py-2">
+                    <span class="text-gray-600">Tạm tính ({{ totalItems }} sản phẩm):</span>
+                    <span class="font-semibold text-gray-900">${{ formatPrice(subtotal) }}</span>
                   </div>
                   
-                  <div class="summary-row">
-                    <span>Giảm giá:</span>
-                    <span class="discount-amount">-${{ formatPrice(totalDiscount) }}</span>
+                  <div v-if="totalDiscount > 0" class="summary-row flex justify-between items-center py-2">
+                    <span class="text-gray-600">Giảm giá sản phẩm:</span>
+                    <span class="font-semibold text-green-600">-${{ formatPrice(totalDiscount) }}</span>
                   </div>
                   
-                  <div class="summary-row">
-                    <span>Phí vận chuyển:</span>
-                    <span>
-                      <span v-if="isEligibleForFreeShipping" class="free-shipping">
-                        Miễn phí
+                  <div v-if="appliedCoupon" class="summary-row flex justify-between items-center py-2">
+                    <span class="text-gray-600">Mã giảm giá:</span>
+                    <span class="font-semibold text-green-600">-${{ formatPrice(couponDiscount) }}</span>
+                  </div>
+                  
+                  <div class="summary-row flex justify-between items-center py-2">
+                    <span class="text-gray-600">Phí vận chuyển:</span>
+                    <span class="font-semibold">
+                      <span v-if="isEligibleForFreeShipping" class="text-green-600 flex items-center">
+                        <i class="fas fa-check-circle mr-1"></i>Miễn phí
                       </span>
-                      <span v-else>${{ formatPrice(shippingFee) }}</span>
+                      <span v-else class="text-gray-900">${{ formatPrice(shippingFee) }}</span>
                     </span>
                   </div>
                   
-                  <div v-if="!isEligibleForFreeShipping" class="free-shipping-notice">
-                    <i class="fas fa-info-circle"></i>
-                    Mua thêm ${{ formatPrice(amountForFreeShipping) }} để được miễn phí vận chuyển
+                  <!-- Free Shipping Progress -->
+                  <div v-if="!isEligibleForFreeShipping" class="free-shipping-notice bg-gradient-to-r from-green-50 to-blue-50 border border-green-200 rounded-xl p-4">
+                    <div class="flex items-center justify-between mb-2">
+                      <span class="text-green-700 font-medium text-sm">
+                        <i class="fas fa-truck mr-1"></i>
+                        Mua thêm ${{ formatPrice(amountForFreeShipping) }} để được miễn phí vận chuyển
+                      </span>
+                    </div>
+                    <div class="w-full bg-green-200 rounded-full h-2">
+                      <div class="bg-gradient-to-r from-green-400 to-green-600 h-2 rounded-full transition-all duration-500" 
+                           :style="{ width: Math.min(100, (afterCouponTotal / FREE_SHIPPING_THRESHOLD) * 100) + '%' }"></div>
+                    </div>
                   </div>
                   
-                  <hr />
-                  
-                  <div class="summary-row total-row">
-                    <span>Tổng cộng:</span>
-                    <span class="total-amount">${{ formatPrice(finalTotal) }}</span>
+                  <div class="border-t border-gray-200 pt-4">
+                    <div class="summary-row total-row flex justify-between items-center py-2">
+                      <span class="text-xl font-bold text-gray-900">Tổng cộng:</span>
+                      <span class="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                        ${{ formatPrice(finalTotal) }}
+                      </span>
+                    </div>
                   </div>
                 </div>
 
                 <!-- Coupon Code -->
-                <div class="coupon-section">
-                  <div class="coupon-input">
-                    <input 
-                      type="text" 
-                      v-model="couponCode"
-                      placeholder="Nhập mã giảm giá"
-                      :disabled="appliedCoupon"
-                    />
-                    <button 
-                      @click="applyCoupon" 
-                      :disabled="!couponCode || appliedCoupon"
-                      class="apply-coupon-btn"
-                    >
-                      {{ appliedCoupon ? 'Đã áp dụng' : 'Áp dụng' }}
-                    </button>
+                <div class="coupon-section px-8 py-6 border-t border-gray-100">
+                  <div class="mb-4">
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">
+                      <i class="fas fa-tag mr-2"></i>Mã giảm giá
+                    </label>
+                    <div class="coupon-input flex gap-3">
+                      <input 
+                        type="text" 
+                        v-model="couponCode"
+                        placeholder="Nhập mã giảm giá..."
+                        :disabled="appliedCoupon"
+                        class="flex-1 px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:outline-none transition-colors disabled:bg-gray-100"
+                      />
+                      <button 
+                        @click="applyCoupon" 
+                        :disabled="!couponCode || appliedCoupon"
+                        class="apply-coupon-btn px-6 py-3 bg-gradient-to-r from-green-500 to-green-600 text-white font-semibold rounded-xl hover:from-green-600 hover:to-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 shadow-lg hover:shadow-xl">
+                        {{ appliedCoupon ? 'Đã áp dụng' : 'Áp dụng' }}
+                      </button>
+                    </div>
                   </div>
                   
-                  <div v-if="appliedCoupon" class="applied-coupon">
-                    <span class="coupon-info">
-                      <i class="fas fa-tag"></i>
-                      {{ appliedCoupon.code }} - Giảm {{ appliedCoupon.discount }}%
-                    </span>
-                    <button @click="removeCoupon" class="remove-coupon-btn">
-                      <i class="fas fa-times"></i>
-                    </button>
+                  <div v-if="appliedCoupon" class="applied-coupon bg-green-50 border-2 border-green-200 rounded-xl p-4">
+                    <div class="flex items-center justify-between">
+                      <div class="coupon-info flex items-center text-green-700">
+                        <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center mr-3">
+                          <i class="fas fa-tag text-white text-sm"></i>
+                        </div>
+                        <div>
+                          <div class="font-semibold">{{ appliedCoupon.code }}</div>
+                          <div class="text-sm">Giảm {{ appliedCoupon.discount }}%</div>
+                        </div>
+                      </div>
+                      <button @click="removeCoupon" class="remove-coupon-btn w-8 h-8 flex items-center justify-center text-green-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all duration-300">
+                        <i class="fas fa-times"></i>
+                      </button>
+                    </div>
+                  </div>
+                  
+                  <!-- Popular Coupons -->
+                  <div v-if="!appliedCoupon" class="mt-4">
+                    <div class="text-xs text-gray-500 mb-2">Mã phổ biến:</div>
+                    <div class="flex flex-wrap gap-2">
+                      <button v-for="code in ['SAVE10', 'SAVE20', 'WELCOME15']" :key="code"
+                              @click="couponCode = code"
+                              class="px-3 py-1 text-xs bg-gray-100 hover:bg-blue-100 text-gray-700 hover:text-blue-700 rounded-lg transition-colors">
+                        {{ code }}
+                      </button>
+                    </div>
                   </div>
                 </div>
 
                 <!-- Checkout Button -->
-                <button @click="proceedToCheckout" class="checkout-btn">
-                  <i class="fas fa-credit-card"></i>
-                  Tiến hành thanh toán
-                </button>
+                <div class="px-8 py-6 border-t border-gray-100">
+                  <button @click="proceedToCheckout" 
+                          class="checkout-btn w-full py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold text-lg rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl flex items-center justify-center">
+                    <i class="fas fa-lock mr-3"></i>
+                    Thanh toán an toàn
+                    <i class="fas fa-arrow-right ml-3"></i>
+                  </button>
+                  
+                  <!-- Security Badge -->
+                  <div class="flex items-center justify-center mt-4 text-sm text-gray-500">
+                    <i class="fas fa-shield-alt mr-2 text-green-500"></i>
+                    Thanh toán được bảo mật với SSL 256-bit
+                  </div>
+                </div>
 
                 <!-- Payment Methods -->
-                <div class="payment-methods">
-                  <span>Phương thức thanh toán:</span>
-                  <div class="payment-icons">
-                    <i class="fab fa-cc-visa"></i>
-                    <i class="fab fa-cc-mastercard"></i>
-                    <i class="fab fa-cc-paypal"></i>
-                    <i class="fab fa-apple-pay"></i>
+                <div class="payment-methods px-8 py-6 border-t border-gray-100 bg-gray-50">
+                  <div class="text-center">
+                    <div class="text-sm text-gray-600 mb-3">Chúng tôi chấp nhận:</div>
+                    <div class="flex justify-center items-center gap-4">
+                      <div class="w-12 h-8 bg-white rounded-lg flex items-center justify-center shadow-sm">
+                        <i class="fab fa-cc-visa text-blue-600 text-lg"></i>
+                      </div>
+                      <div class="w-12 h-8 bg-white rounded-lg flex items-center justify-center shadow-sm">
+                        <i class="fab fa-cc-mastercard text-red-500 text-lg"></i>
+                      </div>
+                      <div class="w-12 h-8 bg-white rounded-lg flex items-center justify-center shadow-sm">
+                        <i class="fab fa-cc-paypal text-blue-500 text-lg"></i>
+                      </div>
+                      <div class="w-12 h-8 bg-white rounded-lg flex items-center justify-center shadow-sm">
+                        <i class="fab fa-apple-pay text-gray-900 text-lg"></i>
+                      </div>
+                      <div class="w-12 h-8 bg-white rounded-lg flex items-center justify-center shadow-sm">
+                        <i class="fab fa-google-pay text-gray-700 text-lg"></i>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
 
               <!-- Estimated Delivery -->
-              <div class="delivery-info">
-                <h4>Thông tin giao hàng</h4>
-                <div class="delivery-options">
-                  <div class="delivery-option">
-                    <div class="option-header">
-                      <i class="fas fa-truck"></i>
-                      <span>Giao hàng tiêu chuẩn</span>
+              <div class="delivery-info bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
+                <div class="px-6 py-4 bg-gradient-to-r from-green-50 to-blue-50 border-b border-gray-100">
+                  <div class="flex items-center">
+                    <div class="w-10 h-10 bg-gradient-to-br from-green-500 to-blue-600 rounded-lg flex items-center justify-center mr-3">
+                      <i class="fas fa-shipping-fast text-white"></i>
                     </div>
-                    <div class="option-details">
-                      <span class="delivery-time">2-3 ngày làm việc</span>
-                      <span class="delivery-cost">
-                        {{ isEligibleForFreeShipping ? 'Miễn phí' : '$' + formatPrice(shippingFee) }}
-                      </span>
+                    <h4 class="text-lg font-bold text-gray-900">Tùy chọn giao hàng</h4>
+                  </div>
+                </div>
+                
+                <div class="delivery-options p-6 space-y-4">
+                  <div class="delivery-option group cursor-pointer p-4 border-2 border-gray-200 hover:border-blue-300 rounded-xl transition-all duration-300 hover:shadow-md">
+                    <div class="flex items-center justify-between">
+                      <div class="flex items-center">
+                        <div class="w-12 h-12 bg-blue-100 group-hover:bg-blue-200 rounded-lg flex items-center justify-center mr-4 transition-colors">
+                          <i class="fas fa-truck text-blue-600 text-lg"></i>
+                        </div>
+                        <div>
+                          <div class="font-semibold text-gray-900">Giao hàng tiêu chuẩn</div>
+                          <div class="text-sm text-gray-600">2-3 ngày làm việc</div>
+                        </div>
+                      </div>
+                      <div class="text-right">
+                        <div class="font-bold text-lg">
+                          <span v-if="isEligibleForFreeShipping" class="text-green-600">Miễn phí</span>
+                          <span v-else class="text-gray-900">${{ formatPrice(shippingFee) }}</span>
+                        </div>
+                        <div class="text-xs text-gray-500">Mặc định</div>
+                      </div>
                     </div>
                   </div>
                   
-                  <div class="delivery-option">
-                    <div class="option-header">
-                      <i class="fas fa-shipping-fast"></i>
-                      <span>Giao hàng nhanh</span>
+                  <div class="delivery-option group cursor-pointer p-4 border-2 border-gray-200 hover:border-orange-300 rounded-xl transition-all duration-300 hover:shadow-md">
+                    <div class="flex items-center justify-between">
+                      <div class="flex items-center">
+                        <div class="w-12 h-12 bg-orange-100 group-hover:bg-orange-200 rounded-lg flex items-center justify-center mr-4 transition-colors">
+                          <i class="fas fa-bolt text-orange-600 text-lg"></i>
+                        </div>
+                        <div>
+                          <div class="font-semibold text-gray-900">Giao hàng nhanh</div>
+                          <div class="text-sm text-gray-600">1-2 ngày làm việc</div>
+                        </div>
+                      </div>
+                      <div class="text-right">
+                        <div class="font-bold text-lg text-gray-900">${{ formatPrice(50000) }}</div>
+                        <div class="text-xs text-gray-500">Express</div>
+                      </div>
                     </div>
-                    <div class="option-details">
-                      <span class="delivery-time">1-2 ngày làm việc</span>
-                      <span class="delivery-cost">${{ formatPrice(50000) }}</span>
+                  </div>
+                  
+                  <div class="delivery-option group cursor-pointer p-4 border-2 border-gray-200 hover:border-purple-300 rounded-xl transition-all duration-300 hover:shadow-md">
+                    <div class="flex items-center justify-between">
+                      <div class="flex items-center">
+                        <div class="w-12 h-12 bg-purple-100 group-hover:bg-purple-200 rounded-lg flex items-center justify-center mr-4 transition-colors">
+                          <i class="fas fa-clock text-purple-600 text-lg"></i>
+                        </div>
+                        <div>
+                          <div class="font-semibold text-gray-900">Giao hàng trong ngày</div>
+                          <div class="text-sm text-gray-600">Trong vòng 24h</div>
+                        </div>
+                      </div>
+                      <div class="text-right">
+                        <div class="font-bold text-lg text-gray-900">${{ formatPrice(100000) }}</div>
+                        <div class="text-xs text-gray-500">Premium</div>
+                      </div>
                     </div>
+                  </div>
+                </div>
+                
+                <!-- Delivery Notice -->
+                <div class="px-6 py-4 bg-blue-50 border-t border-gray-100">
+                  <div class="flex items-center text-sm text-blue-700">
+                    <i class="fas fa-info-circle mr-2"></i>
+                    Đặt hàng trước 16:00 để được giao trong ngày làm việc tiếp theo
                   </div>
                 </div>
               </div>
@@ -235,7 +452,7 @@
 
     <!-- Recently Viewed -->
     <section v-if="recentlyViewed.length > 0" class="recently-viewed py-5">
-      <div class="container">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <h2 class="section-title">Sản phẩm đã xem gần đây</h2>
         <div class="products-grid">
           <ProductCard 
@@ -250,12 +467,12 @@
 
     <!-- Remove Item Modal -->
     <div v-if="showRemoveModal" class="modal-overlay" @click="showRemoveModal = false">
-      <div class="modal-content" @click.stop>
+      <div class="bg-white rounded-lg shadow-xl" @click.stop>
         <h3>Xác nhận xóa sản phẩm</h3>
         <p>Bạn có chắc chắn muốn xóa sản phẩm này khỏi giỏ hàng?</p>
         <div class="modal-actions">
-          <button @click="showRemoveModal = false" class="btn btn-secondary">Hủy</button>
-          <button @click="confirmRemoveItem" class="btn">Xóa</button>
+          <button @click="showRemoveModal = false" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md transition-colors duration-200 bg-gray-600 hover:bg-gray-700 text-white">Hủy</button>
+          <button @click="confirmRemoveItem" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md transition-colors duration-200">Xóa</button>
         </div>
       </div>
     </div>
@@ -266,6 +483,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import ProductCard from '../components/Product/ProductCard.vue'
+import Swal from 'sweetalert2'
 
 const router = useRouter()
 
@@ -406,9 +624,9 @@ const applyCoupon = () => {
   
   if (coupon) {
     appliedCoupon.value = coupon
-    alert(`Đã áp dụng mã giảm giá ${coupon.code} - Giảm ${coupon.discount}%`)
+    Swal.fire(`Đã áp dụng mã giảm giá ${coupon.code} - Giảm ${coupon.discount}%`)
   } else {
-    alert('Mã giảm giá không hợp lệ!')
+    Swal.fire('Mã giảm giá không hợp lệ!')
   }
 }
 
@@ -537,537 +755,111 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.cart-page {
-  min-height: 100vh;
-  background: #f8f9fa;
-}
-
-.page-header {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  padding: 40px 0;
-}
-
-.breadcrumb {
-  margin-bottom: 15px;
-  font-size: 14px;
-  opacity: 0.9;
-}
-
-.breadcrumb a {
-  color: white;
-  text-decoration: none;
-}
-
-.breadcrumb span {
-  margin: 0 10px;
-}
-
-.page-header h1 {
-  font-size: 2.5rem;
-  margin: 0;
-}
-
-.empty-cart {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 60vh;
-}
-
-.empty-cart-content {
-  text-align: center;
-  max-width: 400px;
-}
-
-.empty-cart-content i {
-  font-size: 80px;
-  color: #ccc;
-  margin-bottom: 30px;
-}
-
-.empty-cart-content h2 {
-  font-size: 2rem;
-  color: #666;
-  margin-bottom: 15px;
-}
-
-.empty-cart-content p {
-  color: #999;
-  margin-bottom: 30px;
-  line-height: 1.6;
-}
-
+/* Cart Layout Styles */
 .cart-layout {
   display: grid;
-  grid-template-columns: 1fr 400px;
-  gap: 40px;
-}
-
-.cart-items {
-  background: white;
-  border-radius: 15px;
-  padding: 30px;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
-  height: fit-content;
-}
-
-.cart-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 30px;
-  padding-bottom: 20px;
-  border-bottom: 1px solid #eee;
-}
-
-.cart-header h2 {
-  color: #333;
-  margin: 0;
-}
-
-.clear-cart-btn {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 16px;
-  background: #dc3545;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 14px;
-  transition: background 0.3s ease;
-}
-
-.clear-cart-btn:hover {
-  background: #c82333;
-}
-
-.items-list {
-  display: flex;
-  flex-direction: column;
-  gap: 25px;
+  grid-template-columns: 1fr 420px;
+  gap: 2rem;
+  align-items: start;
 }
 
 .cart-item {
   display: grid;
-  grid-template-columns: 100px 1fr 120px 120px 80px;
-  gap: 20px;
+  grid-template-columns: 120px 1fr 140px 120px 80px;
+  gap: 1.5rem;
   align-items: center;
-  padding: 20px;
-  border: 1px solid #eee;
-  border-radius: 10px;
-  transition: border-color 0.3s ease;
-}
-
-.cart-item:hover {
-  border-color: #e74c3c;
 }
 
 .item-image {
-  width: 100px;
-  height: 100px;
-  border-radius: 8px;
-  overflow: hidden;
+  width: 120px;
+  height: 120px;
 }
 
-.item-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+/* Responsive Adjustments */
+@media (max-width: 1200px) {
+  .cart-layout {
+    grid-template-columns: 1fr 380px;
+    gap: 1.5rem;
+  }
 }
 
-.item-details {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+@media (max-width: 1024px) {
+  .cart-layout {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  
+  .order-summary {
+    order: -1;
+  }
 }
 
-.item-info h3 {
-  margin: 0 0 8px 0;
-  font-size: 16px;
+@media (max-width: 768px) {
+  .cart-item {
+    grid-template-columns: 100px 1fr;
+    grid-template-areas: 
+      "image details"
+      "quantity total"  
+      "actions actions";
+    gap: 1rem;
+  }
+  
+  .item-image {
+    grid-area: image;
+    width: 100px;
+    height: 100px;
+  }
+  
+  .item-details {
+    grid-area: details;
+  }
+  
+  .item-quantity {
+    grid-area: quantity;
+  }
+  
+  .item-total {
+    grid-area: total;
+  }
+  
+  .item-actions {
+    grid-area: actions;
+    flex-direction: row;
+    justify-content: center;
+    gap: 1rem;
+  }
 }
 
-.item-info h3 a {
-  color: #333;
-  text-decoration: none;
-  transition: color 0.3s ease;
+/* Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.item-info h3 a:hover {
-  color: #e74c3c;
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
 }
 
-.item-meta {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  font-size: 14px;
-  color: #666;
-}
-
-.item-category {
-  font-weight: 500;
-}
-
-.item-price {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.current-price {
-  font-size: 18px;
-  font-weight: 600;
-  color: #e74c3c;
-}
-
-.original-price {
-  font-size: 14px;
-  color: #999;
-  text-decoration: line-through;
-}
-
-.quantity-controls {
-  display: flex;
-  align-items: center;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  overflow: hidden;
-}
-
-.quantity-controls button {
-  width: 35px;
-  height: 35px;
-  border: none;
-  background: #f8f9fa;
-  cursor: pointer;
-  transition: background 0.3s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.quantity-controls button:hover:not(:disabled) {
-  background: #e9ecef;
-}
-
-.quantity-controls button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.quantity {
-  padding: 0 15px;
-  font-weight: 600;
-  min-width: 50px;
-  text-align: center;
-}
-
-.item-total {
-  text-align: right;
-}
-
-.total-price {
-  font-size: 18px;
-  font-weight: 700;
-  color: #e74c3c;
-}
-
-.item-actions {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.remove-btn,
-.wishlist-btn {
-  width: 35px;
-  height: 35px;
-  border: 1px solid #ddd;
-  background: white;
-  border-radius: 6px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.3s ease;
-}
-
-.remove-btn:hover {
-  border-color: #dc3545;
-  color: #dc3545;
-}
-
-.wishlist-btn:hover {
-  border-color: #e74c3c;
-  color: #e74c3c;
-}
-
-.continue-shopping {
-  margin-top: 30px;
-  padding-top: 30px;
-  border-top: 1px solid #eee;
-}
-
-.order-summary {
-  display: flex;
-  flex-direction: column;
-  gap: 25px;
-}
-
-.summary-card {
-  background: white;
-  border-radius: 15px;
-  padding: 30px;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
-  position: sticky;
-  top: 100px;
-}
-
-.summary-card h3 {
-  margin-bottom: 25px;
-  color: #333;
-  font-size: 20px;
-}
-
-.summary-details {
-  margin-bottom: 25px;
-}
-
-.summary-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 15px;
-  font-size: 15px;
-}
-
-.summary-row:last-child {
-  margin-bottom: 0;
-}
-
-.discount-amount {
-  color: #27ae60;
-  font-weight: 600;
-}
-
-.free-shipping {
-  color: #27ae60;
-  font-weight: 600;
-}
-
-.free-shipping-notice {
-  background: #e8f5e8;
-  color: #27ae60;
-  padding: 12px;
-  border-radius: 8px;
-  font-size: 14px;
-  margin: 15px 0;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.total-row {
-  font-size: 18px;
-  font-weight: 700;
-  padding-top: 15px;
-  border-top: 2px solid #e74c3c;
-}
-
-.total-amount {
-  color: #e74c3c;
-  font-size: 24px;
-}
-
-.coupon-section {
-  margin-bottom: 25px;
-}
-
-.coupon-input {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 15px;
-}
-
-.coupon-input input {
-  flex: 1;
-  padding: 12px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  font-size: 14px;
-}
-
-.apply-coupon-btn {
-  padding: 12px 20px;
-  background: #28a745;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: 500;
-  transition: background 0.3s ease;
-  white-space: nowrap;
-}
-
-.apply-coupon-btn:hover:not(:disabled) {
-  background: #218838;
-}
-
-.apply-coupon-btn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.applied-coupon {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: #d4edda;
-  color: #155724;
-  padding: 12px;
-  border-radius: 6px;
-  border: 1px solid #c3e6cb;
-}
-
-.coupon-info {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-weight: 600;
-}
-
-.remove-coupon-btn {
-  background: none;
-  border: none;
-  color: #155724;
-  cursor: pointer;
-  padding: 4px;
-  border-radius: 4px;
-  transition: background 0.3s ease;
-}
-
-.remove-coupon-btn:hover {
-  background: rgba(21, 87, 36, 0.1);
-}
-
-.checkout-btn {
-  width: 100%;
-  padding: 16px;
-  background: #e74c3c;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.3s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  margin-bottom: 20px;
+.cart-item {
+  animation: fadeInUp 0.5s ease-out;
 }
 
 .checkout-btn:hover {
-  background: #c0392b;
+  animation: pulse 0.5s ease-in-out;
 }
 
-.payment-methods {
-  text-align: center;
-  font-size: 14px;
-  color: #666;
-}
-
-.payment-icons {
-  display: flex;
-  justify-content: center;
-  gap: 15px;
-  margin-top: 10px;
-}
-
-.payment-icons i {
-  font-size: 24px;
-  color: #999;
-}
-
-.delivery-info {
-  background: white;
-  border-radius: 15px;
-  padding: 25px;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
-}
-
-.delivery-info h4 {
-  margin-bottom: 20px;
-  color: #333;
-}
-
-.delivery-options {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-
-.delivery-option {
-  padding: 15px;
-  border: 1px solid #eee;
-  border-radius: 8px;
-  transition: border-color 0.3s ease;
-}
-
-.delivery-option:hover {
-  border-color: #e74c3c;
-}
-
-.option-header {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 8px;
-  font-weight: 600;
-  color: #333;
-}
-
-.option-header i {
-  color: #e74c3c;
-}
-
-.option-details {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 14px;
-}
-
-.delivery-time {
-  color: #666;
-}
-
-.delivery-cost {
-  font-weight: 600;
-  color: #e74c3c;
-}
-
-.recently-viewed {
-  background: white;
-}
-
-.section-title {
-  font-size: 2rem;
-  text-align: center;
-  margin-bottom: 40px;
-  color: #333;
-}
-
-.products-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 25px;
-}
-
+/* Modal styles */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -1081,22 +873,24 @@ onMounted(() => {
   z-index: 1000;
 }
 
-.modal-content {
+.modal-overlay .bg-white {
   background: white;
-  padding: 30px;
-  border-radius: 15px;
+  padding: 2rem;
+  border-radius: 1rem;
   max-width: 400px;
   width: 90%;
   text-align: center;
 }
 
-.modal-content h3 {
-  margin-bottom: 15px;
+.modal-overlay h3 {
+  margin-bottom: 1rem;
   color: #333;
+  font-size: 1.5rem;
+  font-weight: 700;
 }
 
-.modal-content p {
-  margin-bottom: 25px;
+.modal-overlay p {
+  margin-bottom: 1.5rem;
   color: #666;
   line-height: 1.6;
 }
@@ -1104,75 +898,27 @@ onMounted(() => {
 .modal-actions {
   display: flex;
   justify-content: center;
-  gap: 15px;
+  gap: 1rem;
 }
 
-@media (max-width: 1024px) {
-  .cart-layout {
-    grid-template-columns: 1fr;
-    gap: 30px;
-  }
-  
-  .order-summary {
-    order: -1;
-  }
-  
-  .summary-card {
-    position: static;
-  }
+/* Recently viewed section */
+.recently-viewed {
+  background: white;
+  margin-top: 3rem;
+  padding: 3rem 0;
 }
 
-@media (max-width: 768px) {
-  .cart-item {
-    grid-template-columns: 80px 1fr;
-    grid-template-areas: 
-      "image details"
-      "quantity total"
-      "actions actions";
-    gap: 15px;
-  }
-  
-  .item-image {
-    grid-area: image;
-    width: 80px;
-    height: 80px;
-  }
-  
-  .item-details {
-    grid-area: details;
-  }
-  
-  .item-quantity {
-    grid-area: quantity;
-  }
-  
-  .item-total {
-    grid-area: total;
-    text-align: right;
-  }
-  
-  .item-actions {
-    grid-area: actions;
-    flex-direction: row;
-    justify-content: center;
-  }
-  
-  .coupon-input {
-    flex-direction: column;
-  }
-  
-  .page-header h1 {
-    font-size: 2rem;
-  }
-  
-  .cart-items,
-  .summary-card,
-  .delivery-info {
-    padding: 20px;
-  }
-  
-  .products-grid {
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  }
+.section-title {
+  font-size: 2rem;
+  text-align: center;
+  margin-bottom: 2.5rem;
+  color: #333;
+  font-weight: 700;
+}
+
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
 }
 </style>

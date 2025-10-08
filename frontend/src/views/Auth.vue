@@ -1,6 +1,6 @@
 <template>
   <div class="auth-page">
-    <div class="container">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="auth-container">
         <div class="auth-wrapper">
           <!-- Left Side - Form -->
@@ -32,7 +32,7 @@
               <h3>Chào mừng trở lại!</h3>
               <p class="form-subtitle">Đăng nhập vào tài khoản của bạn</p>
 
-              <div class="form-group">
+              <div class="mb-4">
                 <label for="loginEmail">Email</label>
                 <div class="input-group">
                   <i class="fas fa-envelope"></i>
@@ -46,7 +46,7 @@
                 </div>
               </div>
 
-              <div class="form-group">
+              <div class="mb-4">
                 <label for="loginPassword">Mật khẩu</label>
                 <div class="input-group">
                   <i class="fas fa-lock"></i>
@@ -106,7 +106,7 @@
               <p class="form-subtitle">Đăng ký để bắt đầu mua sắm</p>
 
               <div class="form-row">
-                <div class="form-group">
+                <div class="mb-4">
                   <label for="registerFirstName">Họ</label>
                   <div class="input-group">
                     <i class="fas fa-user"></i>
@@ -119,7 +119,7 @@
                     />
                   </div>
                 </div>
-                <div class="form-group">
+                <div class="mb-4">
                   <label for="registerLastName">Tên</label>
                   <div class="input-group">
                     <i class="fas fa-user"></i>
@@ -134,7 +134,7 @@
                 </div>
               </div>
 
-              <div class="form-group">
+              <div class="mb-4">
                 <label for="registerEmail">Email</label>
                 <div class="input-group">
                   <i class="fas fa-envelope"></i>
@@ -148,7 +148,7 @@
                 </div>
               </div>
 
-              <div class="form-group">
+              <div class="mb-4">
                 <label for="registerPhone">Số điện thoại</label>
                 <div class="input-group">
                   <i class="fas fa-phone"></i>
@@ -162,7 +162,7 @@
                 </div>
               </div>
 
-              <div class="form-group">
+              <div class="mb-4">
                 <label for="registerPassword">Mật khẩu</label>
                 <div class="input-group">
                   <i class="fas fa-lock"></i>
@@ -193,7 +193,7 @@
                 </div>
               </div>
 
-              <div class="form-group">
+              <div class="mb-4">
                 <label for="registerConfirmPassword">Xác nhận mật khẩu</label>
                 <div class="input-group">
                   <i class="fas fa-lock"></i>
@@ -217,7 +217,7 @@
                 </div>
               </div>
 
-              <div class="form-group">
+              <div class="mb-4">
   <label class="checkbox-label">
     <input class="checkbox" type="checkbox" v-model="registerForm.agreeToTerms" required>
     <span class="checkbox-text">
@@ -229,7 +229,7 @@
   </label>
 </div>
 
-<div class="form-group">
+<div class="mb-4">
   <label class="checkbox-label">
     <input class="checkbox" type="checkbox" v-model="registerForm.subscribeNewsletter">
     <span class="checkbox-text">

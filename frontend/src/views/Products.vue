@@ -2,7 +2,7 @@
   <div class="products-page">
     <!-- Page Header -->
     <section class="page-header">
-      <div class="container">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="header-content">
           <div class="breadcrumb">
             <router-link to="/">Trang chủ</router-link>
@@ -17,7 +17,7 @@
 
     <!-- Filters and Products -->
     <section class="products-section py-5">
-      <div class="container">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="products-layout">
           <!-- Sidebar Filters -->
           <aside class="filters-sidebar">
@@ -166,7 +166,7 @@
                 <i class="fas fa-search"></i>
                 <h3>Không tìm thấy sản phẩm</h3>
                 <p>Thử điều chỉnh bộ lọc để tìm kiếm sản phẩm khác</p>
-                <button @click="clearAllFilters" class="btn">Xóa bộ lọc</button>
+                <button @click="clearAllFilters" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md transition-colors duration-200">Xóa bộ lọc</button>
               </div>
 
               <div v-else class="products-grid">

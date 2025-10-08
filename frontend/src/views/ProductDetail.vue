@@ -8,12 +8,12 @@
 
     <!-- Product Not Found -->
     <div v-else-if="!product" class="not-found-container">
-      <div class="container">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="not-found-content">
           <i class="fas fa-exclamation-triangle"></i>
           <h2>Sản phẩm không tồn tại</h2>
           <p>Sản phẩm bạn tìm kiếm không tồn tại hoặc đã bị xóa.</p>
-          <router-link to="/products" class="btn">Quay lại danh sách sản phẩm</router-link>
+          <router-link to="/products" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md transition-colors duration-200">Quay lại danh sách sản phẩm</router-link>
         </div>
       </div>
     </div>
@@ -22,7 +22,7 @@
     <div v-else>
       <!-- Breadcrumb -->
       <section class="breadcrumb-section">
-        <div class="container">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <nav class="breadcrumb">
             <router-link to="/">Trang chủ</router-link>
             <span>/</span>
@@ -35,15 +35,15 @@
 
       <!-- Product Details -->
       <section class="product-section py-5">
-        <div class="container">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div class="product-layout">
             <!-- Product Images -->
             <div class="product-images">
               <div class="main-image">
                 <img :src="selectedImage" :alt="product.name" />
                 <div class="image-badges">
-                  <span v-if="product.isNew" class="badge new-badge">Mới</span>
-                  <span v-if="product.discount" class="badge discount-badge">
+                  <span v-if="product.isNew" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium new-badge">Mới</span>
+                  <span v-if="product.discount" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium discount-badge">
                     -{{ product.discount }}%
                   </span>
                 </div>
@@ -162,12 +162,12 @@
                 <button 
                   @click="addToCart" 
                   :disabled="!product.inStock"
-                  class="btn add-to-cart-btn"
+                  class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md transition-colors duration-200 add-to-cart-btn"
                 >
                   <i class="fas fa-shopping-cart"></i>
                   {{ product.inStock ? 'Thêm vào giỏ hàng' : 'Hết hàng' }}
                 </button>
-                <button @click="buyNow" :disabled="!product.inStock" class="btn buy-now-btn">
+                <button @click="buyNow" :disabled="!product.inStock" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md transition-colors duration-200 buy-now-btn">
                   Mua ngay
                 </button>
                 <button @click="addToWishlist" class="btn-icon wishlist-btn">
@@ -204,7 +204,7 @@
 
       <!-- Product Details Tabs -->
       <section class="product-tabs py-5">
-        <div class="container">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div class="tabs-container">
             <div class="tabs-header">
               <button 
@@ -254,7 +254,7 @@
                     </div>
                   </div>
                   
-                  <button @click="showReviewForm = !showReviewForm" class="btn">
+                  <button @click="showReviewForm = !showReviewForm" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md transition-colors duration-200">
                     Viết đánh giá
                   </button>
                 </div>
@@ -262,7 +262,7 @@
                 <!-- Review Form -->
                 <form v-if="showReviewForm" @submit.prevent="submitReview" class="review-form">
                   <h3>Viết đánh giá của bạn</h3>
-                  <div class="form-group">
+                  <div class="mb-4">
                     <label>Đánh giá:</label>
                     <div class="rating-input">
                       <button 
@@ -277,17 +277,17 @@
                       </button>
                     </div>
                   </div>
-                  <div class="form-group">
+                  <div class="mb-4">
                     <label>Tiêu đề:</label>
                     <input type="text" v-model="reviewTitle" required />
                   </div>
-                  <div class="form-group">
+                  <div class="mb-4">
                     <label>Nội dung:</label>
                     <textarea v-model="reviewContent" rows="4" required></textarea>
                   </div>
                   <div class="form-actions">
-                    <button type="submit" class="btn">Gửi đánh giá</button>
-                    <button type="button" @click="showReviewForm = false" class="btn btn-secondary">
+                    <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md transition-colors duration-200">Gửi đánh giá</button>
+                    <button type="button" @click="showReviewForm = false" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md transition-colors duration-200 bg-gray-600 hover:bg-gray-700 text-white">
                       Hủy
                     </button>
                   </div>
@@ -348,7 +348,7 @@
 
       <!-- Related Products -->
       <section class="related-products py-5">
-        <div class="container">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 class="section-title">Sản phẩm liên quan</h2>
           <div class="products-grid">
             <ProductCard 

@@ -2,7 +2,7 @@
     <div class="contact-page">
         <!-- Page Header -->
         <section class="page-header">
-            <div class="container">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <h1>Liên hệ với chúng tôi</h1>
                 <p>Chúng tôi luôn sẵn sàng hỗ trợ bạn</p>
             </div>
@@ -11,12 +11,12 @@
 
         <!-- Contact Content -->
         <section class="contact-section py-5">
-            <div class="container">
-                <div class="row">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex flex-wrap">
                     <!-- Contact Information -->
                     <div class="col-lg-12">
                         <div class="contact-info">
-                            <h2 class="card-title">
+                            <h2 class="text-lg font-semibold text-gray-900">
                                 <i class="fas fa-headset me-2"></i>Thông tin liên hệ
                             </h2>
                             <p class="contact-description">
@@ -101,13 +101,13 @@
                     <!-- Contact Form -->
                     <div class="col-lg-12">
                         <div class="contact-form-wrapper">
-                            <h2 class="card-title">
+                            <h2 class="text-lg font-semibold text-gray-900">
                                 <i class="fas fa-paper-plane me-2"></i>Gửi tin nhắn cho chúng tôi
                             </h2>
 
                             <form @submit.prevent="submitForm" class="contact-form" novalidate>
                                 <div class="form-row">
-                                    <div class="form-group">
+                                    <div class="mb-4">
                                         <label for="name">Họ và tên *</label>
                                         <input ref="nameInput" type="text" id="name" v-model.trim="form.name"
                                             :aria-invalid="!!errors.name"
@@ -119,7 +119,7 @@
                                         </span>
                                     </div>
 
-                                    <div class="form-group">
+                                    <div class="mb-4">
                                         <label for="email">Email *</label>
                                         <input type="email" id="email" v-model.trim="form.email"
                                             :aria-invalid="!!errors.email"
@@ -133,7 +133,7 @@
                                 </div>
 
                                 <div class="form-row">
-                                    <div class="form-group">
+                                    <div class="mb-4">
                                         <label for="phone">Số điện thoại</label>
                                         <input type="tel" id="phone" v-model.trim="form.phone"
                                             :aria-invalid="!!errors.phone"
@@ -145,7 +145,7 @@
                                         </span>
                                     </div>
 
-                                    <div class="form-group">
+                                    <div class="mb-4">
                                         <label for="subject">Chủ đề *</label>
                                         <div class="select-wrapper" :class="{ error: errors.subject }">
                                             <select id="subject" v-model="form.subject" :aria-invalid="!!errors.subject"
@@ -168,7 +168,7 @@
                                     </div>
                                 </div>
 
-                                <div class="form-group">
+                                <div class="mb-4">
                                     <label for="message">Nội dung tin nhắn *</label>
                                     <textarea id="message" v-model.trim="form.message" :aria-invalid="!!errors.message"
                                         :aria-describedby="errors.message ? 'message-error' : undefined"
@@ -183,7 +183,7 @@
                                 </div>
 
                                 <!-- Privacy Policy -->
-                                <div class="form-group checkbox-group">
+                                <div class="mb-4 checkbox-group">
                                     <label class="checkbox-label">
                                         <input type="checkbox" v-model="form.privacy" :class="{ error: errors.privacy }"
                                             required>
@@ -233,7 +233,7 @@
 
         <!-- FAQ Section -->
         <section class="faq-section py-5">
-            <div class="container">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="section-header text-center">
                     <h2>Câu hỏi thường gặp</h2>
                     <p>Những câu hỏi phổ biến từ khách hàng</p>
@@ -258,7 +258,7 @@
 
         <!-- Map Section -->
         <section class="map-section">
-            <div class="container">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <h2 class="text-center mb-4">Vị trí của chúng tôi</h2>
                 <div class="map-wrapper">
                     <div class="map-placeholder">
@@ -274,17 +274,17 @@
 
         <!-- Success Modal -->
         <div v-if="showSuccessModal" class="modal-overlay" @click="closeSuccessModal">
-            <div class="modal-content success-modal" role="dialog" aria-modal="true" aria-labelledby="success-title"
+            <div class="bg-white rounded-lg shadow-xl success-modal" role="dialog" aria-modal="true" aria-labelledby="success-title"
                 @click.stop>
-                <div class="modal-header">
+                <div class="flex justify-between items-center p-6 border-b border-gray-200">
                     <i class="fas fa-check-circle success-icon"></i>
                     <h3 id="success-title">Gửi thành công!</h3>
                 </div>
-                <div class="modal-body">
+                <div class="p-6">
                     <p>Cảm ơn bạn đã liên hệ với chúng tôi. Chúng tôi sẽ phản hồi trong vòng 24 giờ.</p>
                 </div>
-                <div class="modal-footer">
-                    <button @click="closeSuccessModal" class="btn btn-primary">
+                <div class="flex justify-end space-x-3 p-6 border-t border-gray-200">
+                    <button @click="closeSuccessModal" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md transition-colors duration-200 bg-blue-600 hover:bg-blue-700 text-white">
                         Đóng
                     </button>
                 </div>
@@ -293,18 +293,18 @@
 
         <!-- Docs Modal (Privacy/Terms) -->
         <div v-if="showDocsModal" class="modal-overlay" @click="closeDocs">
-            <div class="modal-content" role="dialog" aria-modal="true" @click.stop>
-                <div class="modal-header">
+            <div class="bg-white rounded-lg shadow-xl" role="dialog" aria-modal="true" @click.stop>
+                <div class="flex justify-between items-center p-6 border-b border-gray-200">
                     <h3 class="mb-0"><i class="far fa-file-alt me-2"></i>{{ docsTitle }}</h3>
                 </div>
-                <div class="modal-body">
+                <div class="p-6">
                     <p class="text-start">
                         Đây là nội dung minh họa cho {{ docsTitle.toLowerCase() }}. Bạn có thể thay thế bằng nội dung
                         thật của hệ thống.
                     </p>
                 </div>
-                <div class="modal-footer">
-                    <button @click="closeDocs" class="btn btn-primary">Đã hiểu</button>
+                <div class="flex justify-end space-x-3 p-6 border-t border-gray-200">
+                    <button @click="closeDocs" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md transition-colors duration-200 bg-blue-600 hover:bg-blue-700 text-white">Đã hiểu</button>
                 </div>
             </div>
         </div>

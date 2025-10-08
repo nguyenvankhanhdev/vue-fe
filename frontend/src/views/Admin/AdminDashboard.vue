@@ -1,287 +1,282 @@
-<template>
-  <div class="admin-dashboard">
-    <div class="container-fluid px-4">
-      <!-- Header -->
-      <div class="row">
-        <div class="col-12">
-          <div class="d-flex justify-content-between align-items-center mb-4">
+﻿<template>
+  <div class="admin-dashboard p-6 bg-gray-50 min-h-screen">
+    <!-- Page Header -->
+    <div class="mb-8">
+      <div class="flex justify-between items-center">
+        <div>
+          <h1 class="text-3xl font-bold text-gray-900 mb-2">Dashboard</h1>
+          <p class="text-gray-600">Chào mừng bạn quay lại! Đây là tổng quan về hoạt động kinh doanh.</p>
+        </div>
+        <div class="flex gap-3">
+          <button class="bg-white border border-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-all duration-200 shadow-sm">
+            <i class="fas fa-download mr-2"></i>Xuất báo cáo
+          </button>
+          <button class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-sm">
+            <i class="fas fa-plus mr-2"></i>Thêm mới
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
+      <div class="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl shadow-lg text-white p-6 transform hover:scale-105 transition-all duration-200">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-blue-100 text-sm font-medium">Doanh thu tháng</p>
+            <p class="text-2xl font-bold">₫128.5M</p>
+            <div class="flex items-center mt-2">
+              <i class="fas fa-arrow-up text-xs mr-1"></i>
+              <span class="text-xs text-blue-100">+12.5% so với tháng trước</span>
+            </div>
+          </div>
+          <div class="bg-blue-400 bg-opacity-30 rounded-lg p-3">
+            <i class="fas fa-dollar-sign text-2xl"></i>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-gradient-to-br from-green-500 to-green-600 rounded-xl shadow-lg text-white p-6 transform hover:scale-105 transition-all duration-200">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-green-100 text-sm font-medium">Đơn hàng</p>
+            <p class="text-2xl font-bold">156</p>
+            <div class="flex items-center mt-2">
+              <i class="fas fa-arrow-up text-xs mr-1"></i>
+              <span class="text-xs text-green-100">+8.2% từ tuần trước</span>
+            </div>
+          </div>
+          <div class="bg-green-400 bg-opacity-30 rounded-lg p-3">
+            <i class="fas fa-shopping-cart text-2xl"></i>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl shadow-lg text-white p-6 transform hover:scale-105 transition-all duration-200">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-purple-100 text-sm font-medium">Khách truy cập</p>
+            <p class="text-2xl font-bold">2,341</p>
+            <div class="flex items-center mt-2">
+              <i class="fas fa-arrow-up text-xs mr-1"></i>
+              <span class="text-xs text-purple-100">+23.1% hôm nay</span>
+            </div>
+          </div>
+          <div class="bg-purple-400 bg-opacity-30 rounded-lg p-3">
+            <i class="fas fa-users text-2xl"></i>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl shadow-lg text-white p-6 transform hover:scale-105 transition-all duration-200">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-orange-100 text-sm font-medium">Sản phẩm</p>
+            <p class="text-2xl font-bold">189</p>
+            <div class="flex items-center mt-2">
+              <i class="fas fa-arrow-up text-xs mr-1"></i>
+              <span class="text-xs text-orange-100">+5 sản phẩm mới</span>
+            </div>
+          </div>
+          <div class="bg-orange-400 bg-opacity-30 rounded-lg p-3">
+            <i class="fas fa-box text-2xl"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Orders & Quick Stats -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+      <!-- Recent Orders -->
+      <div class="lg:col-span-2 bg-white rounded-xl shadow-sm border border-gray-200">
+        <div class="p-6 border-b border-gray-200">
+          <div class="flex justify-between items-center">
             <div>
-              <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
-              <p class="text-muted">Chào mừng bạn quay trở lại, Admin!</p>
+              <h3 class="text-lg font-semibold text-gray-900">Đơn hàng gần đây</h3>
+              <p class="text-sm text-gray-500">Theo dõi các đơn hàng mới nhất</p>
             </div>
-            <div class="text-end">
-              <small class="text-muted">Cập nhật lần cuối: {{ lastUpdated }}</small>
-            </div>
+            <button class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg transition-all duration-200 text-sm font-medium">
+              <i class="fas fa-file-export mr-2"></i>Xuất tất cả
+            </button>
+          </div>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full">
+            <thead class="bg-gray-50">
+              <tr>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Đơn hàng</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Khách hàng</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Giá trị</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Trạng thái</th>
+                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Thao tác</th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+              <tr class="hover:bg-gray-50 transition-colors duration-150">
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="text-sm font-medium text-gray-900">#ORD-0001</div>
+                  <div class="text-sm text-gray-500">Hôm nay, 14:30</div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="flex items-center">
+                    <div class="h-8 w-8 bg-blue-100 rounded-full flex items-center justify-center">
+                      <span class="text-sm font-medium text-blue-600">NA</span>
+                    </div>
+                    <div class="ml-3">
+                      <div class="text-sm font-medium text-gray-900">Nguyễn Văn A</div>
+                      <div class="text-sm text-gray-500">nguyenvana@email.com</div>
+                    </div>
+                  </div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="text-sm font-semibold text-gray-900">₫5,200,000</div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                    <span class="w-1.5 h-1.5 bg-green-400 rounded-full mr-1.5"></span>
+                    Đã thanh toán
+                  </span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-right">
+                  <button class="bg-blue-100 hover:bg-blue-200 text-blue-700 p-2 rounded-lg transition-colors duration-200">
+                    <i class="fas fa-eye text-sm"></i>
+                  </button>
+                </td>
+              </tr>
+              <tr class="hover:bg-gray-50 transition-colors duration-150">
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="text-sm font-medium text-gray-900">#ORD-0002</div>
+                  <div class="text-sm text-gray-500">Hôm nay, 12:15</div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="flex items-center">
+                    <div class="h-8 w-8 bg-purple-100 rounded-full flex items-center justify-center">
+                      <span class="text-sm font-medium text-purple-600">TB</span>
+                    </div>
+                    <div class="ml-3">
+                      <div class="text-sm font-medium text-gray-900">Trần Thị B</div>
+                      <div class="text-sm text-gray-500">tranthib@email.com</div>
+                    </div>
+                  </div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="text-sm font-semibold text-gray-900">₫3,150,000</div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                    <span class="w-1.5 h-1.5 bg-yellow-400 rounded-full mr-1.5"></span>
+                    Đang xử lý
+                  </span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-right">
+                  <button class="bg-blue-100 hover:bg-blue-200 text-blue-700 p-2 rounded-lg transition-colors duration-200">
+                    <i class="fas fa-eye text-sm"></i>
+                  </button>
+                </td>
+              </tr>
+              <tr class="hover:bg-gray-50 transition-colors duration-150">
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="text-sm font-medium text-gray-900">#ORD-0003</div>
+                  <div class="text-sm text-gray-500">Hôm qua, 16:45</div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="flex items-center">
+                    <div class="h-8 w-8 bg-green-100 rounded-full flex items-center justify-center">
+                      <span class="text-sm font-medium text-green-600">LC</span>
+                    </div>
+                    <div class="ml-3">
+                      <div class="text-sm font-medium text-gray-900">Lê Văn C</div>
+                      <div class="text-sm text-gray-500">levanc@email.com</div>
+                    </div>
+                  </div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="text-sm font-semibold text-gray-900">₫1,990,000</div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                    <span class="w-1.5 h-1.5 bg-gray-400 rounded-full mr-1.5"></span>
+                    Chờ thanh toán
+                  </span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-right">
+                  <button class="bg-blue-100 hover:bg-blue-200 text-blue-700 p-2 rounded-lg transition-colors duration-200">
+                    <i class="fas fa-eye text-sm"></i>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="p-6 border-t border-gray-200 bg-gray-50">
+          <div class="text-center">
+            <button class="text-blue-600 hover:text-blue-700 font-medium text-sm">
+              Xem tất cả đơn hàng <i class="fas fa-arrow-right ml-1"></i>
+            </button>
           </div>
         </div>
       </div>
 
-      <!-- Statistics Cards -->
-      <div class="row mb-4">
-        <div class="col-xl-3 col-md-6 mb-4">
-          <div class="card border-left-primary shadow h-100 py-2">
-            <div class="card-body">
-              <div class="row no-gutters align-items-center">
-                <div class="col mr-2">
-                  <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                    Doanh thu (Tháng)
-                  </div>
-                  <div class="h5 mb-0 font-weight-bold text-gray-800">
-                    ${{ formatPrice(monthlyRevenue) }}
-                  </div>
-                </div>
-                <div class="col-auto">
-                  <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-xl-3 col-md-6 mb-4">
-          <div class="card border-left-success shadow h-100 py-2">
-            <div class="card-body">
-              <div class="row no-gutters align-items-center">
-                <div class="col mr-2">
-                  <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                    Đơn hàng (Hôm nay)
-                  </div>
-                  <div class="h5 mb-0 font-weight-bold text-gray-800">
-                    {{ todayOrders }}
-                  </div>
-                </div>
-                <div class="col-auto">
-                  <i class="fas fa-shopping-cart fa-2x text-gray-300"></i>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-xl-3 col-md-6 mb-4">
-          <div class="card border-left-info shadow h-100 py-2">
-            <div class="card-body">
-              <div class="row no-gutters align-items-center">
-                <div class="col mr-2">
-                  <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                    Khách hàng mới
-                  </div>
-                  <div class="h5 mb-0 font-weight-bold text-gray-800">
-                    {{ newCustomers }}
-                  </div>
-                </div>
-                <div class="col-auto">
-                  <i class="fas fa-users fa-2x text-gray-300"></i>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-xl-3 col-md-6 mb-4">
-          <div class="card border-left-warning shadow h-100 py-2">
-            <div class="card-body">
-              <div class="row no-gutters align-items-center">
-                <div class="col mr-2">
-                  <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                    Sản phẩm sắp hết
-                  </div>
-                  <div class="h5 mb-0 font-weight-bold text-gray-800">
-                    {{ lowStockProducts }}
-                  </div>
-                </div>
-                <div class="col-auto">
-                  <i class="fas fa-exclamation-triangle fa-2x text-gray-300"></i>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Charts and Recent Activity -->
-      <div class="row">
-        <!-- Sales Chart -->
-        <div class="col-xl-8 col-lg-7">
-          <div class="card shadow mb-4">
-            <div class="card-header py-3 d-flex justify-content-between align-items-center">
-              <h6 class="m-0 font-weight-bold text-primary">Biểu đồ doanh thu</h6>
-              <div class="dropdown">
-                <button class="btn btn-sm btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                  {{ selectedPeriod }}
-                </button>
-                <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="#" @click="selectedPeriod = '7 ngày qua'">7 ngày qua</a></li>
-                  <li><a class="dropdown-item" href="#" @click="selectedPeriod = '30 ngày qua'">30 ngày qua</a></li>
-                  <li><a class="dropdown-item" href="#" @click="selectedPeriod = '6 tháng qua'">6 tháng qua</a></li>
-                </ul>
-              </div>
-            </div>
-            <div class="card-body">
-              <div class="chart-area">
-                <canvas id="salesChart" width="100%" height="40"></canvas>
-              </div>
-            </div>
+      <!-- Quick Actions & Stats -->
+      <div class="space-y-6">
+        <!-- Quick Actions -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+          <h3 class="text-lg font-semibold text-gray-900 mb-4">Thao tác nhanh</h3>
+          <div class="space-y-3">
+            <button class="w-full bg-blue-50 hover:bg-blue-100 text-blue-700 p-3 rounded-lg text-left transition-all duration-200">
+              <i class="fas fa-plus mr-3"></i>Thêm sản phẩm mới
+            </button>
+            <button class="w-full bg-green-50 hover:bg-green-100 text-green-700 p-3 rounded-lg text-left transition-all duration-200">
+              <i class="fas fa-user-plus mr-3"></i>Thêm khách hàng
+            </button>
+            <button class="w-full bg-purple-50 hover:bg-purple-100 text-purple-700 p-3 rounded-lg text-left transition-all duration-200">
+              <i class="fas fa-chart-line mr-3"></i>Xem báo cáo
+            </button>
+            <button class="w-full bg-orange-50 hover:bg-orange-100 text-orange-700 p-3 rounded-lg text-left transition-all duration-200">
+              <i class="fas fa-cog mr-3"></i>Cài đặt hệ thống
+            </button>
           </div>
         </div>
 
         <!-- Top Products -->
-        <div class="col-xl-4 col-lg-5">
-          <div class="card shadow mb-4">
-            <div class="card-header py-3">
-              <h6 class="m-0 font-weight-bold text-primary">Sản phẩm bán chạy</h6>
-            </div>
-            <div class="card-body">
-              <div class="top-products">
-                <div 
-                  v-for="(product, index) in topProducts" 
-                  :key="product.id"
-                  class="product-item d-flex align-items-center mb-3"
-                >
-                  <div class="rank-badge">
-                    {{ index + 1 }}
-                  </div>
-                  <img :src="product.image" :alt="product.name" class="product-thumb">
-                  <div class="product-info flex-grow-1">
-                    <h6 class="product-name mb-1">{{ product.name }}</h6>
-                    <div class="d-flex justify-content-between">
-                      <small class="text-muted">{{ product.sold }} đã bán</small>
-                      <strong class="text-success">${{ formatPrice(product.revenue) }}</strong>
-                    </div>
-                  </div>
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+          <h3 class="text-lg font-semibold text-gray-900 mb-4">Sản phẩm bán chạy</h3>
+          <div class="space-y-3">
+            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+              <div class="flex items-center">
+                <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                  <i class="fas fa-mobile-alt text-blue-600"></i>
+                </div>
+                <div class="ml-3">
+                  <div class="text-sm font-medium text-gray-900">iPhone 15 Pro</div>
+                  <div class="text-xs text-gray-500">45 đã bán</div>
                 </div>
               </div>
+              <div class="text-sm font-semibold text-gray-900">₫32M</div>
             </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Recent Orders and Quick Actions -->
-      <div class="row">
-        <!-- Recent Orders -->
-        <div class="col-xl-8 col-lg-7">
-          <div class="card shadow mb-4">
-            <div class="card-header py-3 d-flex justify-content-between align-items-center">
-              <h6 class="m-0 font-weight-bold text-primary">Đơn hàng gần đây</h6>
-              <router-link to="/admin/orders" class="btn btn-sm btn-primary">
-                Xem tất cả
-              </router-link>
-            </div>
-            <div class="card-body">
-              <div class="table-responsive">
-                <table class="table table-borderless">
-                  <thead>
-                    <tr>
-                      <th>Mã đơn</th>
-                      <th>Khách hàng</th>
-                      <th>Sản phẩm</th>
-                      <th>Tổng tiền</th>
-                      <th>Trạng thái</th>
-                      <th>Thời gian</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr v-for="order in recentOrders" :key="order.id">
-                      <td><code>{{ order.code }}</code></td>
-                      <td>{{ order.customer }}</td>
-                      <td>{{ order.items }} sản phẩm</td>
-                      <td><strong>${{ formatPrice(order.total) }}</strong></td>
-                      <td>
-                        <span 
-                          class="badge"
-                          :class="getStatusClass(order.status)"
-                        >
-                          {{ order.status }}
-                        </span>
-                      </td>
-                      <td><small>{{ formatTime(order.time) }}</small></td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Quick Actions -->
-        <div class="col-xl-4 col-lg-5">
-          <div class="card shadow mb-4">
-            <div class="card-header py-3">
-              <h6 class="m-0 font-weight-bold text-primary">Thao tác nhanh</h6>
-            </div>
-            <div class="card-body">
-              <div class="quick-actions">
-                <router-link to="/admin/products" class="action-card">
-                  <div class="action-icon bg-primary">
-                    <i class="fas fa-plus"></i>
-                  </div>
-                  <div class="action-content">
-                    <h6>Thêm sản phẩm</h6>
-                    <p>Thêm sản phẩm mới vào cửa hàng</p>
-                  </div>
-                </router-link>
-
-                <router-link to="/admin/orders" class="action-card">
-                  <div class="action-icon bg-success">
-                    <i class="fas fa-eye"></i>
-                  </div>
-                  <div class="action-content">
-                    <h6>Xem đơn hàng</h6>
-                    <p>Quản lý và xử lý đơn hàng</p>
-                  </div>
-                </router-link>
-
-                <router-link to="/admin/reports" class="action-card">
-                  <div class="action-icon bg-info">
-                    <i class="fas fa-chart-bar"></i>
-                  </div>
-                  <div class="action-content">
-                    <h6>Báo cáo</h6>
-                    <p>Xem báo cáo doanh thu chi tiết</p>
-                  </div>
-                </router-link>
-
-                <router-link to="/admin/settings" class="action-card">
-                  <div class="action-icon bg-warning">
-                    <i class="fas fa-cog"></i>
-                  </div>
-                  <div class="action-content">
-                    <h6>Cài đặt</h6>
-                    <p>Cấu hình hệ thống</p>
-                  </div>
-                </router-link>
-              </div>
-            </div>
-          </div>
-
-          <!-- System Status -->
-          <div class="card shadow mb-4">
-            <div class="card-header py-3">
-              <h6 class="m-0 font-weight-bold text-primary">Trạng thái hệ thống</h6>
-            </div>
-            <div class="card-body">
-              <div class="system-status">
-                <div class="status-item">
-                  <div class="status-indicator bg-success"></div>
-                  <span>Server</span>
-                  <small class="text-success">Online</small>
+            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+              <div class="flex items-center">
+                <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                  <i class="fas fa-laptop text-green-600"></i>
                 </div>
-                <div class="status-item">
-                  <div class="status-indicator bg-success"></div>
-                  <span>Database</span>
-                  <small class="text-success">Connected</small>
-                </div>
-                <div class="status-item">
-                  <div class="status-indicator bg-warning"></div>
-                  <span>Cache</span>
-                  <small class="text-warning">75% Full</small>
-                </div>
-                <div class="status-item">
-                  <div class="status-indicator bg-success"></div>
-                  <span>Storage</span>
-                  <small class="text-success">Available</small>
+                <div class="ml-3">
+                  <div class="text-sm font-medium text-gray-900">MacBook Air</div>
+                  <div class="text-xs text-gray-500">32 đã bán</div>
                 </div>
               </div>
+              <div class="text-sm font-semibold text-gray-900">₫26M</div>
+            </div>
+            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+              <div class="flex items-center">
+                <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+                  <i class="fas fa-headphones text-purple-600"></i>
+                </div>
+                <div class="ml-3">
+                  <div class="text-sm font-medium text-gray-900">AirPods Pro</div>
+                  <div class="text-xs text-gray-500">28 đã bán</div>
+                </div>
+              </div>
+              <div class="text-sm font-semibold text-gray-900">₫5M</div>
             </div>
           </div>
         </div>
@@ -291,288 +286,71 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
 
-// State
-const monthlyRevenue = ref(40000)
-const todayOrders = ref(25)
-const newCustomers = ref(12)
-const lowStockProducts = ref(8)
-const selectedPeriod = ref('30 ngày qua')
-const lastUpdated = ref('')
-
-// Sample data
-const topProducts = ref([
-  {
-    id: 1,
-    name: 'iPhone 15 Pro Max',
-    image: 'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=50',
-    sold: 45,
-    revenue: 53955
-  },
-  {
-    id: 2,
-    name: 'MacBook Pro 16"',
-    image: 'https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=50',
-    sold: 23,
-    revenue: 57477
-  },
-  {
-    id: 3,
-    name: 'AirPods Pro 2',
-    image: 'https://images.unsplash.com/photo-1606220945770-b5b6c2c55bf1?w=50',
-    sold: 67,
-    revenue: 16683
-  },
-  {
-    id: 4,
-    name: 'iPad Pro 12.9"',
-    image: 'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=50',
-    sold: 34,
-    revenue: 37366
-  }
-])
-
-const recentOrders = ref([
-  {
-    id: 1,
-    code: 'ORD-2024-001',
-    customer: 'Nguyễn Văn A',
-    items: 3,
-    total: 1299.99,
-    status: 'Đang xử lý',
-    time: new Date(Date.now() - 10 * 60 * 1000)
-  },
-  {
-    id: 2,
-    code: 'ORD-2024-002',
-    customer: 'Trần Thị B',
-    items: 1,
-    total: 2499.99,
-    status: 'Đã thanh toán',
-    time: new Date(Date.now() - 25 * 60 * 1000)
-  },
-  {
-    id: 3,
-    code: 'ORD-2024-003',
-    customer: 'Lê Minh C',
-    items: 2,
-    total: 549.98,
-    status: 'Đang vận chuyển',
-    time: new Date(Date.now() - 45 * 60 * 1000)
-  },
-  {
-    id: 4,
-    code: 'ORD-2024-004',
-    customer: 'Phạm Thị D',
-    items: 1,
-    total: 799.99,
-    status: 'Hoàn thành',
-    time: new Date(Date.now() - 2 * 60 * 60 * 1000)
-  }
-])
-
-// Methods
-const formatPrice = (price) => {
-  return new Intl.NumberFormat('vi-VN').format(price)
-}
-
-const formatTime = (time) => {
-  const now = new Date()
-  const diff = now - time
-  const minutes = Math.floor(diff / 60000)
-  const hours = Math.floor(minutes / 60)
-  const days = Math.floor(hours / 24)
-  
-  if (days > 0) return `${days} ngày trước`
-  if (hours > 0) return `${hours} giờ trước`
-  return `${minutes} phút trước`
-}
-
-const getStatusClass = (status) => {
-  const statusClasses = {
-    'Đang xử lý': 'bg-warning',
-    'Đã thanh toán': 'bg-info',
-    'Đang vận chuyển': 'bg-primary',
-    'Hoàn thành': 'bg-success',
-    'Đã hủy': 'bg-danger'
-  }
-  return statusClasses[status] || 'bg-secondary'
-}
-
-const updateLastUpdated = () => {
-  lastUpdated.value = new Date().toLocaleString('vi-VN')
-}
-
-// Initialize chart (mock implementation)
-const initChart = () => {
-  // This would integrate with Chart.js or similar library
-  console.log('Chart initialized')
-}
-
-onMounted(() => {
-  updateLastUpdated()
-  initChart()
-  
-  // Update time every minute
-  setInterval(updateLastUpdated, 60000)
-})
 </script>
 
 <style scoped>
-.admin-dashboard {
-  background-color: #f8f9fc;
-  min-height: 100vh;
-  padding: 2rem 0;
+/* Gradient animations */
+@keyframes gradient-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
 }
 
-.border-left-primary {
-  border-left: 4px solid #4e73df !important;
+.bg-gradient-to-br {
+  background-size: 200% 200%;
+  animation: gradient-shift 6s ease infinite;
 }
 
-.border-left-success {
-  border-left: 4px solid #1cc88a !important;
-}
-
-.border-left-info {
-  border-left: 4px solid #36b9cc !important;
-}
-
-.border-left-warning {
-  border-left: 4px solid #f6c23e !important;
-}
-
-.chart-area {
-  height: 300px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #f8f9fc;
-  border-radius: 8px;
-  color: #5a5c69;
-}
-
-.top-products .product-item {
-  padding: 0.5rem 0;
-  border-bottom: 1px solid #e3e6f0;
-}
-
-.top-products .product-item:last-child {
-  border-bottom: none;
-}
-
-.rank-badge {
-  width: 30px;
-  height: 30px;
-  background: #4e73df;
-  color: white;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
-  font-size: 0.875rem;
-  margin-right: 0.75rem;
-}
-
-.product-thumb {
-  width: 40px;
-  height: 40px;
-  object-fit: cover;
-  border-radius: 8px;
-  margin-right: 0.75rem;
-}
-
-.product-info .product-name {
-  font-size: 0.875rem;
-  font-weight: 600;
-}
-
-.quick-actions .action-card {
-  display: flex;
-  align-items: center;
-  padding: 1rem;
-  border: 1px solid #e3e6f0;
-  border-radius: 8px;
-  margin-bottom: 1rem;
-  text-decoration: none;
-  color: inherit;
-  transition: all 0.3s ease;
-}
-
-.quick-actions .action-card:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+/* Hover effects */
+.transform:hover {
   transform: translateY(-2px);
-  text-decoration: none;
-  color: inherit;
 }
 
-.action-icon {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-right: 1rem;
-  color: white;
+/* Card shadows */
+.shadow-lg {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
 
-.action-content h6 {
-  margin-bottom: 0.25rem;
-  font-size: 0.9rem;
-  font-weight: 600;
+/* Smooth transitions */
+* {
+  transition: all 0.2s ease-in-out;
 }
 
-.action-content p {
-  margin: 0;
-  font-size: 0.8rem;
-  color: #5a5c69;
+/* Table row hover effect */
+tbody tr:hover {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
-.system-status .status-item {
-  display: flex;
-  align-items: center;
-  padding: 0.5rem 0;
-  border-bottom: 1px solid #e3e6f0;
+/* Button hover animations */
+button:hover {
+  transform: translateY(-1px);
 }
 
-.system-status .status-item:last-child {
-  border-bottom: none;
+/* Status indicators */
+.bg-green-100 { background-color: #dcfce7; }
+.text-green-800 { color: #166534; }
+.bg-yellow-100 { background-color: #fef3c7; }
+.text-yellow-800 { color: #92400e; }
+.bg-gray-100 { background-color: #f3f4f6; }
+.text-gray-800 { color: #1f2937; }
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
 }
 
-.status-indicator {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  margin-right: 0.75rem;
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
 }
 
-.system-status span {
-  flex: 1;
-  font-weight: 500;
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 10px;
 }
 
-.system-status small {
-  font-size: 0.75rem;
-}
-
-@media (max-width: 768px) {
-  .admin-dashboard {
-    padding: 1rem 0;
-  }
-  
-  .card-body {
-    padding: 1rem;
-  }
-  
-  .action-card {
-    padding: 0.75rem !important;
-  }
-  
-  .action-icon {
-    width: 40px !important;
-    height: 40px !important;
-  }
+::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
 }
 </style>
