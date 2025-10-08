@@ -2,7 +2,7 @@
   <div class="categories-page">
     <!-- Page Header -->
     <section class="page-header">
-      <div class="container">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <h1>Danh mục sản phẩm</h1>
         <p>Khám phá các danh mục sản phẩm đa dạng của chúng tôi</p>
       </div>
@@ -10,7 +10,7 @@
 
     <!-- Categories Content -->
     <section class="categories-section py-5">
-      <div class="container">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <!-- Category Filters -->
         <div class="category-filters">
           <div class="filter-tabs">
@@ -94,11 +94,11 @@
               </div>
               
               <div class="category-actions">
-                <button @click.stop="viewProducts(category)" class="btn btn-primary">
+                <button @click.stop="viewProducts(category)" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md transition-colors duration-200 bg-blue-600 hover:bg-blue-700 text-white">
                   <i class="fas fa-eye"></i>
                   Xem sản phẩm
                 </button>
-                <button @click.stop="addToFavorites(category)" class="btn btn-outline">
+                <button @click.stop="addToFavorites(category)" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md transition-colors duration-200 btn-outline">
                   <i :class="category.isFavorite ? 'fas fa-heart' : 'far fa-heart'"></i>
                   {{ category.isFavorite ? 'Đã thích' : 'Yêu thích' }}
                 </button>
@@ -193,10 +193,10 @@
 
     <!-- CTA Section -->
     <section class="cta-section">
-      <div class="container text-center">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <h2>Không tìm thấy danh mục phù hợp?</h2>
         <p>Hãy liên hệ với chúng tôi để được tư vấn</p>
-        <router-link to="/contact" class="btn btn-primary">
+        <router-link to="/contact" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md transition-colors duration-200 bg-blue-600 hover:bg-blue-700 text-white">
           <i class="fas fa-phone"></i>
           Liên hệ tư vấn
         </router-link>

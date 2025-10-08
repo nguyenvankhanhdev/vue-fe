@@ -34,6 +34,12 @@ const routes = [
     component: () => import('./views/Register.vue'),
   },
   {
+    path: '/verify-email',
+    name: 'VerifyEmail',
+    component: () => import('./views/VerifyEmail.vue'),
+    meta: { requiresAuth: true }
+  },
+  {
     path: '/checkout',
     name: 'Checkout',
     component: () => import('./views/Checkout.vue'),
@@ -70,7 +76,7 @@ const routes = [
   {
     path: '/admin',
     component: () => import('./views/Admin/AdminLayout.vue'),
-    meta: { requiresAuth: true },
+    // meta: { requiresAuth: true }, // Temporary disabled for development
     children: [
       {
         path: '',
@@ -134,6 +140,8 @@ router.beforeEach((to, from, next) => {
   
   // Check if user is truly authenticated
   const isLoggedIn = !!(isAuthenticated && user)
+  const parsedUser = (() => { try { return user ? JSON.parse(user) : null } catch { return null } })()
+  const isVerified = !!(parsedUser?.email_verified || parsedUser?.email_verified_at)
   
   // If user is logged in and trying to access login/register pages
   if (isLoggedIn && (to.name === 'Login' || to.name === 'Register')) {
@@ -153,6 +161,31 @@ router.beforeEach((to, from, next) => {
     return
   }
   
+  // If user is logged in but email is not verified, force them to verify before accessing protected pages
+  if (isLoggedIn && !isVerified) {
+    // Chỉ chặn các route cần đăng nhập
+    if (to.meta?.requiresAuth && to.name !== 'VerifyEmail') {
+      next({ name: 'VerifyEmail', query: { redirect: to.fullPath } })
+      return
+    }
+  }
+  
+  // Admin role guard (temporary bypass for development)
+  if (to.path.startsWith('/admin')) {
+    const role = parsedUser?.role
+    // Temporarily allow admin access for development
+    // Uncomment the lines below for production:
+    // if (!isLoggedIn) {
+    //   next({ name: 'Login', query: { redirect: to.fullPath } })
+    //   return
+    // }
+    // if (role && role !== 'admin') {
+    //   toastService.error('Bạn không có quyền truy cập trang quản trị')
+    //   next('/')
+    //   return
+    // }
+  }
+
   // Allow navigation
   next()
 })

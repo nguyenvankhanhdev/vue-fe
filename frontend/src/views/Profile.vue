@@ -2,7 +2,7 @@
   <div class="profile-page">
     <!-- Page Header -->
     <section class="page-header">
-      <div class="container">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <h1>Tài khoản của tôi</h1>
         <p>Quản lý thông tin cá nhân và cài đặt tài khoản</p>
       </div>
@@ -10,7 +10,7 @@
 
     <!-- Profile Content -->
     <section class="profile-section py-5">
-      <div class="container">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="profile-layout">
           <!-- Sidebar Navigation -->
           <aside class="profile-sidebar">
@@ -57,7 +57,7 @@
 
               <form @submit.prevent="updatePersonalInfo" class="profile-form">
                 <div class="form-row">
-                  <div class="form-group">
+                  <div class="mb-4">
                     <label for="firstName">Họ *</label>
                     <input 
                       type="text" 
@@ -66,7 +66,7 @@
                       required
                     />
                   </div>
-                  <div class="form-group">
+                  <div class="mb-4">
                     <label for="lastName">Tên *</label>
                     <input 
                       type="text" 
@@ -77,7 +77,7 @@
                   </div>
                 </div>
 
-                <div class="form-group">
+                <div class="mb-4">
                   <label for="email">Email *</label>
                   <input 
                     type="email" 
@@ -87,7 +87,7 @@
                   />
                 </div>
 
-                <div class="form-group">
+                <div class="mb-4">
                   <label for="phone">Số điện thoại</label>
                   <input 
                     type="tel" 
@@ -97,7 +97,7 @@
                 </div>
 
                 <div class="form-row">
-                  <div class="form-group">
+                  <div class="mb-4">
                     <label for="birthDate">Ngày sinh</label>
                     <input 
                       type="date" 
@@ -105,7 +105,7 @@
                       v-model="personalInfo.birthDate"
                     />
                   </div>
-                  <div class="form-group">
+                  <div class="mb-4">
                     <label for="gender">Giới tính</label>
                     <select id="gender" v-model="personalInfo.gender">
                       <option value="">Chọn giới tính</option>
@@ -117,7 +117,7 @@
                 </div>
 
                 <div class="form-actions">
-                  <button type="submit" :disabled="personalLoading" class="btn btn-primary">
+                  <button type="submit" :disabled="personalLoading" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md transition-colors duration-200 bg-blue-600 hover:bg-blue-700 text-white">
                     <span v-if="personalLoading" class="loading-spinner"></span>
                     {{ personalLoading ? 'Đang lưu...' : 'Lưu thay đổi' }}
                   </button>
@@ -130,7 +130,7 @@
               <div class="content-header">
                 <h2>Địa chỉ giao hàng</h2>
                 <p>Quản lý địa chỉ giao hàng của bạn</p>
-                <button @click="showAddressForm = true" class="btn btn-outline">
+                <button @click="showAddressForm = true" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md transition-colors duration-200 btn-outline">
                   <i class="fas fa-plus"></i>
                   Thêm địa chỉ mới
                 </button>
@@ -147,13 +147,13 @@
                     <div class="address-header">
                       <h4>{{ address.name }}</h4>
                       <div class="address-badges">
-                        <span v-if="address.isDefault" class="badge default-badge">
+                        <span v-if="address.isDefault" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium default-badge">
                           Mặc định
                         </span>
-                        <span v-if="address.type === 'home'" class="badge type-badge">
+                        <span v-if="address.type === 'home'" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium type-badge">
                           Nhà riêng
                         </span>
-                        <span v-if="address.type === 'office'" class="badge type-badge">
+                        <span v-if="address.type === 'office'" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium type-badge">
                           Văn phòng
                         </span>
                       </div>
@@ -195,7 +195,7 @@
               </div>
 
               <form @submit.prevent="changePassword" class="profile-form">
-                <div class="form-group">
+                <div class="mb-4">
                   <label for="currentPassword">Mật khẩu hiện tại *</label>
                   <div class="password-input">
                     <input 
@@ -214,7 +214,7 @@
                   </div>
                 </div>
 
-                <div class="form-group">
+                <div class="mb-4">
                   <label for="newPassword">Mật khẩu mới *</label>
                   <div class="password-input">
                     <input 
@@ -233,7 +233,7 @@
                   </div>
                 </div>
 
-                <div class="form-group">
+                <div class="mb-4">
                   <label for="confirmPassword">Xác nhận mật khẩu mới *</label>
                   <div class="password-input">
                     <input 
@@ -259,7 +259,7 @@
                   <button 
                     type="submit" 
                     :disabled="passwordLoading || !passwordsMatch"
-                    class="btn btn-primary"
+                    class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md transition-colors duration-200 bg-blue-600 hover:bg-blue-700 text-white"
                   >
                     <span v-if="passwordLoading" class="loading-spinner"></span>
                     {{ passwordLoading ? 'Đang cập nhật...' : 'Đổi mật khẩu' }}
@@ -324,8 +324,8 @@
 
     <!-- Address Form Modal -->
     <div v-if="showAddressForm" class="modal-overlay" @click="showAddressForm = false">
-      <div class="modal-content" @click.stop>
-        <div class="modal-header">
+      <div class="bg-white rounded-lg shadow-xl" @click.stop>
+        <div class="flex justify-between items-center p-6 border-b border-gray-200">
           <h3>{{ editingAddress ? 'Sửa địa chỉ' : 'Thêm địa chỉ mới' }}</h3>
           <button @click="showAddressForm = false" class="close-btn">
             <i class="fas fa-times"></i>
@@ -334,26 +334,26 @@
         
         <form @submit.prevent="saveAddress" class="modal-form">
           <!-- Address form content -->
-          <div class="form-group">
+          <div class="mb-4">
             <label>Họ tên *</label>
             <input type="text" v-model="addressForm.name" required />
           </div>
           
-          <div class="form-group">
+          <div class="mb-4">
             <label>Số điện thoại *</label>
             <input type="tel" v-model="addressForm.phone" required />
           </div>
           
-          <div class="form-group">
+          <div class="mb-4">
             <label>Địa chỉ chi tiết *</label>
             <input type="text" v-model="addressForm.street" required />
           </div>
           
           <div class="form-actions">
-            <button type="button" @click="showAddressForm = false" class="btn btn-secondary">
+            <button type="button" @click="showAddressForm = false" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md transition-colors duration-200 bg-gray-600 hover:bg-gray-700 text-white">
               Hủy
             </button>
-            <button type="submit" class="btn btn-primary">
+            <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md transition-colors duration-200 bg-blue-600 hover:bg-blue-700 text-white">
               {{ editingAddress ? 'Cập nhật' : 'Thêm địa chỉ' }}
             </button>
           </div>

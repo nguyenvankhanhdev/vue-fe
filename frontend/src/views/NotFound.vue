@@ -1,6 +1,6 @@
 <template>
   <div class="not-found-page">
-    <div class="container">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="not-found-content">
         <div class="error-illustration">
           <div class="error-number">404</div>
@@ -15,11 +15,11 @@
         </div>
         
         <div class="error-actions">
-          <router-link to="/" class="btn btn-primary">
+          <router-link to="/" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md transition-colors duration-200 bg-blue-600 hover:bg-blue-700 text-white">
             <i class="fas fa-home"></i>
             Về trang chủ
           </router-link>
-          <router-link to="/products" class="btn btn-outline">
+          <router-link to="/products" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md transition-colors duration-200 btn-outline">
             <i class="fas fa-shopping-bag"></i>
             Xem sản phẩm
           </router-link>

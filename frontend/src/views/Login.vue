@@ -1,103 +1,118 @@
 <template>
-    <div class="login-page">
-        <div class="container">
-            <div class="login-wrapper">
-                <div class="login-card">
-                    <div class="login-header">
-                        <h2>Đăng nhập</h2>
-                        <p>Chào mừng bạn quay trở lại</p>
+    <div class="min-h-screen bg-gradient-to-br from-indigo-500 via-purple-500 to-purple-700 flex items-center justify-center p-5">
+        <div class="max-w-6xl w-full">
+            <div class="grid md:grid-cols-2 bg-white rounded-3xl shadow-2xl overflow-hidden min-h-[600px]">
+                <div class="p-12 flex flex-col justify-center">
+                    <div class="text-center mb-10">
+                        <h2 class="text-3xl font-bold text-gray-900 mb-2">Đăng nhập</h2>
+                        <p class="text-gray-600">Chào mừng bạn quay trở lại</p>
 
                         <!-- General Error -->
-                        <div v-if="generalError" class="alert alert-error" role="alert">
-                            <i class="fas fa-exclamation-circle"></i>
+                        <div v-if="generalError" class="mt-4 p-3 bg-red-50 border border-red-200 text-red-600 rounded-lg flex items-center gap-2 text-sm" role="alert">
+                            <i class="fas fa-exclamation-circle text-red-500"></i>
                             {{ generalError }}
                         </div>
                     </div>
 
-                    <form @submit.prevent="handleLogin" class="login-form">
-                        <div class="form-group">
-                            <label for="email">Email</label>
+                    <form @submit.prevent="handleLogin" class="w-full">
+                        <div class="mb-6">
+                            <label for="email" class="block mb-2 font-semibold text-gray-700">Email</label>
                             <input type="email" id="email" v-model="loginForm.email" placeholder="Nhập email của bạn"
                                 required
-                                :class="{ 'error': hasFieldError('email') || (loginForm.email && !isValidEmail) }"
+                                :class="[
+                                    'w-full px-4 py-3.5 border-2 rounded-xl text-base transition-all duration-300 bg-gray-50 focus:bg-white focus:outline-none',
+                                    (hasFieldError('email') || (loginForm.email && !isValidEmail)) 
+                                        ? 'border-red-400 bg-red-50 focus:border-red-500 focus:shadow-red-100' 
+                                        : 'border-gray-200 focus:border-blue-500 focus:shadow-blue-100'
+                                ]"
                                 @input="clearErrors">
-                            <p v-if="hasFieldError('email')" class="error-message">
+                            <p v-if="hasFieldError('email')" class="text-red-500 text-xs mt-1.5">
                                 {{ getFieldError('email') }}
                             </p>
-                            <p v-else-if="loginForm.email && !isValidEmail" class="error-message">
+                            <p v-else-if="loginForm.email && !isValidEmail" class="text-red-500 text-xs mt-1.5">
                                 Email không đúng định dạng
                             </p>
                         </div>
 
-                        <div class="form-group">
-                            <label for="password">Mật khẩu</label>
-                            <div class="password-input">
+                        <div class="mb-6">
+                            <label for="password" class="block mb-2 font-semibold text-gray-700">Mật khẩu</label>
+                            <div class="relative">
                                 <input :type="showPassword ? 'text' : 'password'" id="password"
                                     v-model="loginForm.password" placeholder="Nhập mật khẩu" required
-                                    :class="{ 'error': hasFieldError('password') }" @input="clearErrors">
-                                <button type="button" @click="togglePassword" class="password-toggle">
+                                    :class="[
+                                        'w-full px-4 py-3.5 pr-12 border-2 rounded-xl text-base transition-all duration-300 bg-gray-50 focus:bg-white focus:outline-none',
+                                        hasFieldError('password') 
+                                            ? 'border-red-400 bg-red-50 focus:border-red-500 focus:shadow-red-100' 
+                                            : 'border-gray-200 focus:border-blue-500 focus:shadow-blue-100'
+                                    ]" 
+                                    @input="clearErrors">
+                                <button type="button" @click="togglePassword" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 p-1">
                                     <i :class="showPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
                                 </button>
                             </div>
-                            <p v-if="hasFieldError('password')" class="error-message">
+                            <p v-if="hasFieldError('password')" class="text-red-500 text-xs mt-1.5">
                                 {{ getFieldError('password') }}
                             </p>
                         </div>
 
-                        <div class="form-options">
-                            <label class="checkbox-label">
-                                <input type="checkbox" v-model="rememberMe">
-                                <span class="checkmark"></span>
+                        <div class="flex justify-between items-center mb-8">
+                            <label class="flex items-center text-sm text-gray-600 cursor-pointer">
+                                <input type="checkbox" v-model="rememberMe" class="mr-2 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
                                 Ghi nhớ đăng nhập
                             </label>
-                            <router-link to="/forgot-password" class="forgot-link">
+                            <router-link to="/forgot-password" class="text-blue-600 text-sm font-medium hover:underline">
                                 Quên mật khẩu?
                             </router-link>
                         </div>
 
-                        <button type="submit" class="login-btn" :disabled="!isFormValid || loading">
-                            <span v-if="loading" class="spinner"></span>
+                        <button type="submit" :disabled="!isFormValid || loading" 
+                            class="w-full py-4 px-6 bg-blue-600 hover:bg-blue-700 disabled:opacity-70 disabled:cursor-not-allowed text-white font-semibold rounded-xl transition-all duration-300 flex items-center justify-center gap-2 transform hover:-translate-y-0.5">
+                            <div v-if="loading" class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
                             {{ loading ? 'Đang đăng nhập...' : 'Đăng nhập' }}
                         </button>
 
-                        <div class="divider">
-                            <span>hoặc</span>
+                        <div class="relative text-center my-8">
+                            <div class="absolute inset-0 flex items-center">
+                                <div class="w-full border-t border-gray-200"></div>
+                            </div>
+                            <span class="bg-white px-4 text-gray-500 text-sm">hoặc</span>
                         </div>
 
-                        <div class="social-login">
-                            <button type="button" class="social-btn google-btn">
+                        <div class="flex gap-3 mb-8">
+                            <button type="button" class="flex-1 py-3 px-4 border-2 border-gray-200 hover:border-red-400 hover:text-red-500 text-gray-600 font-medium rounded-xl transition-all duration-300 flex items-center justify-center gap-2">
                                 <i class="fab fa-google"></i>
-                                Đăng nhập với Google
+                                Google
                             </button>
-                            <button type="button" class="social-btn facebook-btn">
+                            <button type="button" class="flex-1 py-3 px-4 border-2 border-gray-200 hover:border-blue-500 hover:text-blue-600 text-gray-600 font-medium rounded-xl transition-all duration-300 flex items-center justify-center gap-2">
                                 <i class="fab fa-facebook-f"></i>
-                                Đăng nhập với Facebook
+                                Facebook
                             </button>
                         </div>
 
-                        <div class="signup-prompt">
-                            <p>Chưa có tài khoản?
-                                <router-link to="/register" class="signup-link">Đăng ký ngay</router-link>
+                        <div class="text-center">
+                            <p class="text-gray-600">
+                                Chưa có tài khoản?
+                                <router-link to="/register" class="text-blue-600 font-semibold hover:underline ml-1">Đăng ký ngay</router-link>
                             </p>
                         </div>
                     </form>
                 </div>
 
-                <div class="login-illustration">
-                    <div class="illustration-content">
-                        <h3>Khám phá thế giới mua sắm</h3>
-                        <p>Tham gia cộng đồng hàng triệu người dùng đang tin tưởng và lựa chọn chúng tôi</p>
-                        <div class="features">
-                            <div class="feature">
-                                <i class="fas fa-shipping-fast"></i>
+                <div class="bg-gradient-to-br from-indigo-600 to-purple-700 flex items-center justify-center text-white text-center p-12">
+                    <div class="max-w-md">
+                        <h3 class="text-2xl font-bold mb-4">Khám phá thế giới mua sắm</h3>
+                        <p class="text-indigo-100 mb-10 leading-relaxed">Tham gia cộng đồng hàng triệu người dùng đang tin tưởng và lựa chọn chúng tôi</p>
+                        <div class="space-y-5">
+                            <div class="flex items-center gap-3 text-sm">
+                                <i class="fas fa-shipping-fast text-lg opacity-80"></i>
                                 <span>Giao hàng nhanh chóng</span>
                             </div>
-                            <div class="feature">
-                                <i class="fas fa-shield-alt"></i>
+                            <div class="flex items-center gap-3 text-sm">
+                                <i class="fas fa-shield-alt text-lg opacity-80"></i>
                                 <span>Bảo mật thông tin</span>
                             </div>
-                            <div class="feature">
-                                <i class="fas fa-headset"></i>
+                            <div class="flex items-center gap-3 text-sm">
+                                <i class="fas fa-headset text-lg opacity-80"></i>
                                 <span>Hỗ trợ 24/7</span>
                             </div>
                         </div>
@@ -175,8 +190,14 @@ const handleLogin = async () => {
             password: loginForm.value.password,
             remember: rememberMe.value
         }
-        const { token, user } = await authService.login(credentials) // <- shape chuẩn
+        const { token, user } = await authService.login(credentials)
         setAuth(token, user)
+        // Kiểm tra trạng thái xác minh thống nhất: ưu tiên email_verified_at hoặc verified boolean
+        const isVerified = !!(user.email_verified_at || user.verified === true)
+        if (!isVerified) {
+            router.push({ name: 'VerifyEmail', query: { redirect: router.currentRoute.value.query.redirect || '/' } })
+            return
+        }
         router.push(router.currentRoute.value.query.redirect || '/')
         const Swal = (await import('sweetalert2')).default
         Swal.fire({
@@ -240,347 +261,3 @@ const handleLogin = async () => {
     }
 }
 </script>
-
-<style scoped>
-.login-page {
-    min-height: 100vh;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-}
-
-.container {
-    max-width: 1200px;
-    width: 100%;
-}
-
-.login-wrapper {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    background: white;
-    border-radius: 20px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-    min-height: 600px;
-}
-
-.login-card {
-    padding: 60px 50px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-}
-
-.login-header {
-    text-align: center;
-    margin-bottom: 40px;
-}
-
-.login-header h2 {
-    font-size: 32px;
-    font-weight: 700;
-    color: #1f2937;
-    margin-bottom: 8px;
-}
-
-.login-header p {
-    color: #6b7280;
-    font-size: 16px;
-}
-
-/* Alert styles */
-.alert {
-    padding: 12px 16px;
-    border-radius: 8px;
-    margin-top: 16px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 14px;
-    line-height: 1.5;
-}
-
-.alert-error {
-    background-color: #fef2f2;
-    border: 1px solid #fecaca;
-    color: #dc2626;
-}
-
-.alert-error i {
-    color: #ef4444;
-}
-
-.login-form {
-    width: 100%;
-}
-
-.form-group {
-    margin-bottom: 24px;
-}
-
-.form-group label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: 600;
-    color: #374151;
-}
-
-.form-group input {
-    width: 100%;
-    padding: 14px 16px;
-    border: 2px solid #e5e7eb;
-    border-radius: 12px;
-    font-size: 16px;
-    transition: all 0.3s ease;
-    background: #f9fafb;
-}
-
-.form-group input:focus {
-    outline: none;
-    border-color: #3b82f6;
-    background: white;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-}
-
-/* Input error state */
-input.error {
-    border-color: #ef4444 !important;
-    background-color: #fef2f2 !important;
-}
-
-input.error:focus {
-    border-color: #dc2626 !important;
-    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.12) !important;
-}
-
-/* Error message */
-.error-message {
-    color: #ef4444;
-    font-size: 12px;
-    margin-top: 6px;
-}
-
-.password-input {
-    position: relative;
-}
-
-.password-toggle {
-    position: absolute;
-    right: 16px;
-    top: 50%;
-    transform: translateY(-50%);
-    background: none;
-    border: none;
-    color: #6b7280;
-    cursor: pointer;
-    padding: 4px;
-}
-
-.form-options {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 32px;
-}
-
-.checkbox-label {
-    display: flex;
-    align-items: center;
-    font-size: 14px;
-    color: #6b7280;
-    cursor: pointer;
-}
-
-.checkbox-label input {
-    margin-right: 8px;
-}
-
-.forgot-link {
-    color: #3b82f6;
-    text-decoration: none;
-    font-size: 14px;
-    font-weight: 500;
-}
-
-.forgot-link:hover {
-    text-decoration: underline;
-}
-
-.login-btn {
-    width: 100%;
-    padding: 16px;
-    background: #3b82f6;
-    color: white;
-    border: none;
-    border-radius: 12px;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-}
-
-.login-btn:hover:not(:disabled) {
-    background: #2563eb;
-    transform: translateY(-1px);
-}
-
-.login-btn:disabled {
-    opacity: 0.7;
-    cursor: not-allowed;
-}
-
-.spinner {
-    width: 16px;
-    height: 16px;
-    border: 2px solid transparent;
-    border-top: 2px solid white;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-    to {
-        transform: rotate(360deg);
-    }
-}
-
-.divider {
-    text-align: center;
-    margin: 32px 0;
-    position: relative;
-}
-
-.divider::before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background: #e5e7eb;
-}
-
-.divider span {
-    background: white;
-    padding: 0 16px;
-    color: #6b7280;
-    font-size: 14px;
-}
-
-.social-login {
-    display: flex;
-    gap: 12px;
-    margin-bottom: 32px;
-}
-
-.social-btn {
-    flex: 1;
-    padding: 12px;
-    border: 2px solid #e5e7eb;
-    border-radius: 12px;
-    background: white;
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-}
-
-.google-btn:hover {
-    border-color: #ea4335;
-    color: #ea4335;
-}
-
-.facebook-btn:hover {
-    border-color: #1877f2;
-    color: #1877f2;
-}
-
-.signup-prompt {
-    text-align: center;
-}
-
-.signup-prompt p {
-    color: #6b7280;
-    margin: 0;
-}
-
-.signup-link {
-    color: #3b82f6;
-    text-decoration: none;
-    font-weight: 600;
-}
-
-.signup-link:hover {
-    text-decoration: underline;
-}
-
-.login-illustration {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    text-align: center;
-    padding: 60px 40px;
-}
-
-.illustration-content h3 {
-    font-size: 28px;
-    font-weight: 700;
-    margin-bottom: 16px;
-}
-
-.illustration-content p {
-    font-size: 16px;
-    opacity: 0.9;
-    margin-bottom: 40px;
-    line-height: 1.6;
-}
-
-.features {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-
-.feature {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    font-size: 14px;
-}
-
-.feature i {
-    font-size: 18px;
-    opacity: 0.8;
-}
-
-@media (max-width: 768px) {
-    .login-wrapper {
-        grid-template-columns: 1fr;
-    }
-
-    .login-illustration {
-        order: -1;
-        padding: 40px 20px;
-    }
-
-    .login-card {
-        padding: 40px 30px;
-    }
-
-    .social-login {
-        flex-direction: column;
-    }
-}
-</style>
