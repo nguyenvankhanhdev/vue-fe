@@ -1,371 +1,292 @@
 <template>
-  <div class="admin-layout">
+  <div class="min-h-screen bg-gray-50">
     <!-- Sidebar -->
-    <nav class="sidebar" :class="{ collapsed: sidebarCollapsed }">
-      <div class="sidebar-header">
-        <div class="brand" v-if="!sidebarCollapsed">
-          <i class="fas fa-store" style="font-family: 'Font Awesome 6 Free'; font-weight: 900;"></i>
-          <span>Admin Panel</span>
+    <aside class="fixed top-0 left-0 z-40 w-64 h-screen transition-transform -translate-x-full md:translate-x-0 bg-gradient-to-b from-gray-800 to-gray-900 shadow-2xl">
+      <div class="h-full px-3 py-4 overflow-y-auto">
+        <!-- Logo -->
+        <div class="flex items-center ps-3 mb-8 border-b border-gray-700 pb-6">
+          <div class="flex items-center justify-center w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg mr-3 shadow-lg">
+            <i class="fas fa-store text-white text-lg"></i>
+          </div>
+          <div>
+            <span class="text-xl font-bold text-white">E-Shop</span>
+            <div class="text-xs text-gray-400">Admin Panel</div>
+          </div>
         </div>
-        <button class="sidebar-toggle" @click="toggleSidebar">
-          <i class="fas" :class="sidebarCollapsed ? 'fa-bars' : 'fa-times'" style="font-family: 'Font Awesome 6 Free'; font-weight: 900;"></i>
-        </button>
-      </div>
 
-      <div class="sidebar-menu">
-        <ul class="nav">
-          <li class="nav-item">
-            <router-link to="/admin/dashboard" class="nav-link">
-              <i class="fas fa-tachometer-alt" style="font-family: 'Font Awesome 6 Free'; font-weight: 900;"></i>
-              <span v-if="!sidebarCollapsed">Dashboard</span>
+        <!-- Navigation -->
+        <ul class="space-y-2 font-medium">
+          <li>
+            <router-link to="/admin/dashboard" 
+              class="flex items-center p-3 text-gray-300 rounded-lg hover:bg-gray-700 hover:text-white transition-all duration-200 group"
+              active-class="bg-blue-600 text-white shadow-lg">
+              <i class="fas fa-chart-line w-5 h-5 text-gray-400 transition duration-75 group-hover:text-white"></i>
+              <span class="ms-3">Dashboard</span>
             </router-link>
           </li>
-          <li class="nav-item">
-            <router-link to="/admin/products" class="nav-link">
-              <i class="fas fa-boxes" style="font-family: 'Font Awesome 6 Free'; font-weight: 900;"></i>
-              <span v-if="!sidebarCollapsed">Quản lý sản phẩm</span>
+          
+          <li>
+            <router-link to="/admin/products" 
+              class="flex items-center p-3 text-gray-300 rounded-lg hover:bg-gray-700 hover:text-white transition-all duration-200 group"
+              active-class="bg-blue-600 text-white shadow-lg">
+              <i class="fas fa-box w-5 h-5 text-gray-400 transition duration-75 group-hover:text-white"></i>
+              <span class="ms-3">Sản phẩm</span>
             </router-link>
           </li>
-          <li class="nav-item">
-            <router-link to="/admin/categories" class="nav-link">
-              <i class="fas fa-tags" style="font-family: 'Font Awesome 6 Free'; font-weight: 900;"></i>
-              <span v-if="!sidebarCollapsed">Danh mục</span>
+          
+          <li>
+            <router-link to="/admin/categories" 
+              class="flex items-center p-3 text-gray-300 rounded-lg hover:bg-gray-700 hover:text-white transition-all duration-200 group"
+              active-class="bg-blue-600 text-white shadow-lg">
+              <i class="fas fa-tags w-5 h-5 text-gray-400 transition duration-75 group-hover:text-white"></i>
+              <span class="ms-3">Danh mục</span>
             </router-link>
           </li>
-          <li class="nav-item">
-            <router-link to="/admin/orders" class="nav-link">
-              <i class="fas fa-shopping-cart" style="font-family: 'Font Awesome 6 Free'; font-weight: 900;"></i>
-              <span v-if="!sidebarCollapsed">Đơn hàng</span>
+          
+          <li>
+            <router-link to="/admin/orders" 
+              class="flex items-center p-3 text-gray-300 rounded-lg hover:bg-gray-700 hover:text-white transition-all duration-200 group"
+              active-class="bg-blue-600 text-white shadow-lg">
+              <i class="fas fa-shopping-cart w-5 h-5 text-gray-400 transition duration-75 group-hover:text-white"></i>
+              <span class="ms-3">Đơn hàng</span>
             </router-link>
           </li>
-          <li class="nav-item">
-            <router-link to="/admin/users" class="nav-link">
-              <i class="fas fa-users" style="font-family: 'Font Awesome 6 Free'; font-weight: 900;"></i>
-              <span v-if="!sidebarCollapsed">Khách hàng</span>
+          
+          <li>
+            <router-link to="/admin/users" 
+              class="flex items-center p-3 text-gray-300 rounded-lg hover:bg-gray-700 hover:text-white transition-all duration-200 group"
+              active-class="bg-blue-600 text-white shadow-lg">
+              <i class="fas fa-users w-5 h-5 text-gray-400 transition duration-75 group-hover:text-white"></i>
+              <span class="ms-3">Người dùng</span>
             </router-link>
           </li>
-          <li class="nav-item">
-            <router-link to="/admin/reports" class="nav-link">
-              <i class="fas fa-chart-bar" style="font-family: 'Font Awesome 6 Free'; font-weight: 900;"></i>
-              <span v-if="!sidebarCollapsed">Báo cáo</span>
+          
+          <li>
+            <router-link to="/admin/reports" 
+              class="flex items-center p-3 text-gray-300 rounded-lg hover:bg-gray-700 hover:text-white transition-all duration-200 group"
+              active-class="bg-blue-600 text-white shadow-lg">
+              <i class="fas fa-chart-bar w-5 h-5 text-gray-400 transition duration-75 group-hover:text-white"></i>
+              <span class="ms-3">Báo cáo</span>
             </router-link>
           </li>
-          <li class="nav-item">
-            <router-link to="/admin/settings" class="nav-link">
-              <i class="fas fa-cog" style="font-family: 'Font Awesome 6 Free'; font-weight: 900;"></i>
-              <span v-if="!sidebarCollapsed">Cài đặt</span>
+          
+          <li>
+            <router-link to="/admin/settings" 
+              class="flex items-center p-3 text-gray-300 rounded-lg hover:bg-gray-700 hover:text-white transition-all duration-200 group"
+              active-class="bg-blue-600 text-white shadow-lg">
+              <i class="fas fa-cog w-5 h-5 text-gray-400 transition duration-75 group-hover:text-white"></i>
+              <span class="ms-3">Cài đặt</span>
             </router-link>
           </li>
         </ul>
-      </div>
 
-      <div class="sidebar-footer" v-if="!sidebarCollapsed">
-        <div class="admin-info">
-          <div class="admin-avatar">
-            <i class="fas fa-user-circle" style="font-family: 'Font Awesome 6 Free'; font-weight: 900;"></i>
-          </div>
-          <div class="admin-details">
-            <strong>Admin User</strong>
-            <small>Quản trị viên</small>
+        <!-- User Section -->
+        <div class="absolute bottom-4 left-3 right-3">
+          <div class="p-4 bg-gradient-to-br from-gray-700 to-gray-800 rounded-xl shadow-lg border border-gray-600">
+            <div class="flex items-center mb-3">
+              <div class="relative">
+                <img src="/src/assets/img/avatar.jpg" alt="User" class="w-10 h-10 rounded-full mr-3 ring-2 ring-blue-400">
+                <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-green-400 rounded-full border-2 border-gray-800"></div>
+              </div>
+              <div class="flex-1 min-w-0">
+                <p class="text-sm font-semibold text-white truncate">Admin User</p>
+                <p class="text-xs text-blue-200 truncate">Quản trị viên</p>
+              </div>
+            </div>
+            <div class="flex space-x-2">
+              <button @click="goToProfile" class="flex-1 px-3 py-2 text-xs text-gray-300 hover:text-white bg-gray-600 hover:bg-gray-500 rounded-lg transition-all duration-200 flex items-center justify-center">
+                <i class="fas fa-user-cog mr-1"></i>Hồ sơ
+              </button>
+              <button @click="handleLogout" class="flex-1 px-3 py-2 text-xs text-gray-300 hover:text-white bg-red-600 hover:bg-red-500 rounded-lg transition-all duration-200 flex items-center justify-center">
+                <i class="fas fa-sign-out-alt mr-1"></i>Đăng xuất
+              </button>
+            </div>
           </div>
         </div>
-        <button class="btn btn-outline-light btn-sm" @click="logout">
-          <i class="fas fa-sign-out-alt" style="font-family: 'Font Awesome 6 Free'; font-weight: 900;"></i>
-          Đăng xuất
-        </button>
       </div>
-    </nav>
+    </aside>
 
     <!-- Main Content -->
-    <div class="main-content" :class="{ expanded: sidebarCollapsed }">
-      <!-- Top Navigation -->
-      <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
-        <div class="container-fluid">
-          <div class="navbar-nav ms-auto">
-            <!-- Notifications -->
-            <div class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="notificationDropdown" role="button" data-bs-toggle="dropdown">
-                <i class="fas fa-bell" style="font-family: 'Font Awesome 6 Free'; font-weight: 900;"></i>
-                <span class="badge bg-danger badge-sm">3</span>
-              </a>
-              <ul class="dropdown-menu dropdown-menu-end">
-                <li><h6 class="dropdown-header">Thông báo mới</h6></li>
-                <li><a class="dropdown-item" href="#">Đơn hàng mới #12345</a></li>
-                <li><a class="dropdown-item" href="#">Sản phẩm sắp hết hàng</a></li>
-                <li><a class="dropdown-item" href="#">Khách hàng mới đăng ký</a></li>
-                <li><hr class="dropdown-divider"></li>
-                <li><a class="dropdown-item text-center" href="#">Xem tất cả</a></li>
-              </ul>
+    <div class="md:ml-64">
+      <!-- Top Header -->
+      <header class="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-30">
+        <div class="px-6 py-4">
+          <div class="flex items-center justify-between">
+            <!-- Mobile menu button & Breadcrumb -->
+            <div class="flex items-center space-x-4">
+              <button class="md:hidden p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 transition-colors">
+                <i class="fas fa-bars"></i>
+              </button>
+              
+              <!-- Breadcrumb -->
+              <nav class="hidden md:flex items-center space-x-2 text-sm text-gray-500">
+                <router-link to="/admin/dashboard" class="hover:text-blue-600 transition-colors">
+                  <i class="fas fa-home"></i>
+                </router-link>
+                <i class="fas fa-chevron-right text-xs"></i>
+                <span class="text-gray-900 font-medium">{{ getPageTitle() }}</span>
+              </nav>
             </div>
 
-            <!-- Messages -->
-            <div class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="messageDropdown" role="button" data-bs-toggle="dropdown">
-                <i class="fas fa-envelope" style="font-family: 'Font Awesome 6 Free'; font-weight: 900;"></i>
-                <span class="badge bg-primary badge-sm">2</span>
-              </a>
-              <ul class="dropdown-menu dropdown-menu-end">
-                <li><h6 class="dropdown-header">Tin nhắn mới</h6></li>
-                <li><a class="dropdown-item" href="#">Khiếu nại từ khách hàng</a></li>
-                <li><a class="dropdown-item" href="#">Yêu cầu hỗ trợ</a></li>
-                <li><hr class="dropdown-divider"></li>
-                <li><a class="dropdown-item text-center" href="#">Xem tất cả</a></li>
-              </ul>
-            </div>
-
-            <!-- User Menu -->
-            <div class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
-                <div class="avatar me-2">
-                  <i class="fas fa-user-circle fa-lg" style="font-family: 'Font Awesome 6 Free'; font-weight: 900;"></i>
+            <!-- Search Bar -->
+            <div class="hidden md:flex flex-1 max-w-md mx-8">
+              <div class="relative w-full">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <i class="fas fa-search text-gray-400"></i>
                 </div>
-                <span>Admin</span>
-              </a>
-              <ul class="dropdown-menu dropdown-menu-end">
-                <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2" style="font-family: 'Font Awesome 6 Free'; font-weight: 900;"></i>Hồ sơ</a></li>
-                <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2" style="font-family: 'Font Awesome 6 Free'; font-weight: 900;"></i>Cài đặt</a></li>
-                <li><a class="dropdown-item" href="#"><i class="fas fa-question-circle me-2" style="font-family: 'Font Awesome 6 Free'; font-weight: 900;"></i>Trợ giúp</a></li>
-                <li><hr class="dropdown-divider"></li>
-                <li><a class="dropdown-item" href="#" @click="logout"><i class="fas fa-sign-out-alt me-2" style="font-family: 'Font Awesome 6 Free'; font-weight: 900;"></i>Đăng xuất</a></li>
-              </ul>
+                <input type="text" 
+                  class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 bg-gray-50 placeholder-gray-500" 
+                  placeholder="Tìm kiếm sản phẩm, đơn hàng...">
+              </div>
+            </div>
+
+            <!-- Header actions -->
+            <div class="flex items-center space-x-3">
+              <!-- Quick actions -->
+              <div class="hidden lg:flex items-center space-x-2">
+                <button class="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all duration-200" title="Thêm sản phẩm">
+                  <i class="fas fa-plus"></i>
+                </button>
+                <button class="p-2 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-all duration-200" title="Xuất báo cáo">
+                  <i class="fas fa-download"></i>
+                </button>
+              </div>
+              
+              <div class="w-px h-6 bg-gray-300"></div>
+
+              <!-- Notifications -->
+              <div class="relative">
+                <button class="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-all duration-200 relative">
+                  <i class="fas fa-bell"></i>
+                  <span class="absolute -top-1 -right-1 h-5 w-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center font-medium">3</span>
+                </button>
+              </div>
+
+              <!-- Messages -->
+              <button class="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-all duration-200">
+                <i class="fas fa-envelope"></i>
+              </button>
+
+              <!-- User menu -->
+              <div class="relative">
+                <button class="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-100 transition-all duration-200">
+                  <img class="h-8 w-8 rounded-full ring-2 ring-gray-200" src="/src/assets/img/avatar.jpg" alt="User">
+                  <div class="hidden lg:block text-left">
+                    <div class="text-sm font-medium text-gray-900">Admin User</div>
+                    <div class="text-xs text-gray-500">Quản trị viên</div>
+                  </div>
+                  <i class="fas fa-chevron-down text-gray-400 text-xs"></i>
+                </button>
+              </div>
             </div>
           </div>
         </div>
-      </nav>
+      </header>
 
-      <!-- Page Content -->
-      <main class="page-content">
-        <router-view />
+      <!-- Page content -->
+      <main class="flex-1 p-6">
+        <router-view v-slot="{ Component }">
+          <Transition name="fade" mode="out-in">
+            <component :is="Component" :key="$route.fullPath" />
+          </Transition>
+        </router-view>
       </main>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { computed } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import Swal from 'sweetalert2'
 
+const route = useRoute()
 const router = useRouter()
-const sidebarCollapsed = ref(false)
 
-const toggleSidebar = () => {
-  sidebarCollapsed.value = !sidebarCollapsed.value
+const pageTitle = computed(() => {
+  const routeName = route.name?.toString() || ''
+  const titles = {
+    'AdminDashboard': 'Dashboard',
+    'AdminProducts': 'Quản lý sản phẩm',
+    'AdminCategories': 'Danh mục sản phẩm', 
+    'AdminOrders': 'Quản lý đơn hàng',
+    'AdminUsers': 'Quản lý người dùng',
+    'AdminReports': 'Báo cáo thống kê',
+    'AdminSettings': 'Cài đặt hệ thống'
+  }
+  return titles[routeName] || 'Admin Panel'
+})
+
+function getPageTitle() {
+  return pageTitle.value
 }
 
-const logout = () => {
-  if (confirm('Bạn có chắc chắn muốn đăng xuất?')) {
-    // Handle logout logic here
-    router.push('/')
-  }
+function goToProfile() {
+  // Navigate to profile or show profile modal
+  Swal.fire({
+    title: 'Thông tin hồ sơ',
+    text: 'Tính năng đang phát triển...',
+    icon: 'info'
+  })
+}
+
+function handleLogout() {
+  Swal.fire({
+    title: 'Đăng xuất',
+    text: 'Bạn có chắc chắn muốn đăng xuất khỏi hệ thống?',
+    icon: 'question',
+    showCancelButton: true,
+    confirmButtonColor: '#dc2626',
+    cancelButtonColor: '#6b7280',
+    confirmButtonText: 'Đăng xuất',
+    cancelButtonText: 'Hủy'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      // Clear auth data
+      localStorage.removeItem('token')
+      localStorage.removeItem('user')
+      
+      // Show success message
+      Swal.fire({
+        title: 'Đăng xuất thành công!',
+        text: 'Chuyển hướng về trang đăng nhập...',
+        icon: 'success',
+        timer: 1500,
+        showConfirmButton: false
+      }).then(() => {
+        // Redirect to login page
+        router.push('/login')
+      })
+    }
+  })
 }
 </script>
 
 <style scoped>
-.admin-layout {
-  display: flex;
-  min-height: 100vh;
-}
-
-/* Sidebar Styles */
-.sidebar {
-  width: 280px;
-  background: linear-gradient(180deg, #4e73df 0%, #224abe 100%);
-  color: white;
+/* Page Transitions */
+.fade-enter-active,
+.fade-leave-active {
   transition: all 0.3s ease;
-  position: fixed;
-  height: 100vh;
-  z-index: 1000;
-  overflow-y: auto;
 }
 
-.sidebar.collapsed {
-  width: 70px;
+.fade-enter-from {
+  opacity: 0;
+  transform: translateY(20px);
 }
 
-.sidebar-header {
-  padding: 1.5rem 1rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+.fade-leave-to {
+  opacity: 0;
+  transform: translateY(-20px);
 }
 
-.brand {
-  display: flex;
-  align-items: center;
-  font-size: 1.25rem;
-  font-weight: 600;
-}
-
-.brand i {
-  margin-right: 0.5rem;
-  font-size: 1.5rem;
-}
-
-.sidebar-toggle {
-  background: none;
-  border: none;
+/* Router Link Active State */
+.router-link-active {
+  background-color: rgb(37 99 235);
   color: white;
-  font-size: 1.2rem;
-  cursor: pointer;
-  padding: 0.5rem;
-  border-radius: 4px;
-  transition: background-color 0.3s ease;
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
 }
 
-.sidebar-toggle:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-}
-
-.sidebar-menu {
-  padding: 1rem 0;
-  flex: 1;
-}
-
-.nav {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.nav-item {
-  margin-bottom: 0.25rem;
-}
-
-.nav-link {
-  display: flex;
-  align-items: center;
-  padding: 0.75rem 1.5rem;
-  color: rgba(255, 255, 255, 0.8);
-  text-decoration: none;
-  transition: all 0.3s ease;
-  border-radius: 0;
-}
-
-.nav-link:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+.router-link-active i {
   color: white;
-}
-
-.nav-link.router-link-active {
-  background-color: rgba(255, 255, 255, 0.2);
-  color: white;
-  border-right: 3px solid white;
-}
-
-.nav-link i {
-  margin-right: 0.75rem;
-  width: 20px;
-  text-align: center;
-}
-
-.sidebar-footer {
-  padding: 1rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-  margin-top: auto;
-}
-
-.admin-info {
-  display: flex;
-  align-items: center;
-  margin-bottom: 1rem;
-}
-
-.admin-avatar {
-  margin-right: 0.75rem;
-  font-size: 2rem;
-}
-
-.admin-details strong {
-  display: block;
-  font-size: 0.9rem;
-}
-
-.admin-details small {
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 0.75rem;
-}
-
-/* Main Content Styles */
-.main-content {
-  flex: 1;
-  margin-left: 280px;
-  transition: all 0.3s ease;
-  background-color: #f8f9fc;
-}
-
-.main-content.expanded {
-  margin-left: 70px;
-}
-
-.navbar {
-  padding: 1rem 1.5rem;
-  border-bottom: 1px solid #e3e6f0;
-}
-
-.dropdown-toggle::after {
-  display: none;
-}
-
-.badge-sm {
-  font-size: 0.6rem;
-  position: absolute;
-  top: -2px;
-  right: -2px;
-}
-
-.avatar {
-  color: #5a5c69;
-}
-
-.page-content {
-  padding: 0;
-  min-height: calc(100vh - 76px);
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-  .sidebar {
-    width: 70px;
-  }
-  
-  .sidebar.collapsed {
-    width: 0;
-    overflow: hidden;
-  }
-  
-  .main-content {
-    margin-left: 70px;
-  }
-  
-  .main-content.expanded {
-    margin-left: 0;
-  }
-  
-  .sidebar-header .brand {
-    display: none;
-  }
-  
-  .sidebar-footer {
-    display: none;
-  }
-}
-
-/* Custom Scrollbar for Sidebar */
-.sidebar::-webkit-scrollbar {
-  width: 6px;
-}
-
-.sidebar::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.1);
-}
-
-.sidebar::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.3);
-  border-radius: 3px;
-}
-
-.sidebar::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.5);
 }
 </style>

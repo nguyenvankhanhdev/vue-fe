@@ -1,7 +1,7 @@
 <template>
   <footer class="footer">
     <div class="footer-content">
-      <div class="container">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="footer-sections">
           <!-- Company Info -->
           <div class="footer-section">
@@ -93,7 +93,7 @@
 
     <!-- Footer Bottom -->
     <div class="footer-bottom">
-      <div class="container">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="footer-bottom-content">
           <div class="copyright">
             <p>&copy; 2024 VueShop. Tất cả quyền được bảo lưu.</p>

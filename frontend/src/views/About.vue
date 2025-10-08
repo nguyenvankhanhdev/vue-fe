@@ -2,7 +2,7 @@
   <div class="about-page">
     <!-- Hero Section -->
     <section class="hero-section">
-      <div class="container">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="hero-content">
           <h1>Về chúng tôi</h1>
           <p class="hero-subtitle">
@@ -28,8 +28,8 @@
 
     <!-- Story Section -->
     <section class="story-section py-5">
-      <div class="container">
-        <div class="row">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-wrap">
           <div class="col-lg-6">
             <div class="story-content">
               <h2>Câu chuyện của chúng tôi</h2>
@@ -95,7 +95,7 @@
 
     <!-- Mission & Vision Section -->
     <section class="mission-section py-5">
-      <div class="container">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="mission-grid">
           <div class="mission-item">
             <div class="mission-icon">
@@ -135,7 +135,7 @@
 
     <!-- Team Section -->
     <section class="team-section py-5">
-      <div class="container">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="section-header text-center">
           <h2>Đội ngũ của chúng tôi</h2>
           <p>Những con người tài năng và tận tâm đằng sau thành công của chúng tôi</p>
@@ -175,7 +175,7 @@
 
     <!-- Values Section -->
     <section class="values-section py-5">
-      <div class="container">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="section-header text-center">
           <h2>Giá trị cốt lõi</h2>
           <p>Những nguyên tắc định hướng mọi hành động của chúng tôi</p>
@@ -199,8 +199,8 @@
 
     <!-- Achievements Section -->
     <section class="achievements-section py-5">
-      <div class="container">
-        <div class="row">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-wrap">
           <div class="col-lg-6">
             <div class="achievements-content">
               <h2>Thành tựu của chúng tôi</h2>
@@ -251,7 +251,7 @@
 
     <!-- Commitment Section -->
     <section class="commitment-section py-5">
-      <div class="container text-center">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <h2>Cam kết của chúng tôi</h2>
         <p class="commitment-subtitle">
           Chúng tôi luôn cam kết mang đến cho bạn trải nghiệm mua sắm tốt nhất
@@ -295,15 +295,15 @@
 
     <!-- CTA Section -->
     <section class="cta-section">
-      <div class="container text-center">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <h2>Sẵn sàng trải nghiệm?</h2>
         <p>Hãy khám phá các sản phẩm tuyệt vời của chúng tôi</p>
         <div class="cta-buttons">
-          <router-link to="/products" class="btn btn-primary">
+          <router-link to="/products" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md transition-colors duration-200 bg-blue-600 hover:bg-blue-700 text-white">
             <i class="fas fa-shopping-bag"></i>
             Khám phá sản phẩm
           </router-link>
-          <router-link to="/contact" class="btn btn-outline">
+          <router-link to="/contact" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md transition-colors duration-200 btn-outline">
             <i class="fas fa-phone"></i>
             Liên hệ ngay
           </router-link>

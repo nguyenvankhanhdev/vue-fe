@@ -147,26 +147,64 @@ class ApiError extends Error {
 
 // Auth API methods
 class AuthService extends ApiService {
-  
   async register(userData) {
     const res = await this.post("/auth/register", userData);
-    if (res.token) {
-      localStorage.setItem("token", res.token);
-      localStorage.setItem("user", JSON.stringify(res.user));
+    const data = res?.data || res;
+    if (data?.user?.email) {
+      localStorage.setItem("pendingVerifyEmail", data.user.email);
     }
-    return res;
+    return data;
   }
 
   async login(credentials) {
-    const res = await this.post("/auth/login", credentials);
-    const token = res.data?.token;
-    const user = res.data?.user;
-    
-    if (!token || !user) {
-      throw new ApiError(500, 'Invalid response format from server');
+    try {
+      const res = await this.post("/auth/login", credentials);
+        const payload = res?.data || res; // fallback if API not wrapped
+        const token = payload?.token;
+        let user = payload?.user;
+
+      if (!token || !user) {
+        throw new ApiError(500, "Invalid response format from server", {
+          raw: res,
+        });
+      }
+
+      // Chuẩn hoá field xác thực trước khi kiểm tra
+      if (user && user.verified && !user.email_verified_at) {
+        // Backend chỉ trả verified: true => tạo email_verified_at giả lập để đồng bộ giao diện
+        user = { ...user, email_verified_at: new Date().toISOString() };
+      }
+      if (user?.email_verified_at && user.verified === undefined) {
+        user.verified = true;
+      }
+
+      // Kiểm tra trạng thái xác thực (chấp nhận một trong hai dấu hiệu)
+      const isVerified = !!(user?.email_verified_at || user?.verified === true);
+      if (!isVerified) {
+        localStorage.setItem("pendingVerifyEmail", user.email);
+        throw new ApiError(
+          403,
+          "Tài khoản chưa xác thực. Vui lòng kiểm tra email.",
+          { unverified: true, rawUser: user }
+        );
+      }
+
+      return { token, user };
+    } catch (err) {
+      if (err instanceof ApiError) {
+        // Nếu BE trả 403 (unverified)
+        if (err.status === 403) {
+          // Cố gắng lưu email người dùng đã nhập để trang verify có thể dùng
+          if (credentials?.email) {
+            localStorage.setItem("pendingVerifyEmail", credentials.email);
+          }
+        }
+        throw err;
+      }
+      throw new ApiError(0, "Lỗi không xác định khi đăng nhập", {
+        originalError: err,
+      });
     }
-    
-    return { token, user };
   }
 
   async logout() {
@@ -184,6 +222,25 @@ class AuthService extends ApiService {
     const res = await this.post("/auth/refresh");
     if (res.token) localStorage.setItem("token", res.token);
     return res;
+  }
+
+  async resendVerificationEmail(email) {
+    return this.post("/email/verification-notification", { email });
+  }
+
+  // Tải lại thông tin người dùng để kiểm tra trạng thái xác minh email
+  async reloadUser() {
+    const res = await this.get("/auth/me");
+    // Chuẩn hóa định dạng trả về nếu BE bọc trong data
+    const user = res?.data?.user || res?.user || res?.data || res;
+    if (user) {
+      const existing = localStorage.getItem("user");
+      const parsed = existing ? JSON.parse(existing) : {};
+      const merged = { ...parsed, ...user };
+      localStorage.setItem("user", JSON.stringify(merged));
+      return merged;
+    }
+    return user;
   }
 }
 

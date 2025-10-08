@@ -1,140 +1,237 @@
 <template>
-  <header class="header">
-    <div class="container">
-      <div class="header-content">
+  <header class="bg-white shadow-lg border-b border-gray-200 sticky top-0 z-50 transition-all duration-300" :class="{ 'bg-white/95 backdrop-blur-md shadow-xl': isScrolled }">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16 lg:h-20">
         <!-- Logo -->
-        <div class="logo">
-          <router-link to="/" class="logo-link">
-            <h1>VueShop</h1>
+        <div class="flex-shrink-0">
+          <router-link to="/" class="flex items-center space-x-2 text-gray-900 hover:text-blue-600 transition-colors duration-200">
+            <div class="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
+              <i class="fas fa-store text-white text-sm"></i>
+            </div>
+            <h1 class="text-2xl font-bold tracking-tight">VueShop</h1>
           </router-link>
         </div>
 
-        <!-- Navigation -->
-        <nav class="nav">
-          <ul class="nav-list">
-            <li><router-link to="/" class="nav-link">Trang chủ</router-link></li>
-            <li><router-link to="/products" class="nav-link">Sản phẩm</router-link></li>
-            <li><router-link to="/categories" class="nav-link">Danh mục</router-link></li>
-            <li><router-link to="/contact" class="nav-link">Liên hệ</router-link></li>
-          </ul>
+        <!-- Desktop Navigation -->
+        <nav class="hidden lg:flex items-center space-x-8">
+          <router-link to="/" class="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-lg font-medium transition-colors duration-200" 
+            active-class="text-blue-600 bg-blue-50">
+            Trang chủ
+          </router-link>
+          <router-link to="/products" class="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-lg font-medium transition-colors duration-200"
+            active-class="text-blue-600 bg-blue-50">
+            Sản phẩm
+          </router-link>
+          <router-link to="/categories" class="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-lg font-medium transition-colors duration-200"
+            active-class="text-blue-600 bg-blue-50">
+            Danh mục
+          </router-link>
+          <router-link to="/contact" class="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-lg font-medium transition-colors duration-200"
+            active-class="text-blue-600 bg-blue-50">
+            Liên hệ
+          </router-link>
         </nav>
 
         <!-- Search Bar -->
-        <div class="search-bar">
-          <input type="text" v-model="searchQuery" @keyup.enter="handleSearch" placeholder="Tìm kiếm sản phẩm..."
-            class="search-input" />
-          <button @click="handleSearch" class="search-btn">
-            <i class="fas fa-search"></i>
-          </button>
+        <div class="hidden md:flex flex-1 max-w-lg mx-8">
+          <div class="relative w-full">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <i class="fas fa-search text-gray-400"></i>
+            </div>
+            <input 
+              v-model="searchQuery" 
+              @keyup.enter="handleSearch"
+              type="text" 
+              class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-gray-50 focus:bg-white" 
+              placeholder="Tìm kiếm sản phẩm..."
+            />
+            <button @click="handleSearch" class="absolute inset-y-0 right-0 flex items-center pr-3">
+              <div class="bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-lg transition-colors duration-200">
+                <i class="fas fa-search text-sm"></i>
+              </div>
+            </button>
+          </div>
         </div>
 
-        <!-- User Actions -->
-        <div class="user-actions">
-          <router-link to="/cart" class="cart-link">
-            <i class="fas fa-shopping-cart"></i>
-            <span class="cart-count" v-if="cartCount > 0">{{ cartCount }}</span>
+        <!-- Right Side Actions -->
+        <div class="flex items-center space-x-4">
+          <!-- Cart -->
+          <router-link to="/cart" class="relative p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all duration-200">
+            <i class="fas fa-shopping-cart text-xl"></i>
+            <span v-if="cartCount > 0" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+              {{ cartCount }}
+            </span>
           </router-link>
 
-          <div class="auth-links" v-if="!isLoggedIn">
-            <router-link to="/login" class="auth-link">Đăng nhập</router-link>
-            <router-link to="/register" class="auth-link">Đăng ký</router-link>
+          <!-- Auth Links (Not Logged In) -->
+          <div v-if="!isLoggedIn" class="hidden lg:flex items-center space-x-3">
+            <router-link to="/login" class="text-gray-600 hover:text-blue-600 px-4 py-2 rounded-lg font-medium transition-colors duration-200">
+              Đăng nhập
+            </router-link>
+            <router-link to="/register" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors duration-200">
+              Đăng ký
+            </router-link>
           </div>
 
-          <div class="user-menu" v-if="isLoggedIn">
-            <div class="user-dropdown" :class="{ open: showDropdown }">
-              <button ref="btnRef" @click="toggleDropdown" class="user-btn" type="button" :aria-expanded="showDropdown">
-                <i class="fas fa-user"></i>
-                <span>{{ userName || 'User' }}</span>
-                <i class="fas fa-chevron-down" :class="{ rotated: showDropdown }"></i>
-              </button>
+          <!-- User Menu (Logged In) -->
+          <div v-if="isLoggedIn" class="relative">
+            <button 
+              ref="userMenuBtn"
+              @click="toggleUserMenu" 
+              class="flex items-center space-x-2 bg-gray-100 hover:bg-gray-200 px-3 py-2 rounded-lg transition-colors duration-200"
+              :class="{ 'bg-blue-100 text-blue-600': showUserMenu }"
+            >
+              <div class="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center">
+                <i class="fas fa-user text-sm"></i>
+              </div>
+              <span class="hidden lg:block text-sm font-medium text-gray-700">{{ userName || 'User' }}</span>
+              <i class="fas fa-chevron-down text-xs transition-transform duration-200" :class="{ 'rotate-180': showUserMenu }"></i>
+            </button>
 
-              <!-- Menu render trực tiếp dưới nút để tránh lỗi Teleport -->
-              <div v-if="showDropdown" ref="menuRef" class="user-dropdown-menu" @click.stop>
-                <router-link to="/profile" class="dropdown-item" @click="showDropdown = false">
-                  <i class="fas fa-user-circle"></i>
+            <!-- Dropdown Menu -->
+            <Transition name="dropdown">
+              <div v-if="showUserMenu" ref="userMenu" class="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-gray-200 py-2 z-50">
+                <router-link to="/profile" @click="showUserMenu = false" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors duration-200">
+                  <i class="fas fa-user-circle w-5 text-center mr-3"></i>
                   Tài khoản
                 </router-link>
-                <router-link to="/orders" class="dropdown-item" @click="showDropdown = false">
-                  <i class="fas fa-shopping-bag"></i>
+                <router-link to="/orders" @click="showUserMenu = false" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors duration-200">
+                  <i class="fas fa-shopping-bag w-5 text-center mr-3"></i>
                   Đơn hàng
                 </router-link>
-                <router-link to="/admin" class="dropdown-item" @click="showDropdown = false"
-                  v-if="(currentUser && currentUser.role) === 'admin'">
-                  <i class="fas fa-cogs"></i>
+                <router-link v-if="currentUser?.role === 'admin'" to="/admin" @click="showUserMenu = false" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors duration-200">
+                  <i class="fas fa-cogs w-5 text-center mr-3"></i>
                   Quản trị
                 </router-link>
-                <hr class="dropdown-divider" />
-                <button class="dropdown-item logout-btn" @click="logout">
-                  <i class="fas fa-sign-out-alt"></i>
+                <hr class="my-2 border-gray-200">
+                <button @click="logout" class="w-full flex items-center px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors duration-200">
+                  <i class="fas fa-sign-out-alt w-5 text-center mr-3"></i>
                   Đăng xuất
                 </button>
               </div>
-            </div>
+            </Transition>
           </div>
 
+          <!-- Mobile Menu Button -->
+          <button @click="toggleMobileMenu" class="lg:hidden p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors duration-200">
+            <i class="fas fa-bars text-xl"></i>
+          </button>
         </div>
-
-        <!-- Mobile Menu Toggle -->
-        <button @click="toggleMobileMenu" class="mobile-menu-btn">
-          <i class="fas fa-bars"></i>
-        </button>
       </div>
 
       <!-- Mobile Menu -->
-      <div class="mobile-menu" v-show="showMobileMenu">
-        <div class="mobile-nav">
-          <router-link to="/" @click="closeMobileMenu">Trang chủ</router-link>
-          <router-link to="/products" @click="closeMobileMenu">Sản phẩm</router-link>
-          <router-link to="/categories" @click="closeMobileMenu">Danh mục</router-link>
-          <router-link to="/contact" @click="closeMobileMenu">Liên hệ</router-link>
+      <Transition name="mobile-menu">
+        <div v-if="showMobileMenu" class="lg:hidden py-4 border-t border-gray-200">
+          <!-- Mobile Navigation -->
+          <div class="space-y-2 mb-4">
+            <router-link to="/" @click="closeMobileMenu" class="block px-3 py-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg font-medium transition-colors duration-200">
+              Trang chủ
+            </router-link>
+            <router-link to="/products" @click="closeMobileMenu" class="block px-3 py-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg font-medium transition-colors duration-200">
+              Sản phẩm
+            </router-link>
+            <router-link to="/categories" @click="closeMobileMenu" class="block px-3 py-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg font-medium transition-colors duration-200">
+              Danh mục
+            </router-link>
+            <router-link to="/contact" @click="closeMobileMenu" class="block px-3 py-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg font-medium transition-colors duration-200">
+              Liên hệ
+            </router-link>
+          </div>
+
+          <!-- Mobile Search -->
+          <div class="mb-4">
+            <div class="relative">
+              <input 
+                v-model="searchQuery" 
+                @keyup.enter="handleSearch"
+                type="text" 
+                class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-50" 
+                placeholder="Tìm kiếm sản phẩm..."
+              />
+              <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+            </div>
+          </div>
+
+          <!-- Mobile Auth -->
+          <div v-if="!isLoggedIn" class="flex space-x-3">
+            <router-link to="/login" @click="closeMobileMenu" class="flex-1 text-center px-4 py-3 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors duration-200">
+              Đăng nhập
+            </router-link>
+            <router-link to="/register" @click="closeMobileMenu" class="flex-1 text-center px-4 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors duration-200">
+              Đăng ký
+            </router-link>
+          </div>
+
+          <!-- Mobile User Menu -->
+          <div v-if="isLoggedIn" class="space-y-2">
+            <div class="px-3 py-2 bg-gray-50 rounded-lg">
+              <p class="text-sm font-medium text-gray-900">{{ userName || 'User' }}</p>
+            </div>
+            <router-link to="/profile" @click="closeMobileMenu" class="block px-3 py-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors duration-200">
+              <i class="fas fa-user-circle mr-3"></i>Tài khoản
+            </router-link>
+            <router-link to="/orders" @click="closeMobileMenu" class="block px-3 py-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors duration-200">
+              <i class="fas fa-shopping-bag mr-3"></i>Đơn hàng
+            </router-link>
+            <router-link v-if="currentUser?.role === 'admin'" to="/admin" @click="closeMobileMenu" class="block px-3 py-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors duration-200">
+              <i class="fas fa-cogs mr-3"></i>Quản trị
+            </router-link>
+            <button @click="logout" class="w-full text-left px-3 py-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors duration-200">
+              <i class="fas fa-sign-out-alt mr-3"></i>Đăng xuất
+            </button>
+          </div>
         </div>
-        <div class="mobile-auth" v-if="!isLoggedIn">
-          <router-link to="/login" @click="closeMobileMenu">Đăng nhập</router-link>
-          <router-link to="/register" @click="closeMobileMenu">Đăng ký</router-link>
-        </div>
-      </div>
+      </Transition>
     </div>
   </header>
 </template>
+
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
-import { toastService } from '@/services/toast'
 import { useRouter } from 'vue-router'
-import { useAuth } from '@/composables/useAuth' // nhớ alias @ -> src
+import { useAuth } from '@/composables/useAuth'
 import Swal from 'sweetalert2'
+
 const router = useRouter()
 const { isAuthenticated, userName, currentUser, logout: authLogout } = useAuth()
 
-// UI state
+// State
 const searchQuery = ref('')
-const showDropdown = ref(false)
+const showUserMenu = ref(false)
 const showMobileMenu = ref(false)
+const isScrolled = ref(false)
 
-// Removed showLogoutConfirm state
-// Refs menu
-const btnRef = ref(null)
-const menuRef = ref(null)
+// Refs
+const userMenuBtn = ref(null)
+const userMenu = ref(null)
 
-// Derived
+// Computed
 const isLoggedIn = computed(() => !!isAuthenticated.value)
-const cartCount = computed(() => 3) // TODO: thay bằng cart thực
+const cartCount = computed(() => 3) // TODO: replace with real cart
 
-// Search
+// Methods
 const handleSearch = () => {
   const q = searchQuery.value.trim()
-  if (q) router.push({ name: 'Products', query: { search: q } })
+  if (q) {
+    router.push({ name: 'Products', query: { search: q } })
+    closeMobileMenu()
+  }
 }
 
-const toggleDropdown = () => { showDropdown.value = !showDropdown.value }
+const toggleUserMenu = () => {
+  showUserMenu.value = !showUserMenu.value
+}
 
-const toggleMobileMenu = () => { showMobileMenu.value = !showMobileMenu.value }
-const closeMobileMenu = () => { showMobileMenu.value = false }
+const toggleMobileMenu = () => {
+  showMobileMenu.value = !showMobileMenu.value
+}
 
-// Logout using SweetAlert2 if available
+const closeMobileMenu = () => {
+  showMobileMenu.value = false
+}
+
 const logout = async () => {
-  let confirmed = true
   try {
-    const Swal = (await import('sweetalert2')).default
     const result = await Swal.fire({
       title: 'Đăng xuất',
       text: 'Bạn có chắc chắn muốn đăng xuất?',
@@ -142,468 +239,101 @@ const logout = async () => {
       showCancelButton: true,
       confirmButtonText: 'Đăng xuất',
       cancelButtonText: 'Hủy',
-      reverseButtons: true,
-      focusCancel: true,
       confirmButtonColor: '#ef4444',
       cancelButtonColor: '#6b7280'
     })
-    confirmed = result.isConfirmed
-  } catch (err) {
-    console.warn('SweetAlert2 error:', err)
 
-  }
-
-  if (!confirmed) return
-
-  try {
-    const { authService } = await import('@/services/api') // tránh circular
-    await authService.logout()
-  } catch (e) {
-    console.warn('Logout API error:', e)
-  } finally {
-    authLogout()
-    showDropdown.value = false
-    Swal.fire({
-      toast: true,
-      position: "top-end",
-      icon: "success",
-      title: "Đã đăng xuất",
-      text: "Bạn đã đăng xuất thành công.",
-      showConfirmButton: false,
-      timer: 2000,
-    })
-    router.push('/')
-  }
-}
-
-// Click outside: đóng khi click ngoài nút/menu
-const onDocClick = (e) => {
-  if (
-    showDropdown.value &&
-    btnRef.value && menuRef.value &&
-    !btnRef.value.contains(e.target) &&
-    !menuRef.value.contains(e.target)
-  ) {
-    showDropdown.value = false
+    if (result.isConfirmed) {
+      try {
+        const { authService } = await import('@/services/api')
+        await authService.logout()
+      } catch (e) {
+        console.warn('Logout API error:', e)
+      }
+      
+      authLogout()
+      showUserMenu.value = false
+      showMobileMenu.value = false
+      
+      Swal.fire({
+        toast: true,
+        position: "top-end",
+        icon: "success",
+        title: "Đã đăng xuất",
+        showConfirmButton: false,
+        timer: 2000,
+      })
+      
+      router.push('/')
+    }
+  } catch (error) {
+    console.error('Logout error:', error)
   }
 }
 
-// Header shadow
-const onScroll = () => {
-  const header = document.querySelector('.header')
-  if (window.scrollY > 100) header?.classList.add('scrolled')
-  else header?.classList.remove('scrolled')
+// Event handlers
+const handleScroll = () => {
+  isScrolled.value = window.scrollY > 50
 }
-const onResize = () => { }
 
-// Mount/unmount
+const handleClickOutside = (event) => {
+  if (showUserMenu.value && 
+      userMenuBtn.value && 
+      userMenu.value && 
+      !userMenuBtn.value.contains(event.target) && 
+      !userMenu.value.contains(event.target)) {
+    showUserMenu.value = false
+  }
+}
+
+// Lifecycle
 onMounted(() => {
-  document.addEventListener('click', onDocClick)
-  window.addEventListener('scroll', onScroll, true) // true để bắt cả scroll trong container
-  window.addEventListener('resize', onResize)
+  window.addEventListener('scroll', handleScroll)
+  document.addEventListener('click', handleClickOutside)
 })
+
 onUnmounted(() => {
-  document.removeEventListener('click', onDocClick)
-  window.removeEventListener('scroll', onScroll, true)
-  window.removeEventListener('resize', onResize)
+  window.removeEventListener('scroll', handleScroll)
+  document.removeEventListener('click', handleClickOutside)
 })
 </script>
 
-
 <style scoped>
-.header {
-  background: #ffffff;
-  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
-  border-bottom: 1px solid #e5e7eb;
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-  transition: all 0.3s ease;
+/* Dropdown transitions */
+.dropdown-enter-active {
+  transition: all 0.2s ease-out;
 }
 
-.header.scrolled {
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+.dropdown-leave-active {
+  transition: all 0.15s ease-in;
 }
 
-
-
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 20px;
+.dropdown-enter-from {
+  opacity: 0;
+  transform: translateY(-10px);
 }
 
-.header-content {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: 70px;
-  overflow: visible;
+.dropdown-leave-to {
+  opacity: 0;
+  transform: translateY(-10px);
 }
 
-.logo-link {
-  text-decoration: none;
-  color: #1f2937;
-  transition: color 0.3s ease;
+/* Mobile menu transitions */
+.mobile-menu-enter-active {
+  transition: all 0.3s ease-out;
 }
 
-.logo-link:hover {
-  color: #3b82f6;
+.mobile-menu-leave-active {
+  transition: all 0.25s ease-in;
 }
 
-.logo h1 {
-  margin: 0;
-  font-size: 28px;
-  font-weight: 700;
-  color: #1f2937;
-  letter-spacing: -0.5px;
+.mobile-menu-enter-from {
+  opacity: 0;
+  transform: translateY(-20px);
 }
 
-.nav-list {
-  display: flex;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  gap: 30px;
-}
-
-/* Dropdown container */
-.user-dropdown {
-  position: relative;
-}
-
-
-.nav-link {
-  text-decoration: none;
-  color: #6b7280;
-  font-weight: 500;
-  padding: 8px 16px;
-  border-radius: 8px;
-  transition: all 0.3s ease;
-  position: relative;
-}
-
-.nav-link:hover,
-.nav-link.router-link-active {
-  color: #3b82f6;
-  background: #f8fafc;
-}
-
-.search-bar {
-  display: flex;
-  align-items: center;
-  background: #f8fafc;
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
-  padding: 8px;
-  width: 320px;
-  transition: all 0.3s ease;
-}
-
-.search-bar:focus-within {
-  background: #ffffff;
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-}
-
-.search-input {
-  border: none;
-  background: transparent;
-  padding: 10px 16px;
-  flex: 1;
-  outline: none;
-  color: #1f2937;
-  font-size: 14px;
-}
-
-.search-input::placeholder {
-  color: #9ca3af;
-}
-
-.search-btn {
-  background: #3b82f6;
-  border: none;
-  color: white;
-  padding: 10px 12px;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.search-btn:hover {
-  background: #2563eb;
-}
-
-.user-actions {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  overflow: visible;
-}
-
-.cart-link {
-  position: relative;
-  color: #6b7280;
-  font-size: 20px;
-  text-decoration: none;
-  padding: 10px;
-  border-radius: 8px;
-  transition: all 0.3s ease;
-}
-
-.cart-link:hover {
-  color: #3b82f6;
-  background: #f8fafc;
-}
-
-.cart-count {
-  position: absolute;
-  top: -2px;
-  right: -2px;
-  background: #ef4444;
-  color: white;
-  border-radius: 50%;
-  width: 18px;
-  height: 18px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 10px;
-  font-weight: 600;
-}
-
-.auth-links {
-  display: flex;
-  gap: 15px;
-}
-
-.auth-link {
-  text-decoration: none;
-  color: #6b7280;
-  font-weight: 500;
-  padding: 10px 20px;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  transition: all 0.3s ease;
-  background: #ffffff;
-}
-
-.auth-link:hover {
-  background: #3b82f6;
-  color: #ffffff;
-  border-color: #3b82f6;
-}
-
-.dropdown {
-  position: relative;
-}
-
-.user-btn {
-  background: #f8fafc;
-  border: 1px solid #e5e7eb;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: #1f2937;
-  font-weight: 500;
-  padding: 10px 16px;
-  border-radius: 8px;
-  transition: all 0.3s ease;
-}
-
-.user-btn:hover {
-  background: #ffffff;
-  border-color: #3b82f6;
-  color: #3b82f6;
-}
-
-.user-dropdown-menu {
-  position: absolute;
-  top: calc(100% + 8px);
-  right: 0;
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-  min-width: 220px;
-  z-index: 5000;
-  overflow: hidden;
-}
-
-.dropdown-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 12px 16px;
-  text-decoration: none;
-  color: #374151;
-  border: none;
-  background: none;
-  width: 100%;
-  text-align: left;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  font-weight: 500;
-  font-size: 14px;
-}
-
-.dropdown-item:hover {
-  background: #f8fafc;
-  color: #3b82f6;
-}
-
-.dropdown-divider {
-  height: 1px;
-  margin: 8px 12px;
-  overflow: hidden;
-  background-color: #f3f4f6;
-  border: none;
-}
-
-.logout-btn {
-  color: #ef4444 !important;
-  border-top: 1px solid #f3f4f6;
-  margin-top: 4px;
-}
-
-.logout-btn:hover {
-  background: #fef2f2 !important;
-  color: #dc2626 !important;
-}
-
-.fa-chevron-down {
-  font-size: 0.8rem;
-  transition: transform 0.3s ease;
-}
-
-.fa-chevron-down.rotated {
-  transform: rotate(180deg);
-}
-
-.mobile-menu-btn {
-  display: none;
-  background: #f8fafc;
-  border: 1px solid #e5e7eb;
-  font-size: 18px;
-  cursor: pointer;
-  color: #6b7280;
-  padding: 10px;
-  border-radius: 8px;
-  transition: all 0.3s ease;
-}
-
-.mobile-menu-btn:hover {
-  background: #ffffff;
-  border-color: #3b82f6;
-  color: #3b82f6;
-}
-
-.mobile-menu {
-  display: none;
-  padding: 20px 0;
-  border-top: 1px solid #e5e7eb;
-  background: #f8fafc;
-}
-
-.mobile-nav {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  margin-bottom: 20px;
-}
-
-.mobile-nav a {
-  text-decoration: none;
-  color: #374151;
-  padding: 12px 0;
-  display: block;
-  font-weight: 500;
-  transition: color 0.3s ease;
-}
-
-.mobile-nav a:hover {
-  color: #3b82f6;
-}
-
-.mobile-auth {
-  display: flex;
-  gap: 15px;
-}
-
-.mobile-auth a {
-  text-decoration: none;
-  color: #6b7280;
-  padding: 10px 16px;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  text-align: center;
-  flex: 1;
-  background: #ffffff;
-  transition: all 0.3s ease;
-  font-weight: 500;
-}
-
-.mobile-auth a:hover {
-  background: #3b82f6;
-  border-color: #3b82f6;
-  color: #ffffff;
-}
-
-@media (max-width: 768px) {
-
-  .nav,
-  .search-bar,
-  .auth-links {
-    display: none;
-  }
-
-  .mobile-menu-btn {
-    display: block;
-  }
-
-  .mobile-menu {
-    display: block;
-  }
-
-  .header-content {
-    height: 70px;
-    padding: 0 15px;
-  }
-
-  .logo h1 {
-    font-size: 26px;
-  }
-
-  .cart-link {
-    font-size: 20px;
-    padding: 10px;
-  }
-
-  .container {
-    padding: 0 15px;
-  }
-}
-
-@media (max-width: 1024px) {
-  .search-bar {
-    width: 280px;
-  }
-
-  .nav-list {
-    gap: 20px;
-  }
-}
-
-@media (min-width: 1200px) {
-  .container {
-    max-width: 1400px;
-  }
-
-  .search-bar {
-    width: 400px;
-  }
+.mobile-menu-leave-to {
+  opacity: 0;
+  transform: translateY(-20px);
 }
 </style>

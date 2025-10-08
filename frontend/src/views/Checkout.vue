@@ -2,7 +2,7 @@
   <div class="checkout-page">
     <!-- Page Header -->
     <section class="page-header">
-      <div class="container">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="breadcrumb">
           <router-link to="/">Trang chủ</router-link>
           <span>/</span>
@@ -16,13 +16,13 @@
 
     <!-- Checkout Content -->
     <section class="checkout-section py-5">
-      <div class="container">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="checkout-layout">
           <!-- Left Side - Forms -->
           <div class="checkout-forms">
             <!-- Shipping Information -->
             <div class="checkout-card">
-              <div class="card-header">
+              <div class="px-6 py-4 bg-gray-50 border-b border-gray-200">
                 <h2>
                   <span class="step-number">1</span>
                   Thông tin giao hàng
@@ -30,7 +30,7 @@
               </div>
               <form class="checkout-form">
                 <div class="form-row">
-                  <div class="form-group">
+                  <div class="mb-4">
                     <label for="firstName">Họ *</label>
                     <input 
                       type="text" 
@@ -39,7 +39,7 @@
                       required
                     />
                   </div>
-                  <div class="form-group">
+                  <div class="mb-4">
                     <label for="lastName">Tên *</label>
                     <input 
                       type="text" 
@@ -50,7 +50,7 @@
                   </div>
                 </div>
                 
-                <div class="form-group">
+                <div class="mb-4">
                   <label for="email">Email *</label>
                   <input 
                     type="email" 
@@ -60,7 +60,7 @@
                   />
                 </div>
                 
-                <div class="form-group">
+                <div class="mb-4">
                   <label for="phone">Số điện thoại *</label>
                   <input 
                     type="tel" 
@@ -70,7 +70,7 @@
                   />
                 </div>
                 
-                <div class="form-group">
+                <div class="mb-4">
                   <label for="address">Địa chỉ *</label>
                   <input 
                     type="text" 
@@ -82,7 +82,7 @@
                 </div>
                 
                 <div class="form-row">
-                  <div class="form-group">
+                  <div class="mb-4">
                     <label for="city">Tỉnh/Thành phố *</label>
                     <select 
                       id="city"
@@ -96,7 +96,7 @@
                       </option>
                     </select>
                   </div>
-                  <div class="form-group">
+                  <div class="mb-4">
                     <label for="district">Quận/Huyện *</label>
                     <select 
                       id="district"
@@ -113,7 +113,7 @@
                   </div>
                 </div>
                 
-                <div class="form-group">
+                <div class="mb-4">
                   <label for="ward">Phường/Xã *</label>
                   <select 
                     id="ward"
@@ -128,7 +128,7 @@
                   </select>
                 </div>
                 
-                <div class="form-group">
+                <div class="mb-4">
                   <label for="notes">Ghi chú</label>
                   <textarea 
                     id="notes"
@@ -142,7 +142,7 @@
 
             <!-- Shipping Method -->
             <div class="checkout-card">
-              <div class="card-header">
+              <div class="px-6 py-4 bg-gray-50 border-b border-gray-200">
                 <h2>
                   <span class="step-number">2</span>
                   Phương thức vận chuyển
@@ -182,7 +182,7 @@
 
             <!-- Payment Method -->
             <div class="checkout-card">
-              <div class="card-header">
+              <div class="px-6 py-4 bg-gray-50 border-b border-gray-200">
                 <h2>
                   <span class="step-number">3</span>
                   Phương thức thanh toán
@@ -214,7 +214,7 @@
 
               <!-- Credit Card Form -->
               <div v-if="selectedPaymentMethod === 'credit_card'" class="credit-card-form">
-                <div class="form-group">
+                <div class="mb-4">
                   <label for="cardNumber">Số thẻ *</label>
                   <input 
                     type="text" 
@@ -227,7 +227,7 @@
                   />
                 </div>
                 <div class="form-row">
-                  <div class="form-group">
+                  <div class="mb-4">
                     <label for="expiryDate">Ngày hết hạn *</label>
                     <input 
                       type="text" 
@@ -239,7 +239,7 @@
                       required
                     />
                   </div>
-                  <div class="form-group">
+                  <div class="mb-4">
                     <label for="cvv">CVV *</label>
                     <input 
                       type="text" 
@@ -251,7 +251,7 @@
                     />
                   </div>
                 </div>
-                <div class="form-group">
+                <div class="mb-4">
                   <label for="cardName">Tên trên thẻ *</label>
                   <input 
                     type="text" 

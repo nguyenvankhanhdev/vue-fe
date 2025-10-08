@@ -2,7 +2,7 @@
   <div class="orders-page">
     <!-- Page Header -->
     <section class="page-header">
-      <div class="container">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <h1>Đơn hàng của tôi</h1>
         <p>Theo dõi và quản lý các đơn hàng của bạn</p>
       </div>
@@ -10,7 +10,7 @@
 
     <!-- Orders Content -->
     <section class="orders-section py-5">
-      <div class="container">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <!-- Order Filters -->
         <div class="orders-filters">
           <div class="filter-tabs">
@@ -59,7 +59,7 @@
             <i class="fas fa-shopping-bag"></i>
             <h3>Không có đơn hàng nào</h3>
             <p>{{ getEmptyMessage() }}</p>
-            <router-link to="/products" class="btn btn-primary">
+            <router-link to="/products" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md transition-colors duration-200 bg-blue-600 hover:bg-blue-700 text-white">
               Tiếp tục mua sắm
             </router-link>
           </div>

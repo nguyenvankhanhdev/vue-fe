@@ -3,13 +3,13 @@
     <!-- Hero Banner -->
     <section class="hero-banner">
       <div class="hero-content">
-        <div class="container">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div class="hero-text">
             <h1>Khám phá bộ sưu tập mới nhất</h1>
             <p>Tìm kiếm những sản phẩm chất lượng với giá cả phải chăng</p>
             <div class="hero-buttons">
-              <router-link to="/products" class="btn">Mua sắm ngay</router-link>
-              <router-link to="/about" class="btn btn-outline">Tìm hiểu thêm</router-link>
+              <router-link to="/products" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md transition-colors duration-200">Mua sắm ngay</router-link>
+              <router-link to="/about" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md transition-colors duration-200 btn-outline">Tìm hiểu thêm</router-link>
             </div>
           </div>
           <div class="hero-image">
@@ -21,7 +21,7 @@
 
     <!-- Features Section -->
     <section class="features-section py-5">
-      <div class="container">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="features-grid">
           <div class="feature-item">
             <div class="feature-icon">
@@ -57,7 +57,7 @@
 
     <!-- Categories Section -->
     <section class="categories-section py-5">
-      <div class="container">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <h2 class="section-title text-center mb-4">Danh mục sản phẩm</h2>
         <div class="categories-grid">
           <div 
@@ -80,7 +80,7 @@
 
     <!-- Featured Products -->
     <section class="featured-products py-5">
-      <div class="container">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <h2 class="section-title text-center mb-5">Sản phẩm nổi bật</h2>
         <div class="products-container">
           <div class="products-grid">
@@ -95,14 +95,14 @@
           </div>
         </div>
         <div class="text-center mt-5">
-          <router-link to="/products" class="btn">Xem tất cả sản phẩm</router-link>
+          <router-link to="/products" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md transition-colors duration-200">Xem tất cả sản phẩm</router-link>
         </div>
       </div>
     </section>
 
     <!-- Newsletter Section -->
     <section class="newsletter-section py-5">
-      <div class="container">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="newsletter-content">
           <div class="newsletter-text">
             <h2>Đăng ký nhận tin tức</h2>
@@ -115,7 +115,7 @@
               placeholder="Nhập email của bạn"
               required
             />
-            <button type="submit" class="btn">Đăng ký</button>
+            <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md transition-colors duration-200">Đăng ký</button>
           </form>
         </div>
       </div>
