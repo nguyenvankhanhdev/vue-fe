@@ -1,318 +1,382 @@
 <template>
-  <div class="profile-page">
+  <div class="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50">
     <!-- Page Header -->
-    <section class="page-header">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1>Tài khoản của tôi</h1>
-        <p>Quản lý thông tin cá nhân và cài đặt tài khoản</p>
+    <section class="relative py-16 bg-gradient-to-br from-blue-600 via-purple-600 to-blue-800 overflow-hidden">
+      <div class="absolute inset-0 bg-black/10"></div>
+      <div class="absolute inset-0">
+        <div class="absolute top-10 left-10 w-32 h-32 bg-white/10 rounded-full animate-pulse"></div>
+        <div class="absolute top-32 right-20 w-24 h-24 bg-blue-300/20 rounded-full animate-bounce"></div>
+        <div class="absolute bottom-10 left-1/3 w-20 h-20 bg-purple-300/20 rounded-full animate-pulse"></div>
+      </div>
+      <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h1 class="text-4xl font-bold text-white mb-4 animate-fade-in">Tài khoản của tôi</h1>
+        <p class="text-xl text-white/90 animate-fade-in">Quản lý thông tin cá nhân và cài đặt tài khoản</p>
       </div>
     </section>
 
     <!-- Profile Content -->
-    <section class="profile-section py-5">
+    <section class="py-12">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="profile-layout">
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
           <!-- Sidebar Navigation -->
-          <aside class="profile-sidebar">
-            <div class="user-info">
-              <div class="avatar">
-                <img :src="userAvatar" :alt="user.name" />
-                <button @click="showAvatarUpload = true" class="avatar-edit">
-                  <i class="fas fa-camera"></i>
+          <aside class="lg:col-span-1">
+            <div class="bg-white/70 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 sticky top-8">
+              <!-- User Info -->
+              <div class="p-6 text-center border-b border-gray-100">
+                <div class="relative inline-block">
+                  <div class="w-20 h-20 rounded-full bg-gradient-to-br from-blue-600 to-purple-600 p-1 mx-auto mb-4">
+                    <img :src="userAvatar" :alt="user.name" class="w-full h-full rounded-full object-cover bg-white" />
+                  </div>
+                  <button 
+                    @click="showAvatarUpload = true" 
+                    class="absolute -bottom-1 -right-1 w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-full border-2 border-white hover:from-blue-700 hover:to-purple-700 transition-all duration-200 flex items-center justify-center"
+                  >
+                    <i class="fas fa-camera text-xs"></i>
+                  </button>
+                </div>
+                <h3 class="font-semibold text-gray-900 mb-1">{{ user.name }}</h3>
+                <p class="text-sm text-gray-600">{{ user.email }}</p>
+              </div>
+
+              <!-- Navigation -->
+              <nav class="p-4">
+                <button 
+                  v-for="tab in profileTabs" 
+                  :key="tab.id"
+                  @click="activeTab = tab.id"
+                  :class="[
+                    'w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left transition-all duration-200 mb-2',
+                    activeTab === tab.id 
+                      ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg' 
+                      : 'text-gray-700 hover:bg-gray-100'
+                  ]"
+                >
+                  <i :class="tab.icon" class="w-5"></i>
+                  <span class="font-medium">{{ tab.label }}</span>
+                </button>
+              </nav>
+
+              <!-- Logout -->
+              <div class="p-4 border-t border-gray-100">
+                <button 
+                  @click="logout" 
+                  class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-left transition-all duration-200 text-red-600 hover:bg-red-50"
+                >
+                  <i class="fas fa-sign-out-alt w-5"></i>
+                  <span class="font-medium">Đăng xuất</span>
                 </button>
               </div>
-              <h3>{{ user.name }}</h3>
-              <p>{{ user.email }}</p>
-            </div>
-
-            <nav class="profile-nav">
-              <button 
-                v-for="tab in profileTabs" 
-                :key="tab.id"
-                @click="activeTab = tab.id"
-                :class="{ active: activeTab === tab.id }"
-                class="nav-item"
-              >
-                <i :class="tab.icon"></i>
-                <span>{{ tab.label }}</span>
-              </button>
-            </nav>
-
-            <div class="logout-section">
-              <button @click="logout" class="logout-btn">
-                <i class="fas fa-sign-out-alt"></i>
-                Đăng xuất
-              </button>
             </div>
           </aside>
 
           <!-- Main Content -->
-          <main class="profile-main">
+          <main class="lg:col-span-3">
             <!-- Personal Information -->
-            <div v-if="activeTab === 'personal'" class="profile-content">
-              <div class="content-header">
-                <h2>Thông tin cá nhân</h2>
-                <p>Quản lý thông tin cá nhân của bạn</p>
+            <div v-if="activeTab === 'personal'" class="bg-white/70 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 overflow-hidden">
+              <div class="bg-gradient-to-r from-blue-600 to-purple-600 px-6 py-8">
+                <h2 class="text-2xl font-bold text-white mb-2">Thông tin cá nhân</h2>
+                <p class="text-white/90">Quản lý thông tin cá nhân của bạn</p>
               </div>
 
-              <form @submit.prevent="updatePersonalInfo" class="profile-form">
-                <div class="form-row">
-                  <div class="mb-4">
-                    <label for="firstName">Họ *</label>
+              <div class="p-8">
+                <form @submit.prevent="updatePersonalInfo" class="space-y-6">
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <label for="firstName" class="block text-sm font-semibold text-gray-700 mb-2">Họ *</label>
+                      <input 
+                        type="text" 
+                        id="firstName"
+                        v-model="personalInfo.firstName"
+                        required
+                        class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                      />
+                    </div>
+                    <div>
+                      <label for="lastName" class="block text-sm font-semibold text-gray-700 mb-2">Tên *</label>
+                      <input 
+                        type="text" 
+                        id="lastName"
+                        v-model="personalInfo.lastName"
+                        required
+                        class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label for="email" class="block text-sm font-semibold text-gray-700 mb-2">Email *</label>
                     <input 
-                      type="text" 
-                      id="firstName"
-                      v-model="personalInfo.firstName"
+                      type="email" 
+                      id="email"
+                      v-model="personalInfo.email"
                       required
+                      class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                     />
                   </div>
-                  <div class="mb-4">
-                    <label for="lastName">Tên *</label>
+
+                  <div>
+                    <label for="phone" class="block text-sm font-semibold text-gray-700 mb-2">Số điện thoại</label>
                     <input 
-                      type="text" 
-                      id="lastName"
-                      v-model="personalInfo.lastName"
-                      required
+                      type="tel" 
+                      id="phone"
+                      v-model="personalInfo.phone"
+                      class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                     />
                   </div>
-                </div>
 
-                <div class="mb-4">
-                  <label for="email">Email *</label>
-                  <input 
-                    type="email" 
-                    id="email"
-                    v-model="personalInfo.email"
-                    required
-                  />
-                </div>
-
-                <div class="mb-4">
-                  <label for="phone">Số điện thoại</label>
-                  <input 
-                    type="tel" 
-                    id="phone"
-                    v-model="personalInfo.phone"
-                  />
-                </div>
-
-                <div class="form-row">
-                  <div class="mb-4">
-                    <label for="birthDate">Ngày sinh</label>
-                    <input 
-                      type="date" 
-                      id="birthDate"
-                      v-model="personalInfo.birthDate"
-                    />
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <label for="birthDate" class="block text-sm font-semibold text-gray-700 mb-2">Ngày sinh</label>
+                      <input 
+                        type="date" 
+                        id="birthDate"
+                        v-model="personalInfo.birthDate"
+                        class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                      />
+                    </div>
+                    <div>
+                      <label for="gender" class="block text-sm font-semibold text-gray-700 mb-2">Giới tính</label>
+                      <select 
+                        id="gender" 
+                        v-model="personalInfo.gender"
+                        class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                      >
+                        <option value="">Chọn giới tính</option>
+                        <option value="male">Nam</option>
+                        <option value="female">Nữ</option>
+                        <option value="other">Khác</option>
+                      </select>
+                    </div>
                   </div>
-                  <div class="mb-4">
-                    <label for="gender">Giới tính</label>
-                    <select id="gender" v-model="personalInfo.gender">
-                      <option value="">Chọn giới tính</option>
-                      <option value="male">Nam</option>
-                      <option value="female">Nữ</option>
-                      <option value="other">Khác</option>
-                    </select>
-                  </div>
-                </div>
 
-                <div class="form-actions">
-                  <button type="submit" :disabled="personalLoading" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md transition-colors duration-200 bg-blue-600 hover:bg-blue-700 text-white">
-                    <span v-if="personalLoading" class="loading-spinner"></span>
-                    {{ personalLoading ? 'Đang lưu...' : 'Lưu thay đổi' }}
-                  </button>
-                </div>
-              </form>
+                  <div class="flex justify-end pt-4">
+                    <button 
+                      type="submit" 
+                      :disabled="personalLoading" 
+                      class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-xl hover:from-blue-700 hover:to-purple-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50"
+                    >
+                      <span v-if="personalLoading" class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+                      <i v-else class="fas fa-save"></i>
+                      {{ personalLoading ? 'Đang lưu...' : 'Lưu thay đổi' }}
+                    </button>
+                  </div>
+                </form>
+              </div>
             </div>
 
             <!-- Address Management -->
-            <div v-if="activeTab === 'addresses'" class="profile-content">
-              <div class="content-header">
-                <h2>Địa chỉ giao hàng</h2>
-                <p>Quản lý địa chỉ giao hàng của bạn</p>
-                <button @click="showAddressForm = true" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md transition-colors duration-200 btn-outline">
+            <div v-if="activeTab === 'addresses'" class="bg-white/70 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 overflow-hidden">
+              <div class="bg-gradient-to-r from-blue-600 to-purple-600 px-6 py-8 flex justify-between items-center">
+                <div>
+                  <h2 class="text-2xl font-bold text-white mb-2">Địa chỉ giao hàng</h2>
+                  <p class="text-white/90">Quản lý địa chỉ giao hàng của bạn</p>
+                </div>
+                <button 
+                  @click="showAddressForm = true" 
+                  class="inline-flex items-center gap-2 px-4 py-2 bg-white/20 backdrop-blur-sm border border-white/30 text-white font-medium rounded-xl hover:bg-white/30 transition-all duration-200"
+                >
                   <i class="fas fa-plus"></i>
                   Thêm địa chỉ mới
                 </button>
               </div>
 
-              <div class="addresses-list">
+              <div class="p-8 space-y-4">
                 <div 
                   v-for="address in addresses" 
                   :key="address.id"
-                  class="address-card"
-                  :class="{ default: address.isDefault }"
+                  :class="[
+                    'p-6 rounded-xl border-2 transition-all duration-200',
+                    address.isDefault 
+                      ? 'border-gradient-to-r from-blue-500 to-purple-500 bg-gradient-to-r from-blue-50 to-purple-50' 
+                      : 'border-gray-200 hover:border-gray-300 bg-white'
+                  ]"
                 >
-                  <div class="address-info">
-                    <div class="address-header">
-                      <h4>{{ address.name }}</h4>
-                      <div class="address-badges">
-                        <span v-if="address.isDefault" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium default-badge">
-                          Mặc định
-                        </span>
-                        <span v-if="address.type === 'home'" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium type-badge">
-                          Nhà riêng
-                        </span>
-                        <span v-if="address.type === 'office'" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium type-badge">
-                          Văn phòng
-                        </span>
+                  <div class="flex justify-between items-start">
+                    <div class="flex-1">
+                      <div class="flex items-center gap-3 mb-3">
+                        <h4 class="font-semibold text-gray-900">{{ address.name }}</h4>
+                        <div class="flex gap-2">
+                          <span v-if="address.isDefault" class="px-2 py-1 bg-gradient-to-r from-blue-600 to-purple-600 text-white text-xs rounded-full">
+                            Mặc định
+                          </span>
+                          <span v-if="address.type === 'home'" class="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">
+                            Nhà riêng
+                          </span>
+                          <span v-if="address.type === 'office'" class="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded-full">
+                            Văn phòng
+                          </span>
+                        </div>
                       </div>
+                      <p class="text-gray-600 mb-2 leading-relaxed">
+                        {{ address.street }}, {{ address.ward }}, 
+                        {{ address.district }}, {{ address.city }}
+                      </p>
+                      <p class="text-gray-500 text-sm">{{ address.phone }}</p>
                     </div>
-                    <p class="address-details">
-                      {{ address.street }}, {{ address.ward }}, 
-                      {{ address.district }}, {{ address.city }}
-                    </p>
-                    <p class="address-phone">{{ address.phone }}</p>
-                  </div>
-                  <div class="address-actions">
-                    <button @click="editAddress(address)" class="action-btn">
-                      <i class="fas fa-edit"></i>
-                    </button>
-                    <button 
-                      @click="setDefaultAddress(address)"
-                      :disabled="address.isDefault"
-                      class="action-btn"
-                    >
-                      <i class="fas fa-star"></i>
-                    </button>
-                    <button 
-                      @click="deleteAddress(address)"
-                      :disabled="address.isDefault"
-                      class="action-btn delete"
-                    >
-                      <i class="fas fa-trash"></i>
-                    </button>
+                    <div class="flex gap-2 ml-4">
+                      <button 
+                        @click="editAddress(address)" 
+                        class="p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors duration-200"
+                      >
+                        <i class="fas fa-edit"></i>
+                      </button>
+                      <button 
+                        @click="setDefaultAddress(address)"
+                        :disabled="address.isDefault"
+                        class="p-2 text-gray-600 hover:text-yellow-600 hover:bg-yellow-50 rounded-lg transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        <i class="fas fa-star"></i>
+                      </button>
+                      <button 
+                        @click="deleteAddress(address)"
+                        :disabled="address.isDefault"
+                        class="p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        <i class="fas fa-trash"></i>
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
 
             <!-- Security Settings -->
-            <div v-if="activeTab === 'security'" class="profile-content">
-              <div class="content-header">
-                <h2>Bảo mật tài khoản</h2>
-                <p>Quản lý mật khẩu và cài đặt bảo mật</p>
+            <div v-if="activeTab === 'security'" class="bg-white/70 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 overflow-hidden">
+              <div class="bg-gradient-to-r from-blue-600 to-purple-600 px-6 py-8">
+                <h2 class="text-2xl font-bold text-white mb-2">Bảo mật tài khoản</h2>
+                <p class="text-white/90">Quản lý mật khẩu và cài đặt bảo mật</p>
               </div>
 
-              <form @submit.prevent="changePassword" class="profile-form">
-                <div class="mb-4">
-                  <label for="currentPassword">Mật khẩu hiện tại *</label>
-                  <div class="password-input">
-                    <input 
-                      :type="showCurrentPassword ? 'text' : 'password'"
-                      id="currentPassword"
-                      v-model="passwordForm.currentPassword"
-                      required
-                    />
+              <div class="p-8 space-y-8">
+                <form @submit.prevent="changePassword" class="space-y-6">
+                  <div>
+                    <label for="currentPassword" class="block text-sm font-semibold text-gray-700 mb-2">Mật khẩu hiện tại *</label>
+                    <div class="relative">
+                      <input 
+                        :type="showCurrentPassword ? 'text' : 'password'"
+                        id="currentPassword"
+                        v-model="passwordForm.currentPassword"
+                        required
+                        class="w-full px-4 py-3 pr-12 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                      />
+                      <button 
+                        type="button"
+                        @click="showCurrentPassword = !showCurrentPassword"
+                        class="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-gray-500 hover:text-gray-700"
+                      >
+                        <i :class="showCurrentPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+                      </button>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label for="newPassword" class="block text-sm font-semibold text-gray-700 mb-2">Mật khẩu mới *</label>
+                    <div class="relative">
+                      <input 
+                        :type="showNewPassword ? 'text' : 'password'"
+                        id="newPassword"
+                        v-model="passwordForm.newPassword"
+                        required
+                        class="w-full px-4 py-3 pr-12 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                      />
+                      <button 
+                        type="button"
+                        @click="showNewPassword = !showNewPassword"
+                        class="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-gray-500 hover:text-gray-700"
+                      >
+                        <i :class="showNewPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+                      </button>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label for="confirmPassword" class="block text-sm font-semibold text-gray-700 mb-2">Xác nhận mật khẩu mới *</label>
+                    <div class="relative">
+                      <input 
+                        :type="showConfirmPassword ? 'text' : 'password'"
+                        id="confirmPassword"
+                        v-model="passwordForm.confirmPassword"
+                        required
+                        class="w-full px-4 py-3 pr-12 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                      />
+                      <button 
+                        type="button"
+                        @click="showConfirmPassword = !showConfirmPassword"
+                        class="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-gray-500 hover:text-gray-700"
+                      >
+                        <i :class="showConfirmPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+                      </button>
+                    </div>
+                    <div v-if="passwordForm.confirmPassword && !passwordsMatch" class="mt-2 text-sm text-red-600">
+                      <i class="fas fa-exclamation-triangle mr-1"></i>
+                      Mật khẩu xác nhận không khớp
+                    </div>
+                  </div>
+
+                  <div class="flex justify-end pt-4">
                     <button 
-                      type="button"
-                      @click="showCurrentPassword = !showCurrentPassword"
-                      class="password-toggle"
+                      type="submit" 
+                      :disabled="passwordLoading || !passwordsMatch"
+                      class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-xl hover:from-blue-700 hover:to-purple-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 disabled:opacity-50"
                     >
-                      <i :class="showCurrentPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+                      <span v-if="passwordLoading" class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+                      <i v-else class="fas fa-key"></i>
+                      {{ passwordLoading ? 'Đang cập nhật...' : 'Đổi mật khẩu' }}
                     </button>
                   </div>
-                </div>
+                </form>
 
-                <div class="mb-4">
-                  <label for="newPassword">Mật khẩu mới *</label>
-                  <div class="password-input">
-                    <input 
-                      :type="showNewPassword ? 'text' : 'password'"
-                      id="newPassword"
-                      v-model="passwordForm.newPassword"
-                      required
-                    />
-                    <button 
-                      type="button"
-                      @click="showNewPassword = !showNewPassword"
-                      class="password-toggle"
-                    >
-                      <i :class="showNewPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
-                    </button>
+                <!-- Two-Factor Authentication -->
+                <div class="p-6 bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl border border-blue-100">
+                  <div class="flex justify-between items-center">
+                    <div>
+                      <h4 class="font-semibold text-gray-900 mb-2">Xác thực hai yếu tố</h4>
+                      <p class="text-sm text-gray-600">Tăng cường bảo mật tài khoản bằng xác thực hai yếu tố</p>
+                    </div>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                      <input 
+                        type="checkbox" 
+                        v-model="securitySettings.twoFactorAuth"
+                        @change="toggleTwoFactor"
+                        class="sr-only peer"
+                      />
+                      <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gradient-to-r peer-checked:from-blue-600 peer-checked:to-purple-600"></div>
+                    </label>
                   </div>
-                </div>
-
-                <div class="mb-4">
-                  <label for="confirmPassword">Xác nhận mật khẩu mới *</label>
-                  <div class="password-input">
-                    <input 
-                      :type="showConfirmPassword ? 'text' : 'password'"
-                      id="confirmPassword"
-                      v-model="passwordForm.confirmPassword"
-                      required
-                    />
-                    <button 
-                      type="button"
-                      @click="showConfirmPassword = !showConfirmPassword"
-                      class="password-toggle"
-                    >
-                      <i :class="showConfirmPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
-                    </button>
-                  </div>
-                  <div v-if="passwordForm.confirmPassword && !passwordsMatch" class="error-message">
-                    Mật khẩu xác nhận không khớp
-                  </div>
-                </div>
-
-                <div class="form-actions">
-                  <button 
-                    type="submit" 
-                    :disabled="passwordLoading || !passwordsMatch"
-                    class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md transition-colors duration-200 bg-blue-600 hover:bg-blue-700 text-white"
-                  >
-                    <span v-if="passwordLoading" class="loading-spinner"></span>
-                    {{ passwordLoading ? 'Đang cập nhật...' : 'Đổi mật khẩu' }}
-                  </button>
-                </div>
-              </form>
-
-              <!-- Two-Factor Authentication -->
-              <div class="security-option">
-                <div class="option-info">
-                  <h4>Xác thực hai yếu tố</h4>
-                  <p>Tăng cường bảo mật tài khoản bằng xác thực hai yếu tố</p>
-                </div>
-                <div class="option-action">
-                  <label class="toggle-switch">
-                    <input 
-                      type="checkbox" 
-                      v-model="securitySettings.twoFactorAuth"
-                      @change="toggleTwoFactor"
-                    />
-                    <span class="slider"></span>
-                  </label>
                 </div>
               </div>
             </div>
 
             <!-- Notifications -->
-            <div v-if="activeTab === 'notifications'" class="profile-content">
-              <div class="content-header">
-                <h2>Thông báo</h2>
-                <p>Quản lý cài đặt thông báo</p>
+            <div v-if="activeTab === 'notifications'" class="bg-white/70 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 overflow-hidden">
+              <div class="bg-gradient-to-r from-blue-600 to-purple-600 px-6 py-8">
+                <h2 class="text-2xl font-bold text-white mb-2">Thông báo</h2>
+                <p class="text-white/90">Quản lý cài đặt thông báo</p>
               </div>
 
-              <div class="notifications-settings">
+              <div class="p-8 space-y-4">
                 <div 
                   v-for="setting in notificationSettings" 
                   :key="setting.key"
-                  class="notification-item"
+                  class="p-6 bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl border border-blue-100"
                 >
-                  <div class="notification-info">
-                    <h4>{{ setting.title }}</h4>
-                    <p>{{ setting.description }}</p>
-                  </div>
-                  <div class="notification-controls">
-                    <label class="toggle-switch">
-                      <input 
-                        type="checkbox" 
-                        v-model="setting.email"
-                        @change="updateNotificationSettings"
-                      />
-                      <span class="slider"></span>
-                    </label>
-                    <span class="control-label">Email</span>
+                  <div class="flex justify-between items-center">
+                    <div>
+                      <h4 class="font-semibold text-gray-900 mb-2">{{ setting.title }}</h4>
+                      <p class="text-sm text-gray-600">{{ setting.description }}</p>
+                    </div>
+                    <div class="flex items-center gap-3">
+                      <span class="text-sm font-medium text-gray-700">Email</span>
+                      <label class="relative inline-flex items-center cursor-pointer">
+                        <input 
+                          type="checkbox" 
+                          v-model="setting.email"
+                          @change="updateNotificationSettings"
+                          class="sr-only peer"
+                        />
+                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-gradient-to-r peer-checked:from-blue-600 peer-checked:to-purple-600"></div>
+                      </label>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -323,37 +387,60 @@
     </section>
 
     <!-- Address Form Modal -->
-    <div v-if="showAddressForm" class="modal-overlay" @click="showAddressForm = false">
-      <div class="bg-white rounded-lg shadow-xl" @click.stop>
-        <div class="flex justify-between items-center p-6 border-b border-gray-200">
-          <h3>{{ editingAddress ? 'Sửa địa chỉ' : 'Thêm địa chỉ mới' }}</h3>
-          <button @click="showAddressForm = false" class="close-btn">
-            <i class="fas fa-times"></i>
-          </button>
+    <div v-if="showAddressForm" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4" @click="showAddressForm = false">
+      <div class="bg-white/90 backdrop-blur-sm rounded-2xl shadow-2xl max-w-md w-full" @click.stop>
+        <div class="bg-gradient-to-r from-blue-600 to-purple-600 px-6 py-4 rounded-t-2xl">
+          <div class="flex justify-between items-center">
+            <h3 class="text-xl font-bold text-white">{{ editingAddress ? 'Sửa địa chỉ' : 'Thêm địa chỉ mới' }}</h3>
+            <button @click="showAddressForm = false" class="p-1 text-white/80 hover:text-white transition-colors duration-200">
+              <i class="fas fa-times text-lg"></i>
+            </button>
+          </div>
         </div>
         
-        <form @submit.prevent="saveAddress" class="modal-form">
-          <!-- Address form content -->
-          <div class="mb-4">
-            <label>Họ tên *</label>
-            <input type="text" v-model="addressForm.name" required />
+        <form @submit.prevent="saveAddress" class="p-6 space-y-4">
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Họ tên *</label>
+            <input 
+              type="text" 
+              v-model="addressForm.name" 
+              required 
+              class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+            />
           </div>
           
-          <div class="mb-4">
-            <label>Số điện thoại *</label>
-            <input type="tel" v-model="addressForm.phone" required />
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Số điện thoại *</label>
+            <input 
+              type="tel" 
+              v-model="addressForm.phone" 
+              required 
+              class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+            />
           </div>
           
-          <div class="mb-4">
-            <label>Địa chỉ chi tiết *</label>
-            <input type="text" v-model="addressForm.street" required />
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Địa chỉ chi tiết *</label>
+            <input 
+              type="text" 
+              v-model="addressForm.street" 
+              required 
+              class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+            />
           </div>
           
-          <div class="form-actions">
-            <button type="button" @click="showAddressForm = false" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md transition-colors duration-200 bg-gray-600 hover:bg-gray-700 text-white">
+          <div class="flex gap-3 pt-4">
+            <button 
+              type="button" 
+              @click="showAddressForm = false" 
+              class="flex-1 px-4 py-3 border border-gray-300 text-gray-700 font-medium rounded-xl hover:bg-gray-50 transition-all duration-200"
+            >
               Hủy
             </button>
-            <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md transition-colors duration-200 bg-blue-600 hover:bg-blue-700 text-white">
+            <button 
+              type="submit" 
+              class="flex-1 px-4 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-medium rounded-xl hover:from-blue-700 hover:to-purple-700 transition-all duration-200"
+            >
               {{ editingAddress ? 'Cập nhật' : 'Thêm địa chỉ' }}
             </button>
           </div>
@@ -587,621 +674,52 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.profile-page {
-  min-height: 100vh;
-  background: #f8f9fa;
-}
-
-.page-header {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  padding: 60px 0;
-  text-align: center;
-}
-
-.page-header h1 {
-  font-size: 2.5rem;
-  margin-bottom: 10px;
-}
-
-.page-header p {
-  font-size: 1.1rem;
-  opacity: 0.9;
-}
-
-.profile-layout {
-  display: grid;
-  grid-template-columns: 300px 1fr;
-  gap: 40px;
-}
-
-.profile-sidebar {
-  background: white;
-  border-radius: 15px;
-  padding: 30px;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
-  height: fit-content;
-  position: sticky;
-  top: 100px;
-}
-
-.user-info {
-  text-align: center;
-  margin-bottom: 30px;
-  padding-bottom: 30px;
-  border-bottom: 1px solid #eee;
-}
-
-.avatar {
-  position: relative;
-  width: 100px;
-  height: 100px;
-  margin: 0 auto 20px;
-}
-
-.avatar img {
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 4px solid #e74c3c;
-}
-
-.avatar-edit {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  width: 30px;
-  height: 30px;
-  background: #e74c3c;
-  border: none;
-  border-radius: 50%;
-  color: white;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.user-info h3 {
-  margin: 0 0 5px 0;
-  color: #333;
-}
-
-.user-info p {
-  margin: 0;
-  color: #666;
-  font-size: 14px;
-}
-
-.profile-nav {
-  margin-bottom: 30px;
-}
-
-.nav-item {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 15px 20px;
-  border: none;
-  background: transparent;
-  text-align: left;
-  cursor: pointer;
-  border-radius: 10px;
-  margin-bottom: 5px;
-  transition: all 0.3s ease;
-  color: #666;
-}
-
-.nav-item:hover,
-.nav-item.active {
-  background: #e74c3c;
-  color: white;
-}
-
-.nav-item i {
-  width: 20px;
-  font-size: 16px;
-}
-
-.logout-section {
-  padding-top: 20px;
-  border-top: 1px solid #eee;
-}
-
-.logout-btn {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 15px 20px;
-  border: none;
-  background: transparent;
-  text-align: left;
-  cursor: pointer;
-  border-radius: 10px;
-  transition: all 0.3s ease;
-  color: #dc3545;
-}
-
-.logout-btn:hover {
-  background: #dc3545;
-  color: white;
-}
-
-.profile-main {
-  background: white;
-  border-radius: 15px;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
-}
-
-.profile-content {
-  padding: 40px;
-}
-
-.content-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 30px;
-  padding-bottom: 20px;
-  border-bottom: 1px solid #eee;
-}
-
-.content-header h2 {
-  margin: 0 0 8px 0;
-  color: #333;
-}
-
-.content-header p {
-  margin: 0;
-  color: #666;
-}
-
-.profile-form {
-  max-width: 600px;
-}
-
-.form-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-}
-
-.form-group {
-  margin-bottom: 20px;
-}
-
-.form-group label {
-  display: block;
-  margin-bottom: 8px;
-  font-weight: 600;
-  color: #333;
-  font-size: 14px;
-}
-
-.form-group input,
-.form-group select,
-.form-group textarea {
-  width: 100%;
-  padding: 12px 15px;
-  border: 2px solid #e1e5e9;
-  border-radius: 8px;
-  font-size: 14px;
-  transition: border-color 0.3s ease;
-  outline: none;
-}
-
-.form-group input:focus,
-.form-group select:focus,
-.form-group textarea:focus {
-  border-color: #e74c3c;
-}
-
-.password-input {
-  position: relative;
-}
-
-.password-toggle {
-  position: absolute;
-  right: 15px;
-  top: 50%;
-  transform: translateY(-50%);
-  background: none;
-  border: none;
-  color: #999;
-  cursor: pointer;
-  padding: 5px;
-}
-
-.password-toggle:hover {
-  color: #666;
-}
-
-.error-message {
-  margin-top: 5px;
-  color: #dc3545;
-  font-size: 14px;
-}
-
-.form-actions {
-  margin-top: 30px;
-}
-
-.btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 12px 24px;
-  border-radius: 8px;
-  border: none;
-  cursor: pointer;
-  font-weight: 600;
-  text-decoration: none;
-  transition: all 0.3s ease;
-}
-
-.btn-primary {
-  background: #e74c3c;
-  color: white;
-}
-
-.btn-primary:hover:not(:disabled) {
-  background: #c0392b;
-}
-
-.btn-outline {
-  background: transparent;
-  color: #e74c3c;
-  border: 2px solid #e74c3c;
-}
-
-.btn-outline:hover {
-  background: #e74c3c;
-  color: white;
-}
-
-.btn-secondary {
-  background: #6c757d;
-  color: white;
-}
-
-.btn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.loading-spinner {
-  width: 16px;
-  height: 16px;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  border-top: 2px solid white;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-.addresses-list {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.address-card {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px;
-  border: 2px solid #e1e5e9;
-  border-radius: 10px;
-  transition: border-color 0.3s ease;
-}
-
-.address-card.default {
-  border-color: #e74c3c;
-  background: #fef7f7;
-}
-
-.address-info {
-  flex: 1;
-}
-
-.address-header {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  margin-bottom: 8px;
-}
-
-.address-header h4 {
-  margin: 0;
-  color: #333;
-}
-
-.address-badges {
-  display: flex;
-  gap: 8px;
-}
-
-.badge {
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 12px;
-  font-weight: 600;
-}
-
-.default-badge {
-  background: #e74c3c;
-  color: white;
-}
-
-.type-badge {
-  background: #f8f9fa;
-  color: #666;
-}
-
-.address-details {
-  margin: 5px 0;
-  color: #666;
-  line-height: 1.5;
-}
-
-.address-phone {
-  margin: 0;
-  color: #666;
-  font-size: 14px;
-}
-
-.address-actions {
-  display: flex;
-  gap: 8px;
-}
-
-.action-btn {
-  width: 35px;
-  height: 35px;
-  border: 1px solid #ddd;
-  background: white;
-  border-radius: 6px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.3s ease;
-}
-
-.action-btn:hover:not(:disabled) {
-  background: #e74c3c;
-  color: white;
-  border-color: #e74c3c;
-}
-
-.action-btn.delete:hover:not(:disabled) {
-  background: #dc3545;
-  border-color: #dc3545;
-}
-
-.action-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.security-option {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px;
-  border: 1px solid #eee;
-  border-radius: 10px;
-  margin-top: 30px;
-}
-
-.option-info h4 {
-  margin: 0 0 5px 0;
-  color: #333;
-}
-
-.option-info p {
-  margin: 0;
-  color: #666;
-  font-size: 14px;
-}
-
-.toggle-switch {
-  position: relative;
-  display: inline-block;
-  width: 50px;
-  height: 24px;
-}
-
-.toggle-switch input {
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
-
-.slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: #ccc;
-  transition: .4s;
-  border-radius: 24px;
-}
-
-.slider:before {
-  position: absolute;
-  content: "";
-  height: 18px;
-  width: 18px;
-  left: 3px;
-  bottom: 3px;
-  background-color: white;
-  transition: .4s;
-  border-radius: 50%;
-}
-
-input:checked + .slider {
-  background-color: #e74c3c;
-}
-
-input:checked + .slider:before {
-  transform: translateX(26px);
-}
-
-.notifications-settings {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.notification-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px;
-  border: 1px solid #eee;
-  border-radius: 10px;
-}
-
-.notification-info h4 {
-  margin: 0 0 5px 0;
-  color: #333;
-}
-
-.notification-info p {
-  margin: 0;
-  color: #666;
-  font-size: 14px;
-}
-
-.notification-controls {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.control-label {
-  font-size: 14px;
-  color: #666;
-  min-width: 40px;
-}
-
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-}
-
-.modal-content {
-  background: white;
-  padding: 0;
-  border-radius: 15px;
-  max-width: 500px;
-  width: 90%;
-  max-height: 90vh;
-  overflow-y: auto;
-}
-
-.modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px 30px;
-  border-bottom: 1px solid #eee;
-}
-
-.modal-header h3 {
-  margin: 0;
-  color: #333;
-}
-
-.close-btn {
-  background: none;
-  border: none;
-  font-size: 20px;
-  cursor: pointer;
-  color: #999;
-  padding: 5px;
-}
-
-.close-btn:hover {
-  color: #666;
-}
-
-.modal-form {
-  padding: 30px;
-}
-
-@media (max-width: 1024px) {
-  .profile-layout {
-    grid-template-columns: 1fr;
-    gap: 20px;
+@keyframes animate-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
   }
-  
-  .profile-sidebar {
-    position: static;
-    order: -1;
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
-@media (max-width: 768px) {
-  .page-header {
-    padding: 40px 0;
+@keyframes animate-pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
   }
-  
-  .page-header h1 {
-    font-size: 2rem;
+  50% {
+    transform: scale(1.05);
+    opacity: 0.8;
   }
-  
-  .profile-content {
-    padding: 25px;
+}
+
+@keyframes animate-bounce {
+  0%, 20%, 53%, 80%, 100% {
+    transform: translateY(0);
   }
-  
-  .content-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 15px;
+  40%, 43% {
+    transform: translateY(-30px);
   }
-  
-  .form-row {
-    grid-template-columns: 1fr;
+  70% {
+    transform: translateY(-15px);
   }
-  
-  .address-card {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 15px;
+  90% {
+    transform: translateY(-4px);
   }
-  
-  .address-actions {
-    align-self: flex-end;
-  }
-  
-  .security-option,
-  .notification-item {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 15px;
-  }
-  
-  .notification-controls {
-    align-self: flex-end;
-  }
+}
+
+.animate-fade-in {
+  animation: animate-fade-in 0.6s ease-out;
+}
+
+.animate-pulse {
+  animation: animate-pulse 3s ease-in-out infinite;
+}
+
+.animate-bounce {
+  animation: animate-bounce 2s infinite;
 }
 </style>

@@ -1,110 +1,110 @@
 <template>
-  <div class="checkout-page">
+  <div class="min-h-screen bg-gray-50">
     <!-- Page Header -->
-    <section class="page-header">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="breadcrumb">
-          <router-link to="/">Trang chủ</router-link>
-          <span>/</span>
-          <router-link to="/cart">Giỏ hàng</router-link>
-          <span>/</span>
-          <span>Thanh toán</span>
+    <section class="bg-gradient-to-br from-blue-600 via-purple-600 to-blue-800 text-white relative overflow-hidden">
+      <div class="absolute inset-0 bg-black/10"></div>
+      <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-20">
+        <!-- Breadcrumb -->
+        <div class="flex items-center text-blue-100 text-sm mb-6 space-x-2">
+          <router-link to="/" class="hover:text-white transition-colors duration-200">Trang chủ</router-link>
+          <i class="fas fa-chevron-right text-xs"></i>
+          <router-link to="/cart" class="hover:text-white transition-colors duration-200">Giỏ hàng</router-link>
+          <i class="fas fa-chevron-right text-xs"></i>
+          <span class="text-white font-medium">Thanh toán</span>
         </div>
-        <h1>Thanh toán</h1>
+
+        <div class="text-center">
+          <div class="inline-flex items-center justify-center w-16 h-16 bg-white/10 backdrop-blur-sm rounded-2xl mb-6">
+            <i class="fas fa-credit-card text-2xl"></i>
+          </div>
+          <h1
+            class="text-4xl lg:text-5xl font-bold mb-4 bg-gradient-to-r from-white to-blue-100 bg-clip-text text-transparent">
+            Thanh toán
+          </h1>
+          <p class="text-xl text-blue-100 max-w-2xl mx-auto">
+            Hoàn tất đơn hàng của bạn một cách nhanh chóng và an toàn
+          </p>
+        </div>
       </div>
+
+      <!-- Decorative elements -->
+      <div class="absolute top-10 left-10 w-20 h-20 bg-white/5 rounded-full animate-float"></div>
+      <div class="absolute top-40 right-20 w-16 h-16 bg-white/5 rounded-full animate-float-delay"></div>
+      <div class="absolute bottom-20 left-1/4 w-12 h-12 bg-white/5 rounded-full animate-float"></div>
     </section>
 
     <!-- Checkout Content -->
-    <section class="checkout-section py-5">
+    <section class="py-12">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="checkout-layout">
+        <div class="grid lg:grid-cols-3 gap-8">
           <!-- Left Side - Forms -->
-          <div class="checkout-forms">
+          <div class="lg:col-span-2 space-y-8">
             <!-- Shipping Information -->
-            <div class="checkout-card">
-              <div class="px-6 py-4 bg-gray-50 border-b border-gray-200">
-                <h2>
-                  <span class="step-number">1</span>
+            <div class="bg-white rounded-2xl shadow-xl overflow-hidden border border-blue-100/50">
+              <div class="bg-gradient-to-r from-blue-50 to-purple-50 px-6 py-4 border-b border-blue-100">
+                <h2 class="flex items-center gap-4 text-lg font-bold text-gray-800">
+                  <div
+                    class="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-full flex items-center justify-center text-sm font-bold">
+                    1
+                  </div>
                   Thông tin giao hàng
                 </h2>
               </div>
-              <form class="checkout-form">
-                <div class="form-row">
-                  <div class="mb-4">
-                    <label for="firstName">Họ *</label>
-                    <input 
-                      type="text" 
-                      id="firstName"
-                      v-model="shippingInfo.firstName"
-                      required
-                    />
+              <form class="p-6 space-y-6">
+                <div class="grid md:grid-cols-2 gap-4">
+                  <div>
+                    <label for="firstName" class="block text-sm font-semibold text-gray-700 mb-2">Họ *</label>
+                    <input type="text" id="firstName" v-model="shippingInfo.firstName"
+                      class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white"
+                      required />
                   </div>
-                  <div class="mb-4">
-                    <label for="lastName">Tên *</label>
-                    <input 
-                      type="text" 
-                      id="lastName"
-                      v-model="shippingInfo.lastName"
-                      required
-                    />
+                  <div>
+                    <label for="lastName" class="block text-sm font-semibold text-gray-700 mb-2">Tên *</label>
+                    <input type="text" id="lastName" v-model="shippingInfo.lastName"
+                      class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white"
+                      required />
                   </div>
                 </div>
-                
-                <div class="mb-4">
-                  <label for="email">Email *</label>
-                  <input 
-                    type="email" 
-                    id="email"
-                    v-model="shippingInfo.email"
-                    required
-                  />
+
+                <div>
+                  <label for="email" class="block text-sm font-semibold text-gray-700 mb-2">Email *</label>
+                  <input type="email" id="email" v-model="shippingInfo.email"
+                    class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white"
+                    required />
                 </div>
-                
-                <div class="mb-4">
-                  <label for="phone">Số điện thoại *</label>
-                  <input 
-                    type="tel" 
-                    id="phone"
-                    v-model="shippingInfo.phone"
-                    required
-                  />
+
+                <div>
+                  <label for="phone" class="block text-sm font-semibold text-gray-700 mb-2">Số điện thoại *</label>
+                  <input type="tel" id="phone" v-model="shippingInfo.phone"
+                    class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white"
+                    required />
                 </div>
-                
-                <div class="mb-4">
-                  <label for="address">Địa chỉ *</label>
-                  <input 
-                    type="text" 
-                    id="address"
-                    v-model="shippingInfo.address"
-                    placeholder="Số nhà, tên đường"
-                    required
-                  />
+
+                <div>
+                  <label for="address" class="block text-sm font-semibold text-gray-700 mb-2">Địa chỉ *</label>
+                  <input type="text" id="address" v-model="shippingInfo.address" placeholder="Số nhà, tên đường"
+                    class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white"
+                    required />
                 </div>
-                
-                <div class="form-row">
-                  <div class="mb-4">
-                    <label for="city">Tỉnh/Thành phố *</label>
-                    <select 
-                      id="city"
-                      v-model="shippingInfo.city"
-                      @change="loadDistricts"
-                      required
-                    >
+
+                <div class="grid md:grid-cols-2 gap-4">
+                  <div>
+                    <label for="city" class="block text-sm font-semibold text-gray-700 mb-2">Tỉnh/Thành phố *</label>
+                    <select id="city" v-model="shippingInfo.city" @change="loadDistricts"
+                      class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white text-gray-700"
+                      required>
                       <option value="">Chọn tỉnh/thành phố</option>
                       <option v-for="city in cities" :key="city.code" :value="city.code">
                         {{ city.name }}
                       </option>
                     </select>
                   </div>
-                  <div class="mb-4">
-                    <label for="district">Quận/Huyện *</label>
-                    <select 
-                      id="district"
-                      v-model="shippingInfo.district"
-                      @change="loadWards"
+                  <div>
+                    <label for="district" class="block text-sm font-semibold text-gray-700 mb-2">Quận/Huyện *</label>
+                    <select id="district" v-model="shippingInfo.district" @change="loadWards"
                       :disabled="!shippingInfo.city"
-                      required
-                    >
+                      class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white text-gray-700 disabled:bg-gray-100 disabled:text-gray-400"
+                      required>
                       <option value="">Chọn quận/huyện</option>
                       <option v-for="district in districts" :key="district.code" :value="district.code">
                         {{ district.name }}
@@ -112,237 +112,202 @@
                     </select>
                   </div>
                 </div>
-                
-                <div class="mb-4">
-                  <label for="ward">Phường/Xã *</label>
-                  <select 
-                    id="ward"
-                    v-model="shippingInfo.ward"
-                    :disabled="!shippingInfo.district"
-                    required
-                  >
+
+                <div>
+                  <label for="ward" class="block text-sm font-semibold text-gray-700 mb-2">Phường/Xã *</label>
+                  <select id="ward" v-model="shippingInfo.ward" :disabled="!shippingInfo.district"
+                    class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white text-gray-700 disabled:bg-gray-100 disabled:text-gray-400"
+                    required>
                     <option value="">Chọn phường/xã</option>
                     <option v-for="ward in wards" :key="ward.code" :value="ward.code">
                       {{ ward.name }}
                     </option>
                   </select>
                 </div>
-                
-                <div class="mb-4">
-                  <label for="notes">Ghi chú</label>
-                  <textarea 
-                    id="notes"
-                    v-model="shippingInfo.notes"
-                    rows="3"
+
+                <div>
+                  <label for="notes" class="block text-sm font-semibold text-gray-700 mb-2">Ghi chú</label>
+                  <textarea id="notes" v-model="shippingInfo.notes" rows="3"
                     placeholder="Ghi chú thêm cho đơn hàng (tùy chọn)"
-                  ></textarea>
+                    class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white resize-none"></textarea>
                 </div>
               </form>
             </div>
 
             <!-- Shipping Method -->
-            <div class="checkout-card">
-              <div class="px-6 py-4 bg-gray-50 border-b border-gray-200">
-                <h2>
-                  <span class="step-number">2</span>
+            <div class="bg-white rounded-2xl shadow-xl overflow-hidden border border-blue-100/50">
+              <div class="bg-gradient-to-r from-blue-50 to-purple-50 px-6 py-4 border-b border-blue-100">
+                <h2 class="flex items-center gap-4 text-lg font-bold text-gray-800">
+                  <div
+                    class="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-full flex items-center justify-center text-sm font-bold">
+                    2
+                  </div>
                   Phương thức vận chuyển
                 </h2>
               </div>
-              <div class="shipping-methods">
-                <label 
-                  v-for="method in shippingMethods" 
-                  :key="method.id"
-                  class="shipping-method"
-                  :class="{ active: selectedShippingMethod === method.id }"
-                >
-                  <input 
-                    type="radio" 
-                    :value="method.id"
-                    v-model="selectedShippingMethod"
-                    @change="calculateTotal"
-                  />
-                  <div class="method-info">
-                    <div class="method-header">
-                      <span class="method-name">{{ method.name }}</span>
-                      <span class="method-price">
-                        {{ method.price === 0 ? 'Miễn phí' : formatPrice(method.price) + 'đ' }}
-                      </span>
-                    </div>
-                    <div class="method-description">
-                      {{ method.description }}
-                    </div>
-                    <div class="method-time">
-                      <i class="fas fa-clock"></i>
-                      {{ method.estimatedTime }}
+              <div class="p-4 space-y-2">
+                <label v-for="method in shippingMethods" :key="method.id"
+                  class="flex items-center justify-between p-2 border rounded-lg cursor-pointer transition-colors duration-200 hover:bg-blue-50"
+                  :class="selectedShippingMethod === method.id ? 'border-blue-500 bg-blue-50' : 'border-gray-200'">
+                  <div class="flex items-center gap-2">
+                    <input type="radio" :value="method.id" v-model="selectedShippingMethod" @change="calculateTotal"
+                      class="text-blue-600 focus:ring-blue-500" />
+                    <div>
+                      <span class="font-medium text-gray-800 text-sm">{{ method.name }}</span>
+                      <span class="text-xs text-gray-500 ml-2">{{ method.estimatedTime }}</span>
                     </div>
                   </div>
+                  <span class="font-bold text-blue-600 text-sm">
+                    {{ method.price === 0 ? 'Miễn phí' : formatPrice(method.price) + 'đ' }}
+                  </span>
                 </label>
               </div>
             </div>
 
             <!-- Payment Method -->
-            <div class="checkout-card">
-              <div class="px-6 py-4 bg-gray-50 border-b border-gray-200">
-                <h2>
-                  <span class="step-number">3</span>
+            <div class="bg-white rounded-2xl shadow-xl overflow-hidden border border-blue-100/50">
+              <div class="bg-gradient-to-r from-blue-50 to-purple-50 px-6 py-4 border-b border-blue-100">
+                <h2 class="flex items-center gap-4 text-lg font-bold text-gray-800">
+                  <div
+                    class="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-full flex items-center justify-center text-sm font-bold">
+                    3
+                  </div>
                   Phương thức thanh toán
                 </h2>
               </div>
-              <div class="payment-methods">
-                <label 
-                  v-for="method in paymentMethods" 
-                  :key="method.id"
-                  class="payment-method"
-                  :class="{ active: selectedPaymentMethod === method.id }"
-                >
-                  <input 
-                    type="radio" 
-                    :value="method.id"
-                    v-model="selectedPaymentMethod"
-                  />
-                  <div class="method-info">
-                    <div class="method-icon">
-                      <i :class="method.icon"></i>
-                    </div>
-                    <div class="method-details">
-                      <span class="method-name">{{ method.name }}</span>
-                      <span class="method-description">{{ method.description }}</span>
-                    </div>
+              <div class="p-4 space-y-2">
+                <label v-for="method in paymentMethods" :key="method.id"
+                  class="flex items-center gap-2 p-2 border rounded-lg cursor-pointer transition-colors duration-200 hover:bg-blue-50"
+                  :class="selectedPaymentMethod === method.id ? 'border-blue-500 bg-blue-50' : 'border-gray-200'">
+                  <input type="radio" :value="method.id" v-model="selectedPaymentMethod"
+                    class="text-blue-600 focus:ring-blue-500" />
+                  <div class="w-6 h-6 bg-blue-100 rounded flex items-center justify-center flex-shrink-0">
+                    <i :class="method.icon" class="text-blue-600 text-xs"></i>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <span class="font-medium text-gray-800 text-sm">{{ method.name }}</span>
                   </div>
                 </label>
               </div>
 
               <!-- Credit Card Form -->
-              <div v-if="selectedPaymentMethod === 'credit_card'" class="credit-card-form">
-                <div class="mb-4">
-                  <label for="cardNumber">Số thẻ *</label>
-                  <input 
-                    type="text" 
-                    id="cardNumber"
-                    v-model="creditCard.number"
-                    placeholder="1234 5678 9012 3456"
-                    maxlength="19"
-                    @input="formatCardNumber"
-                    required
-                  />
+              <div v-if="selectedPaymentMethod === 'credit_card'" class="border-t border-blue-100 pt-6 mt-6 space-y-4">
+                <div>
+                  <label for="cardNumber" class="block text-sm font-semibold text-gray-700 mb-2">Số thẻ *</label>
+                  <input type="text" id="cardNumber" v-model="creditCard.number" placeholder="1234 5678 9012 3456"
+                    maxlength="19" @input="formatCardNumber"
+                    class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white"
+                    required />
                 </div>
-                <div class="form-row">
-                  <div class="mb-4">
-                    <label for="expiryDate">Ngày hết hạn *</label>
-                    <input 
-                      type="text" 
-                      id="expiryDate"
-                      v-model="creditCard.expiry"
-                      placeholder="MM/YY"
-                      maxlength="5"
+                <div class="grid grid-cols-2 gap-4">
+                  <div>
+                    <label for="expiryDate" class="block text-sm font-semibold text-gray-700 mb-2">Ngày hết hạn
+                      *</label>
+                    <input type="text" id="expiryDate" v-model="creditCard.expiry" placeholder="MM/YY" maxlength="5"
                       @input="formatExpiryDate"
-                      required
-                    />
+                      class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white"
+                      required />
                   </div>
-                  <div class="mb-4">
-                    <label for="cvv">CVV *</label>
-                    <input 
-                      type="text" 
-                      id="cvv"
-                      v-model="creditCard.cvv"
-                      placeholder="123"
-                      maxlength="4"
-                      required
-                    />
+                  <div>
+                    <label for="cvv" class="block text-sm font-semibold text-gray-700 mb-2">CVV *</label>
+                    <input type="text" id="cvv" v-model="creditCard.cvv" placeholder="123" maxlength="4"
+                      class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white"
+                      required />
                   </div>
                 </div>
-                <div class="mb-4">
-                  <label for="cardName">Tên trên thẻ *</label>
-                  <input 
-                    type="text" 
-                    id="cardName"
-                    v-model="creditCard.name"
-                    required
-                  />
+                <div>
+                  <label for="cardName" class="block text-sm font-semibold text-gray-700 mb-2">Tên trên thẻ *</label>
+                  <input type="text" id="cardName" v-model="creditCard.name"
+                    class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white"
+                    required />
                 </div>
               </div>
             </div>
           </div>
 
           <!-- Right Side - Order Summary -->
-          <div class="order-summary">
-            <div class="summary-card">
-              <h3>Đơn hàng của bạn</h3>
-              
+          <div class="lg:col-span-1">
+            <div class="bg-white rounded-2xl shadow-xl p-6 sticky top-8 border border-blue-100/50">
+              <h3 class="text-xl font-bold text-gray-800 mb-6 flex items-center gap-3">
+                <div
+                  class="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
+                  <i class="fas fa-shopping-bag text-white text-sm"></i>
+                </div>
+                Đơn hàng của bạn
+              </h3>
+
               <!-- Cart Items -->
-              <div class="order-items">
-                <div v-for="item in cartItems" :key="item.id" class="order-item">
-                  <div class="item-image">
-                    <img :src="item.image" :alt="item.name" />
+              <div class="space-y-4 mb-6">
+                <div v-for="item in cartItems" :key="item.id" class="flex gap-3 p-3 bg-gray-50 rounded-xl">
+                  <div class="w-16 h-16 rounded-lg overflow-hidden shadow-sm flex-shrink-0">
+                    <img :src="item.image" :alt="item.name" class="w-full h-full object-cover" />
                   </div>
-                  <div class="item-details">
-                    <h4>{{ item.name }}</h4>
-                    <p class="item-options">
-                      <span v-if="item.selectedSize">Size: {{ item.selectedSize }}</span>
-                      <span v-if="item.selectedColor">Màu: {{ item.selectedColor.name }}</span>
-                    </p>
-                    <p class="item-quantity">Số lượng: {{ item.quantity }}</p>
+                  <div class="flex-1 min-w-0">
+                    <h4 class="font-semibold text-gray-800 mb-1 text-sm">{{ item.name }}</h4>
+                    <div class="text-xs text-gray-600 space-y-1">
+                      <p v-if="item.selectedSize || item.selectedColor" class="flex gap-2">
+                        <span v-if="item.selectedSize">Size: {{ item.selectedSize }}</span>
+                        <span v-if="item.selectedColor">Màu: {{ item.selectedColor.name }}</span>
+                      </p>
+                      <p>Số lượng: {{ item.quantity }}</p>
+                    </div>
                   </div>
-                  <div class="item-price">
+                  <div class="text-sm font-bold text-blue-600">
                     {{ formatPrice(getItemTotal(item)) }}đ
                   </div>
                 </div>
               </div>
 
               <!-- Order Totals -->
-              <div class="order-totals">
-                <div class="total-row">
+              <div class="bg-gray-50 rounded-xl p-4 space-y-3 mb-6">
+                <div class="flex justify-between items-center text-gray-700">
                   <span>Tạm tính:</span>
-                  <span>{{ formatPrice(subtotal) }}đ</span>
+                  <span class="font-semibold">{{ formatPrice(subtotal) }}đ</span>
                 </div>
-                <div class="total-row" v-if="appliedCoupon">
+                <div v-if="appliedCoupon" class="flex justify-between items-center text-green-600">
                   <span>Giảm giá ({{ appliedCoupon.code }}):</span>
-                  <span class="discount">-{{ formatPrice(couponDiscount) }}đ</span>
+                  <span class="font-semibold">-{{ formatPrice(couponDiscount) }}đ</span>
                 </div>
-                <div class="total-row">
+                <div class="flex justify-between items-center text-gray-700">
                   <span>Phí vận chuyển:</span>
-                  <span>
+                  <span class="font-semibold">
                     {{ shippingFee === 0 ? 'Miễn phí' : formatPrice(shippingFee) + 'đ' }}
                   </span>
                 </div>
-                <div class="total-row final-total">
+                <div
+                  class="flex justify-between items-center pt-3 border-t-2 border-blue-600 text-lg font-bold text-blue-600">
                   <span>Tổng cộng:</span>
                   <span>{{ formatPrice(finalTotal) }}đ</span>
                 </div>
               </div>
 
               <!-- Coupon Code -->
-              <div class="coupon-section" v-if="!appliedCoupon">
-                <div class="coupon-input">
-                  <input 
-                    type="text" 
-                    v-model="couponCode"
-                    placeholder="Mã giảm giá"
-                  />
-                  <button @click="applyCoupon" :disabled="!couponCode">
+              <div v-if="!appliedCoupon" class="mb-6">
+                <div class="flex gap-2">
+                  <input type="text" v-model="couponCode" placeholder="Mã giảm giá"
+                    class="flex-1 px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm" />
+                  <button @click="applyCoupon" :disabled="!couponCode"
+                    class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 text-sm">
                     Áp dụng
                   </button>
                 </div>
               </div>
 
               <!-- Place Order Button -->
-              <button 
-                @click="placeOrder" 
-                :disabled="!canPlaceOrder || orderLoading"
-                class="place-order-btn"
-              >
-                <span v-if="orderLoading" class="loading-spinner"></span>
+              <button @click="placeOrder" :disabled="!canPlaceOrder || orderLoading"
+                class="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold py-4 px-6 rounded-xl transition-all duration-200 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none shadow-lg mb-6 flex items-center justify-center gap-2">
+                <span v-if="orderLoading" class="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></span>
                 {{ orderLoading ? 'Đang xử lý...' : 'Đặt hàng' }}
               </button>
 
               <!-- Security Badge -->
-              <div class="security-info">
-                <div class="security-item">
-                  <i class="fas fa-shield-alt"></i>
+              <div class="space-y-3 pt-4 border-t border-gray-200">
+                <div class="flex items-center gap-3 text-sm text-gray-600">
+                  <i class="fas fa-shield-alt text-green-600"></i>
                   <span>Thanh toán bảo mật SSL</span>
                 </div>
-                <div class="security-item">
-                  <i class="fas fa-lock"></i>
+                <div class="flex items-center gap-3 text-sm text-gray-600">
+                  <i class="fas fa-lock text-green-600"></i>
                   <span>Thông tin được mã hóa</span>
                 </div>
               </div>
@@ -480,23 +445,23 @@ const finalTotal = computed(() => {
 
 const canPlaceOrder = computed(() => {
   return shippingInfo.value.firstName &&
-         shippingInfo.value.lastName &&
-         shippingInfo.value.email &&
-         shippingInfo.value.phone &&
-         shippingInfo.value.address &&
-         shippingInfo.value.city &&
-         shippingInfo.value.district &&
-         shippingInfo.value.ward &&
-         selectedShippingMethod.value &&
-         selectedPaymentMethod.value &&
-         (selectedPaymentMethod.value !== 'credit_card' || isCardFormValid.value)
+    shippingInfo.value.lastName &&
+    shippingInfo.value.email &&
+    shippingInfo.value.phone &&
+    shippingInfo.value.address &&
+    shippingInfo.value.city &&
+    shippingInfo.value.district &&
+    shippingInfo.value.ward &&
+    selectedShippingMethod.value &&
+    selectedPaymentMethod.value &&
+    (selectedPaymentMethod.value !== 'credit_card' || isCardFormValid.value)
 })
 
 const isCardFormValid = computed(() => {
   return creditCard.value.number &&
-         creditCard.value.expiry &&
-         creditCard.value.cvv &&
-         creditCard.value.name
+    creditCard.value.expiry &&
+    creditCard.value.cvv &&
+    creditCard.value.name
 })
 
 // Methods
@@ -560,9 +525,9 @@ const applyCoupon = () => {
     'SAVE10': { code: 'SAVE10', discount: 10 },
     'SAVE20': { code: 'SAVE20', discount: 20 }
   }
-  
+
   const coupon = validCoupons[couponCode.value.toUpperCase()]
-  
+
   if (coupon) {
     appliedCoupon.value = coupon
     alert(`Đã áp dụng mã giảm giá ${coupon.code} - Giảm ${coupon.discount}%`)
@@ -573,11 +538,11 @@ const applyCoupon = () => {
 
 const placeOrder = async () => {
   orderLoading.value = true
-  
+
   try {
     // Mock API call
     await new Promise(resolve => setTimeout(resolve, 2000))
-    
+
     const orderData = {
       shippingInfo: shippingInfo.value,
       items: cartItems.value,
@@ -591,17 +556,17 @@ const placeOrder = async () => {
         total: finalTotal.value
       }
     }
-    
+
     console.log('Order placed:', orderData)
-    
+
     // Clear cart
     localStorage.removeItem('cart')
-    
+
     alert('Đặt hàng thành công! Cảm ơn bạn đã mua hàng.')
-    
+
     // Redirect to order confirmation or orders page
     router.push('/orders')
-    
+
   } catch (error) {
     console.error('Order error:', error)
     alert('Đặt hàng thất bại. Vui lòng thử lại!')
@@ -617,14 +582,14 @@ onMounted(() => {
   if (savedCart) {
     cartItems.value = JSON.parse(savedCart)
   }
-  
+
   // Load user info if logged in
   const savedUser = localStorage.getItem('user')
   if (savedUser) {
     const user = JSON.parse(savedUser)
     shippingInfo.value.email = user.email
   }
-  
+
   // Redirect if cart is empty
   if (cartItems.value.length === 0) {
     alert('Giỏ hàng trống. Vui lòng thêm sản phẩm trước khi thanh toán.')
@@ -634,464 +599,36 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.checkout-page {
-  min-height: 100vh;
-  background: #f8f9fa;
-}
-
-.page-header {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  padding: 40px 0;
-}
-
-.breadcrumb {
-  margin-bottom: 15px;
-  font-size: 14px;
-  opacity: 0.9;
-}
-
-.breadcrumb a {
-  color: white;
-  text-decoration: none;
-}
-
-.breadcrumb span {
-  margin: 0 10px;
-}
-
-.page-header h1 {
-  font-size: 2.5rem;
-  margin: 0;
-}
-
-.checkout-layout {
-  display: grid;
-  grid-template-columns: 1fr 400px;
-  gap: 40px;
-}
-
-.checkout-forms {
-  display: flex;
-  flex-direction: column;
-  gap: 30px;
-}
-
-.checkout-card {
-  background: white;
-  border-radius: 15px;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
-  overflow: hidden;
-}
-
-.card-header {
-  background: #f8f9fa;
-  padding: 20px 30px;
-  border-bottom: 1px solid #eee;
-}
-
-.card-header h2 {
-  margin: 0;
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  font-size: 18px;
-  color: #333;
-}
-
-.step-number {
-  width: 30px;
-  height: 30px;
-  background: #e74c3c;
-  color: white;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 14px;
-  font-weight: 600;
-}
-
-.checkout-form {
-  padding: 30px;
-}
-
-.form-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-}
-
-.form-group {
-  margin-bottom: 20px;
-}
-
-.form-group label {
-  display: block;
-  margin-bottom: 8px;
-  font-weight: 600;
-  color: #333;
-  font-size: 14px;
-}
-
-.form-group input,
-.form-group select,
-.form-group textarea {
-  width: 100%;
-  padding: 12px 15px;
-  border: 2px solid #e1e5e9;
-  border-radius: 8px;
-  font-size: 14px;
-  transition: border-color 0.3s ease;
-  outline: none;
-}
-
-.form-group input:focus,
-.form-group select:focus,
-.form-group textarea:focus {
-  border-color: #e74c3c;
-}
-
-.form-group select:disabled {
-  background: #f8f9fa;
-  color: #999;
-}
-
-.shipping-methods,
-.payment-methods {
-  padding: 20px 30px 30px;
-}
-
-.shipping-method,
-.payment-method {
-  display: flex;
-  align-items: center;
-  padding: 20px;
-  border: 2px solid #e1e5e9;
-  border-radius: 10px;
-  margin-bottom: 15px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.shipping-method:hover,
-.payment-method:hover,
-.shipping-method.active,
-.payment-method.active {
-  border-color: #e74c3c;
-  background: #fef7f7;
-}
-
-.shipping-method input,
-.payment-method input {
-  margin-right: 15px;
-  accent-color: #e74c3c;
-}
-
-.method-info {
-  flex: 1;
-}
-
-.method-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 5px;
-}
-
-.method-name {
-  font-weight: 600;
-  color: #333;
-}
-
-.method-price {
-  font-weight: 600;
-  color: #e74c3c;
-}
-
-.method-description {
-  color: #666;
-  font-size: 14px;
-  margin-bottom: 8px;
-}
-
-.method-time {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  color: #666;
-  font-size: 13px;
-}
-
-.method-time i {
-  color: #e74c3c;
-}
-
-.method-icon {
-  margin-right: 15px;
-  width: 40px;
-  text-align: center;
-}
-
-.method-icon i {
-  font-size: 24px;
-  color: #e74c3c;
-}
-
-.method-details {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.credit-card-form {
-  padding: 0 30px 30px;
-  border-top: 1px solid #eee;
-  margin-top: 20px;
-  padding-top: 30px;
-}
-
-.order-summary {
-  position: sticky;
-  top: 100px;
-  height: fit-content;
-}
-
-.summary-card {
-  background: white;
-  border-radius: 15px;
-  padding: 30px;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
-}
-
-.summary-card h3 {
-  margin-bottom: 25px;
-  color: #333;
-  font-size: 20px;
-}
-
-.order-items {
-  margin-bottom: 25px;
-}
-
-.order-item {
-  display: flex;
-  gap: 15px;
-  padding: 15px 0;
-  border-bottom: 1px solid #eee;
-}
-
-.order-item:last-child {
-  border-bottom: none;
-}
-
-.item-image {
-  width: 60px;
-  height: 60px;
-  border-radius: 8px;
-  overflow: hidden;
-  flex-shrink: 0;
-}
-
-.item-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.item-details {
-  flex: 1;
-}
-
-.item-details h4 {
-  margin: 0 0 5px 0;
-  font-size: 14px;
-  font-weight: 600;
-  color: #333;
-}
-
-.item-options,
-.item-quantity {
-  margin: 0;
-  font-size: 12px;
-  color: #666;
-}
-
-.item-price {
-  font-weight: 600;
-  color: #e74c3c;
-  white-space: nowrap;
-}
-
-.order-totals {
-  margin-bottom: 25px;
-  padding-top: 20px;
-  border-top: 1px solid #eee;
-}
-
-.total-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 12px;
-  font-size: 15px;
-}
-
-.total-row:last-child {
-  margin-bottom: 0;
-}
-
-.discount {
-  color: #27ae60;
-  font-weight: 600;
-}
-
-.final-total {
-  font-size: 18px;
-  font-weight: 700;
-  padding-top: 15px;
-  border-top: 2px solid #e74c3c;
-  color: #e74c3c;
-}
-
-.coupon-section {
-  margin-bottom: 25px;
-}
-
-.coupon-input {
-  display: flex;
-  gap: 10px;
-}
-
-.coupon-input input {
-  flex: 1;
-  padding: 12px 15px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  font-size: 14px;
-}
-
-.coupon-input button {
-  padding: 12px 20px;
-  background: #28a745;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: 500;
-  transition: background 0.3s ease;
-}
-
-.coupon-input button:hover:not(:disabled) {
-  background: #218838;
-}
-
-.coupon-input button:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.place-order-btn {
-  width: 100%;
-  padding: 16px;
-  background: #e74c3c;
-  color: white;
-  border: none;
-  border-radius: 10px;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.3s ease;
-  margin-bottom: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-}
-
-.place-order-btn:hover:not(:disabled) {
-  background: #c0392b;
-}
-
-.place-order-btn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.loading-spinner {
-  width: 18px;
-  height: 18px;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  border-top: 2px solid white;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-.security-info {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding-top: 20px;
-  border-top: 1px solid #eee;
-}
-
-.security-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: #666;
-  font-size: 13px;
-}
-
-.security-item i {
-  color: #28a745;
-  font-size: 14px;
-}
-
-@media (max-width: 1024px) {
-  .checkout-layout {
-    grid-template-columns: 1fr;
+/* Animation classes */
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0px);
   }
-  
-  .order-summary {
-    position: static;
-    order: -1;
+
+  50% {
+    transform: translateY(-10px);
   }
 }
 
-@media (max-width: 768px) {
-  .checkout-card {
-    border-radius: 10px;
+@keyframes float-delay {
+
+  0%,
+  100% {
+    transform: translateY(0px);
   }
-  
-  .card-header,
-  .checkout-form,
-  .shipping-methods,
-  .payment-methods {
-    padding: 20px;
+
+  50% {
+    transform: translateY(-15px);
   }
-  
-  .form-row {
-    grid-template-columns: 1fr;
-  }
-  
-  .method-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 5px;
-  }
-  
-  .summary-card {
-    padding: 20px;
-  }
-  
-  .page-header h1 {
-    font-size: 2rem;
-  }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.animate-float-delay {
+  animation: float-delay 3s ease-in-out infinite 0.5s;
 }
 </style>
