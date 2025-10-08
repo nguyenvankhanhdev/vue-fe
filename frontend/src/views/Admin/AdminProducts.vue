@@ -107,75 +107,177 @@
         </div>
       </div>
       
-      <div class="overflow-x-auto">
-        <table class="w-full">
-          <thead class="bg-gray-50">
-            <tr>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                <input type="checkbox" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
-              </th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sản phẩm</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">SKU</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Giá bán</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tồn kho</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Trạng thái</th>
-              <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Thao tác</th>
-            </tr>
-          </thead>
-          <tbody class="bg-white divide-y divide-gray-200">
-            <tr v-for="p in products" :key="p.id" class="hover:bg-gray-50 transition-colors duration-150 group">
-              <td class="px-6 py-4 whitespace-nowrap">
-                <input type="checkbox" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap">
-                <div class="flex items-center">
-                  <div class="h-12 w-12 flex-shrink-0">
-                    <img :src="p.image" alt="" class="h-12 w-12 rounded-lg object-cover border border-gray-200" />
+      <div class="overflow-hidden rounded-xl border border-gray-200">
+        <div class="overflow-x-auto">
+          <table class="w-full">
+            <!-- Modern Header with Strong Colors -->
+            <thead style="background: linear-gradient(135deg, #2563eb 0%, #9333ea 100%);">
+              <tr>
+                <th class="px-6 py-4 text-left">
+                  <div class="flex items-center">
+                    <input type="checkbox" class="rounded border-white text-blue-500 focus:ring-blue-500 focus:ring-2">
+                    <span class="ml-3 text-xs font-semibold uppercase tracking-wider" style="color: white;">Chọn tất cả</span>
                   </div>
-                  <div class="ml-4">
-                    <div class="text-sm font-semibold text-gray-900">{{ p.name }}</div>
-                    <div class="text-sm text-gray-500">{{ p.category }}</div>
+                </th>
+                <th class="px-6 py-4 text-left text-sm font-semibold uppercase tracking-wider" style="color: white;">
+                  <div class="flex items-center gap-2">
+                    <i class="fas fa-box" style="color: rgba(255,255,255,0.9);"></i>
+                    Sản phẩm
                   </div>
-                </div>
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap">
-                <div class="text-sm font-mono text-gray-900 bg-gray-100 px-2 py-1 rounded">{{ p.sku }}</div>
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap">
-                <div class="text-sm font-semibold text-gray-900">₫{{ Number(p.price).toLocaleString('vi-VN') }}</div>
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap">
-                <div class="flex items-center">
-                  <div class="text-sm font-semibold text-gray-900">{{ p.stock }}</div>
-                  <span v-if="p.stock < 10" class="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
-                    <i class="fas fa-exclamation-triangle mr-1"></i>Sắp hết
-                  </span>
-                </div>
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap">
-                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium" 
-                  :class="p.active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'">
-                  <span class="w-1.5 h-1.5 rounded-full mr-1.5" 
-                    :class="p.active ? 'bg-green-400' : 'bg-red-400'"></span>
-                  {{ p.active ? 'Đang bán' : 'Ngừng bán' }}
-                </span>
-              </td>
-              <td class="px-6 py-4 whitespace-nowrap text-right">
-                <div class="flex items-center justify-end space-x-2 opacity-0 group-hover:opacity-100 transition-opacity duration-150">
-                  <button class="bg-blue-100 hover:bg-blue-200 text-blue-700 p-2 rounded-lg transition-colors duration-200" @click="openEdit(p)" title="Chỉnh sửa">
-                    <i class="fas fa-pen text-sm"></i>
-                  </button>
-                  <button class="bg-green-100 hover:bg-green-200 text-green-700 p-2 rounded-lg transition-colors duration-200" title="Sao chép">
-                    <i class="fas fa-copy text-sm"></i>
-                  </button>
-                  <button class="bg-red-100 hover:bg-red-200 text-red-700 p-2 rounded-lg transition-colors duration-200" @click="remove(p)" title="Xóa">
-                    <i class="fas fa-trash text-sm"></i>
-                  </button>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+                </th>
+                <th class="px-6 py-4 text-left text-sm font-semibold uppercase tracking-wider" style="color: white;">
+                  <div class="flex items-center gap-2">
+                    <i class="fas fa-barcode" style="color: rgba(255,255,255,0.9);"></i>
+                    SKU
+                  </div>
+                </th>
+                <th class="px-6 py-4 text-left text-sm font-semibold uppercase tracking-wider" style="color: white;">
+                  <div class="flex items-center gap-2">
+                    <i class="fas fa-tag" style="color: rgba(255,255,255,0.9);"></i>
+                    Giá bán
+                  </div>
+                </th>
+                <th class="px-6 py-4 text-left text-sm font-semibold uppercase tracking-wider" style="color: white;">
+                  <div class="flex items-center gap-2">
+                    <i class="fas fa-warehouse" style="color: rgba(255,255,255,0.9);"></i>
+                    Tồn kho
+                  </div>
+                </th>
+                <th class="px-6 py-4 text-left text-sm font-semibold uppercase tracking-wider" style="color: white;">
+                  <div class="flex items-center gap-2">
+                    <i class="fas fa-toggle-on" style="color: rgba(255,255,255,0.9);"></i>
+                    Trạng thái
+                  </div>
+                </th>
+                <th class="px-6 py-4 text-right text-sm font-semibold uppercase tracking-wider" style="color: white;">
+                  <div class="flex items-center justify-end gap-2">
+                    <i class="fas fa-cogs" style="color: rgba(255,255,255,0.9);"></i>
+                    Thao tác
+                  </div>
+                </th>
+              </tr>
+            </thead>
+            
+            <!-- Modern Body -->
+            <tbody class="bg-white divide-y divide-gray-100">
+              <tr v-for="p in products" :key="p.id" class="transition-all duration-200 group" 
+                @mouseover="$event.target.style.background='linear-gradient(135deg, rgba(37, 99, 235, 0.05), rgba(147, 51, 234, 0.05))'" 
+                @mouseleave="$event.target.style.background='white'">
+                <td class="px-6 py-5 whitespace-nowrap">
+                  <div class="flex items-center">
+                    <input type="checkbox" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500 focus:ring-2">
+                  </div>
+                </td>
+                
+                <!-- Product Info -->
+                <td class="px-6 py-5 whitespace-nowrap">
+                  <div class="flex items-center">
+                    <div class="relative h-14 w-14 flex-shrink-0">
+                      <img :src="p.image" alt="" class="h-14 w-14 rounded-xl object-cover border-2 border-gray-200 group-hover:border-blue-300 transition-colors duration-200" />
+                      <div class="absolute inset-0 rounded-xl bg-gradient-to-br from-blue-600/0 to-purple-600/0 group-hover:from-blue-600/10 group-hover:to-purple-600/10 transition-all duration-200"></div>
+                    </div>
+                    <div class="ml-4">
+                      <div class="text-sm font-bold text-gray-900 group-hover:text-blue-700 transition-colors duration-200">{{ p.name }}</div>
+                      <div class="text-sm text-gray-500 bg-gray-100 px-2 py-1 rounded-full inline-block mt-1">
+                        <i class="fas fa-layer-group mr-1"></i>{{ p.category }}
+                      </div>
+                    </div>
+                  </div>
+                </td>
+                
+                <!-- SKU -->
+                <td class="px-6 py-5 whitespace-nowrap">
+                  <div class="relative">
+                    <div class="text-sm font-mono text-gray-900 bg-gradient-to-r from-gray-100 to-gray-200 px-3 py-2 rounded-lg border border-gray-300 group-hover:from-blue-100 group-hover:to-purple-100 group-hover:border-blue-300 transition-all duration-200">
+                      {{ p.sku }}
+                    </div>
+                  </div>
+                </td>
+                
+                <!-- Price -->
+                <td class="px-6 py-5 whitespace-nowrap">
+                  <div class="flex items-center">
+                    <div class="text-lg font-bold" style="background: linear-gradient(135deg, #2563eb, #9333ea); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+                      ₫{{ Number(p.price).toLocaleString('vi-VN') }}
+                    </div>
+                  </div>
+                </td>
+                
+                <!-- Stock -->
+                <td class="px-6 py-5 whitespace-nowrap">
+                  <div class="flex items-center gap-3">
+                    <div class="text-sm font-bold text-gray-900">{{ p.stock }}</div>
+                    <span v-if="p.stock < 10" class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold border-2" 
+                      style="background: linear-gradient(135deg, #fee2e2, #fed7aa); color: #dc2626; border-color: #fca5a5;">
+                      <i class="fas fa-exclamation-triangle mr-1" style="color: #ef4444;"></i>Sắp hết
+                    </span>
+                    <span v-else-if="p.stock < 50" class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold border-2" 
+                      style="background: linear-gradient(135deg, #fef3c7, #fed7aa); color: #d97706; border-color: #fbbf24;">
+                      <i class="fas fa-info-circle mr-1" style="color: #f59e0b;"></i>Ít
+                    </span>
+                    <span v-else class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold border-2" 
+                      style="background: linear-gradient(135deg, #dcfce7, #d1fae5); color: #059669; border-color: #6ee7b7;">
+                      <i class="fas fa-check-circle mr-1" style="color: #10b981;"></i>Đủ
+                    </span>
+                  </div>
+                </td>
+                
+                <!-- Status -->
+                <td class="px-6 py-5 whitespace-nowrap">
+                  <div class="relative">
+                    <span class="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold border-2 transition-all duration-200" 
+                      :style="p.active ? 'background: linear-gradient(135deg, #dcfce7, #d1fae5); color: #047857; border-color: #10b981;' : 'background: linear-gradient(135deg, #fee2e2, #fecaca); color: #dc2626; border-color: #f87171;'">
+                      <span class="w-2 h-2 rounded-full mr-2 animate-pulse" 
+                        :style="p.active ? 'background-color: #10b981;' : 'background-color: #ef4444;'"></span>
+                      {{ p.active ? 'Đang bán' : 'Ngừng bán' }}
+                    </span>
+                  </div>
+                </td>
+                
+                <!-- Actions -->
+                <td class="px-6 py-5 whitespace-nowrap text-right">
+                  <div class="flex items-center justify-end space-x-2 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-x-2 group-hover:translate-x-0">
+                    <!-- View Detail -->
+                    <button class="p-3 rounded-xl transition-all duration-200 shadow-sm hover:shadow-md transform hover:scale-105" 
+                      style="background: linear-gradient(135deg, #f3f4f6, #e5e7eb); color: #374151;" 
+                      @mouseover="$event.target.style.background='linear-gradient(135deg, #e5e7eb, #d1d5db)'" 
+                      @mouseleave="$event.target.style.background='linear-gradient(135deg, #f3f4f6, #e5e7eb)'" 
+                      title="Xem chi tiết">
+                      <i class="fas fa-eye text-sm"></i>
+                    </button>
+                    
+                    <!-- Edit -->
+                    <button class="p-3 rounded-xl transition-all duration-200 shadow-sm hover:shadow-md transform hover:scale-105" 
+                      style="background: linear-gradient(135deg, #dbeafe, #bfdbfe); color: #1d4ed8;" 
+                      @mouseover="$event.target.style.background='linear-gradient(135deg, #bfdbfe, #93c5fd)'" 
+                      @mouseleave="$event.target.style.background='linear-gradient(135deg, #dbeafe, #bfdbfe)'" 
+                      @click="openEdit(p)" title="Chỉnh sửa">
+                      <i class="fas fa-pen text-sm"></i>
+                    </button>
+                    
+                    <!-- Copy -->
+                    <button class="p-3 rounded-xl transition-all duration-200 shadow-sm hover:shadow-md transform hover:scale-105" 
+                      style="background: linear-gradient(135deg, #d1fae5, #a7f3d0); color: #047857;" 
+                      @mouseover="$event.target.style.background='linear-gradient(135deg, #a7f3d0, #6ee7b7)'" 
+                      @mouseleave="$event.target.style.background='linear-gradient(135deg, #d1fae5, #a7f3d0)'" 
+                      title="Sao chép">
+                      <i class="fas fa-copy text-sm"></i>
+                    </button>
+                    
+                    <!-- Delete -->
+                    <button class="p-3 rounded-xl transition-all duration-200 shadow-sm hover:shadow-md transform hover:scale-105" 
+                      style="background: linear-gradient(135deg, #fee2e2, #fecaca); color: #dc2626;" 
+                      @mouseover="$event.target.style.background='linear-gradient(135deg, #fecaca, #fca5a5)'" 
+                      @mouseleave="$event.target.style.background='linear-gradient(135deg, #fee2e2, #fecaca)'" 
+                      @click="remove(p)" title="Xóa">
+                      <i class="fas fa-trash text-sm"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
       
       <!-- Pagination -->
@@ -199,127 +301,140 @@
       </div>
     </div>
 
-    <!-- Create/Edit Modal -->
+    <!-- Modern Compact Modal -->
     <Transition name="modal" appear>
-      <div v-if="showModal" class="fixed inset-0 z-50 flex items-center justify-center p-4" @click="closeModal">
-        <div class="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto" @click.stop>
-          <div class="flex justify-between items-center p-6 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-indigo-50">
-            <div>
-              <h3 class="text-xl font-bold text-gray-900">{{ form.id ? 'Chỉnh sửa sản phẩm' : 'Thêm sản phẩm mới' }}</h3>
-              <p class="text-sm text-gray-600 mt-1">{{ form.id ? 'Cập nhật thông tin sản phẩm' : 'Điền đầy đủ thông tin sản phẩm mới' }}</p>
+      <div v-if="showModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm" @click="closeModal">
+        <div class="bg-white/95 backdrop-blur-lg rounded-2xl shadow-2xl max-w-xl w-full max-h-[88vh] overflow-hidden border border-white/20" @click.stop>
+          
+          <!-- Compact Header -->
+          <div class="relative" style="background: linear-gradient(135deg, #2563eb 0%, #9333ea 100%);">
+            <div class="px-7 py-5">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-4">
+                  <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
+                    <i class="fas fa-box text-white text-xl"></i>
+                  </div>
+                  <div>
+                    <h3 class="text-xl font-bold text-white">{{ form.id ? 'Sửa sản phẩm' : 'Thêm sản phẩm mới' }}</h3>
+                    <p class="text-white/80 text-sm">{{ form.id ? 'Cập nhật thông tin sản phẩm' : 'Tạo sản phẩm mới trong hệ thống' }}</p>
+                  </div>
+                </div>
+                <button type="button" @click="closeModal" 
+                  class="text-white/70 hover:text-white p-2.5 rounded-lg hover:bg-white/10 transition-all duration-200">
+                  <i class="fas fa-times text-xl"></i>
+                </button>
+              </div>
             </div>
-            <button type="button" @click="closeModal" 
-              class="text-gray-400 hover:text-gray-600 p-2 rounded-lg hover:bg-white transition-all duration-200">
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-              </svg>
-            </button>
           </div>
-                    <form @submit.prevent="save">
-            <div class="p-6 space-y-6">
-              <!-- Basic Information -->
-              <div class="bg-gray-50 rounded-lg p-4">
-                <h4 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                  <i class="fas fa-info-circle text-blue-500 mr-2"></i>
-                  Thông tin cơ bản
-                </h4>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-2">Tên sản phẩm *</label>
-                    <input v-model="form.name" type="text" 
-                      class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200" 
-                      placeholder="Nhập tên sản phẩm..." required />
-                  </div>
-                  <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-2">Mã SKU *</label>
-                    <input v-model="form.sku" type="text" 
-                      class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 font-mono bg-gray-50" 
-                      placeholder="VD: SP001" required />
-                  </div>
-                  <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-2">Danh mục *</label>
-                    <select v-model="form.category" 
-                      class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200" required>
-                      <option value="">Chọn danh mục</option>
-                      <option value="Điện thoại">📱 Điện thoại</option>
-                      <option value="Laptop">💻 Laptop</option>
-                      <option value="Phụ kiện">🎧 Phụ kiện</option>
-                      <option value="Tablet">📟 Tablet</option>
-                    </select>
-                  </div>
-                  <div class="flex items-center">
-                    <div class="flex items-center h-full">
-                      <input v-model="form.active" type="checkbox" 
-                        class="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500" id="pActive">
-                      <label for="pActive" class="ml-3 text-sm font-medium text-gray-700 flex items-center">
-                        <span class="w-3 h-3 bg-green-400 rounded-full mr-2"></span>
-                        Sản phẩm đang bán
-                      </label>
-                    </div>
-                  </div>
-                </div>
-              </div>
 
-              <!-- Pricing & Stock -->
-              <div class="bg-blue-50 rounded-lg p-4">
-                <h4 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                  <i class="fas fa-dollar-sign text-green-500 mr-2"></i>
-                  Giá cả & Kho hàng
-                </h4>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-2">Giá bán (VND) *</label>
-                    <div class="relative">
-                      <span class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">₫</span>
-                      <input v-model="form.price" type="number" 
-                        class="w-full pl-8 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200" 
-                        placeholder="0" min="0" required />
-                    </div>
-                  </div>
-                  <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-2">Số lượng tồn kho *</label>
-                    <div class="relative">
-                      <input v-model="form.stock" type="number" 
-                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200" 
-                        placeholder="0" min="0" required />
-                      <span class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 text-sm">sản phẩm</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Product Image -->
-              <div class="bg-purple-50 rounded-lg p-4">
-                <h4 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                  <i class="fas fa-image text-purple-500 mr-2"></i>
-                  Hình ảnh sản phẩm
-                </h4>
+          <!-- Compact Form -->
+          <form @submit.prevent="save">
+            <div class="p-7 space-y-5 max-h-[62vh] overflow-y-auto">
+              
+              <!-- Row 1: Name & SKU -->
+              <div class="grid grid-cols-2 gap-5">
                 <div>
-                  <label class="block text-sm font-semibold text-gray-700 mb-2">URL hình ảnh</label>
-                  <input v-model="form.image" type="url" 
-                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200" 
-                    placeholder="https://example.com/image.jpg" />
-                  <p class="text-xs text-gray-500 mt-1">
-                    <i class="fas fa-info-circle mr-1"></i>
-                    Để trống sẽ sử dụng hình ảnh mặc định
-                  </p>
-                  <!-- Image Preview -->
-                  <div v-if="form.image" class="mt-3">
-                    <div class="w-20 h-20 border-2 border-gray-200 rounded-lg overflow-hidden bg-white">
-                      <img :src="form.image" alt="Preview" class="w-full h-full object-cover" 
-                        @error="$event.target.src='/src/assets/img/placeholder.jpg'">
-                    </div>
+                  <label class="block text-sm font-semibold text-gray-700 mb-2">
+                    <i class="fas fa-tag text-blue-500 mr-2"></i>Tên sản phẩm *
+                  </label>
+                  <input v-model="form.name" type="text" 
+                    class="w-full px-4 py-3 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all" 
+                    placeholder="Nhập tên sản phẩm..." required />
+                </div>
+                <div>
+                  <label class="block text-sm font-semibold text-gray-700 mb-2">
+                    <i class="fas fa-barcode text-purple-500 mr-2"></i>Mã SKU *
+                  </label>
+                  <input v-model="form.sku" type="text" 
+                    class="w-full px-4 py-3 text-sm font-mono border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all bg-gray-50" 
+                    placeholder="VD: SP001" required />
+                </div>
+              </div>
+
+              <!-- Row 2: Category & Status -->
+              <div class="grid grid-cols-2 gap-5">
+                <div>
+                  <label class="block text-sm font-semibold text-gray-700 mb-2">
+                    <i class="fas fa-layer-group text-green-500 mr-2"></i>Danh mục *
+                  </label>
+                  <select v-model="form.category" 
+                    class="w-full px-4 py-3 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all" required>
+                    <option value="">Chọn danh mục</option>
+                    <option value="Điện thoại">📱 Điện thoại</option>
+                    <option value="Laptop">💻 Laptop</option>
+                    <option value="Phụ kiện">🎧 Phụ kiện</option>
+                    <option value="Tablet">📟 Tablet</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-sm font-semibold text-gray-700 mb-2">
+                    <i class="fas fa-toggle-on text-orange-500 mr-2"></i>Trạng thái
+                  </label>
+                  <div class="flex items-center h-12 px-4 py-3 border border-gray-300 rounded-lg bg-gray-50">
+                    <input v-model="form.active" type="checkbox" 
+                      class="w-4 h-4 text-blue-600 bg-white border-gray-300 rounded focus:ring-blue-500" id="pActive">
+                    <label for="pActive" class="ml-3 text-sm font-medium text-gray-700 flex items-center">
+                      <span class="w-2.5 h-2.5 rounded-full mr-2" 
+                        :style="form.active ? 'background-color: #10b981;' : 'background-color: #ef4444;'"></span>
+                      {{ form.active ? 'Đang bán' : 'Tạm ngừng' }}
+                    </label>
                   </div>
                 </div>
+              </div>
+
+              <!-- Row 3: Price & Stock -->
+              <div class="grid grid-cols-2 gap-5">
+                <div>
+                  <label class="block text-sm font-semibold text-gray-700 mb-2">
+                    <i class="fas fa-dollar-sign text-emerald-500 mr-2"></i>Giá bán (VND) *
+                  </label>
+                  <div class="relative">
+                    <span class="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500 text-sm font-medium">₫</span>
+                    <input v-model="form.price" type="number" 
+                      class="w-full pl-9 pr-4 py-3 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all" 
+                      placeholder="0" min="0" required />
+                  </div>
+                </div>
+                <div>
+                  <label class="block text-sm font-semibold text-gray-700 mb-2">
+                    <i class="fas fa-warehouse text-yellow-500 mr-2"></i>Tồn kho *
+                  </label>
+                  <input v-model="form.stock" type="number" 
+                    class="w-full px-4 py-3 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all" 
+                    placeholder="0" min="0" required />
+                </div>
+              </div>
+
+              <!-- Image URL -->
+              <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">
+                  <i class="fas fa-image text-pink-500 mr-2"></i>URL hình ảnh
+                </label>
+                <div class="flex gap-4">
+                  <input v-model="form.image" type="url" 
+                    class="flex-1 px-4 py-3 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all" 
+                    placeholder="https://example.com/image.jpg" />
+                  <div v-if="form.image" class="w-14 h-14 border-2 border-gray-200 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0">
+                    <img :src="form.image" alt="Preview" class="w-full h-full object-cover" 
+                      @error="$event.target.style.display='none'">
+                  </div>
+                </div>
+                <p class="text-xs text-gray-500 mt-2">
+                  <i class="fas fa-info-circle mr-1"></i>
+                  Để trống để sử dụng hình ảnh mặc định
+                </p>
               </div>
             </div>
-            <div class="flex justify-end space-x-3 p-6 border-t border-gray-200 bg-gray-50">
+
+            <!-- Compact Footer -->
+            <div class="flex gap-4 p-7 border-t border-gray-200 bg-gray-50/50">
               <button type="button" @click="closeModal" 
-                class="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors duration-200">
-                <i class="fas fa-times mr-2"></i>Hủy
+                class="flex-1 px-5 py-3 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-all duration-200">
+                <i class="fas fa-times mr-2"></i>Hủy bỏ
               </button>
               <button type="submit" 
-                class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 shadow-lg hover:shadow-xl">
+                class="flex-1 px-5 py-3 text-sm font-medium text-white rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-[1.02]"
+                style="background: linear-gradient(135deg, #2563eb, #9333ea);">
                 <i class="fas fa-save mr-2"></i>{{ form.id ? 'Cập nhật' : 'Tạo mới' }}
               </button>
             </div>
