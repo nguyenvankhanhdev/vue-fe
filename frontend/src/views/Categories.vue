@@ -1,106 +1,159 @@
 <template>
-  <div class="categories-page">
+  <div class="min-h-screen bg-gradient-to-br from-green-50 via-white to-blue-50">
     <!-- Page Header -->
-    <section class="page-header">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1>Danh mục sản phẩm</h1>
-        <p>Khám phá các danh mục sản phẩm đa dạng của chúng tôi</p>
+    <section class="bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-700 text-white py-16 lg:py-24 relative overflow-hidden">
+      <div class="absolute inset-0 bg-black/10"></div>
+      <div class="absolute top-0 left-0 w-full h-full">
+        <div class="absolute top-10 left-10 w-32 h-32 bg-white/10 rounded-full blur-xl"></div>
+        <div class="absolute bottom-10 right-10 w-40 h-40 bg-blue-400/20 rounded-full blur-2xl"></div>
+        <div class="absolute top-1/2 left-1/3 w-24 h-24 bg-purple-300/15 rounded-full blur-lg"></div>
+      </div>
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+        <h1 class="text-4xl lg:text-6xl font-bold mb-6 bg-gradient-to-r from-white to-blue-100 bg-clip-text text-transparent">
+          Danh mục sản phẩm
+        </h1>
+        <p class="text-xl lg:text-2xl text-blue-50 max-w-3xl mx-auto leading-relaxed">
+          Khám phá các danh mục sản phẩm đa dạng của chúng tôi
+        </p>
+        <div class="flex justify-center mt-8">
+          <div class="flex items-center space-x-4 bg-white/20 backdrop-blur-sm rounded-full px-6 py-3">
+            <i class="fas fa-tags text-blue-200"></i>
+            <span class="text-blue-100 font-medium">{{ categories.length }} danh mục</span>
+            <div class="w-px h-6 bg-blue-300/50"></div>
+            <i class="fas fa-box text-blue-200"></i>
+            <span class="text-blue-100 font-medium">{{ totalProducts }}+ sản phẩm</span>
+          </div>
+        </div>
       </div>
     </section>
 
     <!-- Categories Content -->
-    <section class="categories-section py-5">
+    <section class="py-12 lg:py-20">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <!-- Category Filters -->
-        <div class="category-filters">
-          <div class="filter-tabs">
-            <button 
-              v-for="filter in categoryFilters" 
-              :key="filter.key"
-              @click="activeFilter = filter.key"
-              :class="{ active: activeFilter === filter.key }"
-              class="filter-tab"
-            >
-              <i :class="filter.icon"></i>
-              {{ filter.label }}
-            </button>
-          </div>
-          
-          <div class="view-options">
-            <button 
-              @click="viewMode = 'grid'"
-              :class="{ active: viewMode === 'grid' }"
-              class="view-btn"
-            >
-              <i class="fas fa-th"></i>
-            </button>
-            <button 
-              @click="viewMode = 'list'"
-              :class="{ active: viewMode === 'list' }"
-              class="view-btn"
-            >
-              <i class="fas fa-list"></i>
-            </button>
+        <div class="bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl border border-green-100 p-6 lg:p-8 mb-12">
+          <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+            <div class="flex flex-wrap gap-3">
+              <button 
+                v-for="filter in categoryFilters" 
+                :key="filter.key"
+                @click="activeFilter = filter.key"
+                class="flex items-center space-x-2 px-4 py-3 rounded-2xl font-semibold transition-all duration-300 transform hover:scale-105 hover:shadow-lg"
+                :class="activeFilter === filter.key 
+                  ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg' 
+                  : 'bg-gray-100 text-gray-700 hover:bg-blue-50 hover:text-blue-600 border border-gray-200'"
+              >
+                <i :class="filter.icon" class="text-sm"></i>
+                <span>{{ filter.label }}</span>
+              </button>
+            </div>
+            
+            <div class="flex items-center space-x-2 bg-gray-100 rounded-2xl p-1">
+              <button 
+                @click="viewMode = 'grid'"
+                class="p-3 rounded-xl transition-all duration-300"
+                :class="viewMode === 'grid' 
+                  ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg' 
+                  : 'text-gray-600 hover:bg-white hover:text-blue-600'"
+              >
+                <i class="fas fa-th"></i>
+              </button>
+              <button 
+                @click="viewMode = 'list'"
+                class="p-3 rounded-xl transition-all duration-300"
+                :class="viewMode === 'list' 
+                  ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg' 
+                  : 'text-gray-600 hover:bg-white hover:text-blue-600'"
+              >
+                <i class="fas fa-list"></i>
+              </button>
+            </div>
           </div>
         </div>
 
         <!-- Categories Grid/List -->
-        <div :class="viewMode === 'grid' ? 'categories-grid' : 'categories-list'">
+        <div :class="viewMode === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16' : 'space-y-6 mb-16'">
           <div 
             v-for="category in filteredCategories" 
             :key="category.id"
-            class="category-card"
+            class="bg-white rounded-3xl overflow-hidden shadow-xl border border-gray-100 transition-all duration-500 transform hover:-translate-y-2 hover:shadow-2xl cursor-pointer group"
+            :class="viewMode === 'list' ? 'flex items-center' : ''"
             @click="navigateToCategory(category)"
           >
-            <div class="category-image">
-              <img :src="category.image" :alt="category.name" />
-              <div class="category-overlay">
-                <div class="overlay-content">
-                  <h3>{{ category.name }}</h3>
-                  <p>{{ category.productCount }} sản phẩm</p>
-                  <div class="category-icon">
-                    <i :class="category.icon"></i>
+            <div class="relative overflow-hidden" :class="viewMode === 'list' ? 'w-64 h-48 flex-shrink-0' : 'h-56'">
+              <img :src="category.image" :alt="category.name" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"/>
+              
+              <!-- Overlay với gradient -->
+              <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                <div class="absolute bottom-6 left-6 right-6 text-white">
+                  <h3 class="text-xl font-bold mb-2">{{ category.name }}</h3>
+                  <p class="text-green-200 text-sm">{{ category.productCount }} sản phẩm</p>
+                  <div class="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center mt-4 mx-auto">
+                    <i :class="category.icon" class="text-2xl"></i>
                   </div>
                 </div>
               </div>
+              
+              <!-- Badges -->
+              <div class="absolute top-4 left-4 flex flex-col space-y-2">
+                <span v-if="category.trending" class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-gradient-to-r from-red-500 to-red-600 text-white shadow-lg">
+                  <i class="fas fa-fire mr-1"></i>
+                  Hot
+                </span>
+                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg">
+                  {{ category.productCount }} SP
+                </span>
+              </div>
+              
+              <!-- Favorite Button -->
+              <button @click.stop="addToFavorites(category)" 
+                      class="absolute top-4 right-4 w-10 h-10 rounded-full border-2 transition-all duration-300 backdrop-blur-sm flex items-center justify-center"
+                      :class="category.isFavorite 
+                        ? 'bg-red-500 border-red-500 text-white' 
+                        : 'bg-white/20 border-white/30 text-white hover:bg-red-500 hover:border-red-500'">
+                <i :class="category.isFavorite ? 'fas fa-heart' : 'far fa-heart'"></i>
+              </button>
             </div>
             
-            <div class="category-info">
-              <div class="category-header">
-                <h3>{{ category.name }}</h3>
-                <span class="product-count">{{ category.productCount }} SP</span>
-              </div>
-              <p class="category-description">{{ category.description }}</p>
-              
-              <div class="category-stats">
-                <div class="stat-item">
-                  <i class="fas fa-star"></i>
-                  <span>{{ category.rating }}/5</span>
-                </div>
-                <div class="stat-item">
-                  <i class="fas fa-fire"></i>
-                  <span>{{ category.trending ? 'Hot' : 'Normal' }}</span>
+            <div class="p-6 flex-1 space-y-4">
+              <div class="flex justify-between items-start">
+                <h3 class="text-xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors duration-300">{{ category.name }}</h3>
+                <div class="flex items-center space-x-1 text-yellow-400">
+                  <i class="fas fa-star text-sm"></i>
+                  <span class="text-sm font-semibold text-gray-700">{{ category.rating }}</span>
                 </div>
               </div>
               
-              <div class="category-tags">
+              <p class="text-gray-600 leading-relaxed">{{ category.description }}</p>
+              
+              <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4 text-sm">
+                  <div class="flex items-center space-x-1 text-blue-600">
+                    <i class="fas fa-box-open"></i>
+                    <span>{{ category.productCount }}</span>
+                  </div>
+                  <div v-if="category.trending" class="flex items-center space-x-1 text-red-500">
+                    <i class="fas fa-fire"></i>
+                    <span class="font-semibold">Trending</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="flex flex-wrap gap-2">
                 <span 
                   v-for="tag in category.tags" 
                   :key="tag"
-                  class="tag"
+                  class="px-3 py-1 bg-gradient-to-r from-blue-100 to-purple-100 text-blue-700 text-xs font-medium rounded-full border border-blue-200"
                 >
                   {{ tag }}
                 </span>
               </div>
               
-              <div class="category-actions">
-                <button @click.stop="viewProducts(category)" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md transition-colors duration-200 bg-blue-600 hover:bg-blue-700 text-white">
+              <div class="flex space-x-3 pt-2">
+                <button @click.stop="viewProducts(category)" 
+                        class="flex-1 flex items-center justify-center px-4 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 space-x-2">
                   <i class="fas fa-eye"></i>
-                  Xem sản phẩm
-                </button>
-                <button @click.stop="addToFavorites(category)" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md transition-colors duration-200 btn-outline">
-                  <i :class="category.isFavorite ? 'fas fa-heart' : 'far fa-heart'"></i>
-                  {{ category.isFavorite ? 'Đã thích' : 'Yêu thích' }}
+                  <span>Xem sản phẩm</span>
                 </button>
               </div>
             </div>
@@ -108,82 +161,124 @@
         </div>
 
         <!-- Popular Subcategories -->
-        <div class="subcategories-section">
-          <h2>Danh mục phụ phổ biến</h2>
-          <div class="subcategories-grid">
+        <div class="mb-16">
+          <div class="text-center mb-12">
+            <h2 class="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent mb-4">
+              Danh mục phụ phổ biến
+            </h2>
+            <p class="text-gray-600 text-lg max-w-2xl mx-auto">Khám phá những danh mục được yêu thích nhất</p>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             <div 
               v-for="subcategory in popularSubcategories" 
               :key="subcategory.id"
-              class="subcategory-item"
+              class="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 cursor-pointer transition-all duration-300 transform hover:-translate-y-1 hover:shadow-xl group"
               @click="navigateToSubcategory(subcategory)"
             >
-              <div class="subcategory-icon">
-                <i :class="subcategory.icon"></i>
+              <div class="flex items-center justify-between mb-4">
+                <div class="w-14 h-14 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center text-white text-xl group-hover:scale-110 transition-transform duration-300">
+                  <i :class="subcategory.icon"></i>
+                </div>
+                <div class="text-blue-600 group-hover:translate-x-1 transition-transform duration-300">
+                  <i class="fas fa-chevron-right"></i>
+                </div>
               </div>
-              <div class="subcategory-content">
-                <h4>{{ subcategory.name }}</h4>
-                <p>{{ subcategory.productCount }} sản phẩm</p>
-              </div>
-              <div class="subcategory-arrow">
-                <i class="fas fa-chevron-right"></i>
-              </div>
+              <h4 class="font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors duration-300">{{ subcategory.name }}</h4>
+              <p class="text-gray-600 text-sm">{{ subcategory.productCount }} sản phẩm</p>
             </div>
           </div>
         </div>
 
         <!-- Featured Brands -->
-        <div class="brands-section">
-          <h2>Thương hiệu nổi bật</h2>
-          <div class="brands-grid">
+        <div class="mb-16">
+          <div class="text-center mb-12">
+            <h2 class="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent mb-4">
+              Thương hiệu nổi bật
+            </h2>
+            <p class="text-gray-600 text-lg max-w-2xl mx-auto">Các thương hiệu uy tín và chất lượng cao</p>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <div 
               v-for="brand in featuredBrands" 
               :key="brand.id"
-              class="brand-item"
+              class="bg-white rounded-3xl p-8 shadow-xl border border-gray-100 cursor-pointer transition-all duration-500 transform hover:-translate-y-2 hover:shadow-2xl group relative overflow-hidden"
               @click="navigateToBrand(brand)"
             >
-              <div class="brand-logo">
-                <img :src="brand.logo" :alt="brand.name" />
-              </div>
-              <div class="brand-info">
-                <h4>{{ brand.name }}</h4>
-                <p>{{ brand.productCount }} sản phẩm</p>
-                <div class="brand-rating">
-                  <div class="stars">
-                    <i 
-                      v-for="star in 5" 
-                      :key="star"
-                      :class="star <= brand.rating ? 'fas fa-star' : 'far fa-star'"
-                    ></i>
-                  </div>
-                  <span>({{ brand.reviewCount }})</span>
+              <!-- Background decoration -->
+              <div class="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-green-100 to-blue-100 rounded-full -translate-y-12 translate-x-12 group-hover:scale-150 transition-transform duration-700"></div>
+              
+              <div class="relative z-10">
+                <div class="w-20 h-20 rounded-2xl overflow-hidden mb-6 mx-auto bg-gradient-to-br from-gray-100 to-gray-200 p-2 group-hover:scale-110 transition-transform duration-300">
+                  <img :src="brand.logo" :alt="brand.name" class="w-full h-full object-cover rounded-xl"/>
                 </div>
-              </div>
-              <div class="brand-badge" v-if="brand.isVerified">
-                <i class="fas fa-check-circle"></i>
-                Chính hãng
+                
+                <div class="text-center">
+                  <h4 class="text-xl font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors duration-300">{{ brand.name }}</h4>
+                  <p class="text-gray-600 text-sm mb-3">{{ brand.productCount }} sản phẩm</p>
+                  
+                  <div class="flex items-center justify-center space-x-2 mb-4">
+                    <div class="flex space-x-1">
+                      <i 
+                        v-for="star in 5" 
+                        :key="star"
+                        class="text-sm"
+                        :class="star <= brand.rating ? 'fas fa-star text-yellow-400' : 'far fa-star text-gray-300'"
+                      ></i>
+                    </div>
+                    <span class="text-gray-600 text-xs">({{ brand.reviewCount }})</span>
+                  </div>
+                  
+                  <div v-if="brand.isVerified" class="inline-flex items-center space-x-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-3 py-1 rounded-full text-xs font-bold">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Chính hãng</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
 
         <!-- Category Trends -->
-        <div class="trends-section">
-          <h2>Xu hướng danh mục</h2>
-          <div class="trends-chart">
+        <div class="bg-gradient-to-br from-white to-blue-50 rounded-3xl p-8 lg:p-12 shadow-xl border border-blue-100">
+          <div class="text-center mb-10">
+            <h2 class="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent mb-4">
+              Xu hướng danh mục
+            </h2>
+            <p class="text-gray-600 text-lg max-w-2xl mx-auto">Thống kê tăng trưởng các danh mục sản phẩm</p>
+          </div>
+          
+          <div class="space-y-6">
             <div 
               v-for="trend in categoryTrends" 
               :key="trend.id"
-              class="trend-item"
+              class="bg-white rounded-2xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-shadow duration-300"
             >
-              <div class="trend-info">
-                <h4>{{ trend.category }}</h4>
-                <span class="trend-percentage">{{ trend.growth > 0 ? '+' : '' }}{{ trend.growth }}%</span>
+              <div class="flex justify-between items-center mb-4">
+                <h4 class="text-lg font-bold text-gray-900">{{ trend.category }}</h4>
+                <span 
+                  class="px-4 py-2 rounded-full text-sm font-bold"
+                  :class="trend.growth > 0 
+                    ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white' 
+                    : 'bg-gradient-to-r from-red-500 to-red-600 text-white'"
+                >
+                  {{ trend.growth > 0 ? '+' : '' }}{{ trend.growth }}%
+                </span>
               </div>
-              <div class="trend-bar">
-                <div 
-                  class="trend-fill"
-                  :style="{ width: `${Math.abs(trend.growth)}%`, backgroundColor: trend.growth > 0 ? '#28a745' : '#dc3545' }"
-                ></div>
+              
+              <div class="relative">
+                <div class="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
+                  <div 
+                    class="h-full rounded-full transition-all duration-1000 ease-out"
+                    :class="trend.growth > 0 
+                      ? 'bg-gradient-to-r from-blue-400 to-purple-500' 
+                      : 'bg-gradient-to-r from-red-400 to-red-500'"
+                    :style="{ width: `${Math.min(Math.abs(trend.growth), 100)}%` }"
+                  ></div>
+                </div>
+                <div class="flex justify-between text-xs text-gray-500 mt-2">
+                  <span>0%</span>
+                  <span>{{ Math.abs(trend.growth) }}%</span>
+                </div>
               </div>
             </div>
           </div>
@@ -192,14 +287,40 @@
     </section>
 
     <!-- CTA Section -->
-    <section class="cta-section">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <h2>Không tìm thấy danh mục phù hợp?</h2>
-        <p>Hãy liên hệ với chúng tôi để được tư vấn</p>
-        <router-link to="/contact" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md transition-colors duration-200 bg-blue-600 hover:bg-blue-700 text-white">
-          <i class="fas fa-phone"></i>
-          Liên hệ tư vấn
-        </router-link>
+    <section class="bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-700 text-white py-16 lg:py-24 relative overflow-hidden">
+      <div class="absolute inset-0 bg-black/10"></div>
+      <div class="absolute top-0 left-0 w-full h-full">
+        <div class="absolute top-10 right-10 w-32 h-32 bg-white/10 rounded-full blur-xl"></div>
+        <div class="absolute bottom-10 left-10 w-40 h-40 bg-blue-400/20 rounded-full blur-2xl"></div>
+        <div class="absolute top-1/2 right-1/3 w-24 h-24 bg-purple-300/15 rounded-full blur-lg"></div>
+      </div>
+      
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+        <h2 class="text-3xl lg:text-5xl font-bold mb-6 bg-gradient-to-r from-white to-blue-100 bg-clip-text text-transparent">
+          Không tìm thấy danh mục phù hợp?
+        </h2>
+        <p class="text-xl lg:text-2xl text-blue-50 mb-10 leading-relaxed">
+          Hãy liên hệ với chúng tôi để được tư vấn và hỗ trợ tốt nhất
+        </p>
+        
+        <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+          <router-link to="/contact" 
+                       class="inline-flex items-center px-8 py-4 bg-white text-blue-600 font-bold rounded-2xl hover:bg-blue-50 transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:-translate-y-1 space-x-3">
+            <i class="fas fa-phone text-lg"></i>
+            <span>Liên hệ tư vấn</span>
+          </router-link>
+          
+          <div class="flex items-center space-x-6 text-blue-100">
+            <div class="flex items-center space-x-2">
+              <i class="fas fa-clock"></i>
+              <span>24/7 Support</span>
+            </div>
+            <div class="flex items-center space-x-2">
+              <i class="fas fa-headset"></i>
+              <span>Tư vấn miễn phí</span>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   </div>
@@ -399,6 +520,10 @@ const filteredCategories = computed(() => {
   return categories.value.filter(category => category.type === activeFilter.value)
 })
 
+const totalProducts = computed(() => {
+  return categories.value.reduce((total, category) => total + category.productCount, 0)
+})
+
 // Methods
 const navigateToCategory = (category) => {
   router.push(`/products?category=${category.id}`)
@@ -434,601 +559,50 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.categories-page {
-  min-height: 100vh;
-  background: #f8f9fa;
+/* Custom animations and effects */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.page-header {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  padding: 60px 0;
-  text-align: center;
+.animate-fade-in-up {
+  animation: fadeInUp 0.6s ease-out forwards;
 }
 
-.page-header h1 {
-  font-size: 2.5rem;
-  margin-bottom: 10px;
+/* Smooth transitions for all interactive elements */
+* {
+  transition-property: transform, box-shadow, background-color, border-color, opacity;
 }
 
-.page-header p {
-  font-size: 1.1rem;
-  opacity: 0.9;
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
 }
 
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 20px;
-}
-
-.category-filters {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 40px;
-  background: white;
-  padding: 25px;
-  border-radius: 15px;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
-  flex-wrap: wrap;
-  gap: 20px;
-}
-
-.filter-tabs {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-.filter-tab {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 12px 20px;
-  border: 2px solid #e1e5e9;
-  background: white;
-  border-radius: 25px;
-  cursor: pointer;
-  font-weight: 500;
-  transition: all 0.3s ease;
-}
-
-.filter-tab:hover,
-.filter-tab.active {
-  border-color: #e74c3c;
-  background: #e74c3c;
-  color: white;
-}
-
-.view-options {
-  display: flex;
-  gap: 5px;
-}
-
-.view-btn {
-  width: 40px;
-  height: 40px;
-  border: 2px solid #e1e5e9;
-  background: white;
-  border-radius: 8px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.3s ease;
-}
-
-.view-btn:hover,
-.view-btn.active {
-  border-color: #e74c3c;
-  background: #e74c3c;
-  color: white;
-}
-
-.categories-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-  gap: 30px;
-  margin-bottom: 60px;
-}
-
-.categories-list {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  margin-bottom: 60px;
-}
-
-.categories-list .category-card {
-  display: flex;
-  align-items: center;
-  gap: 30px;
-}
-
-.categories-list .category-image {
-  width: 200px;
-  height: 150px;
-  flex-shrink: 0;
-}
-
-.categories-list .category-info {
-  flex: 1;
-}
-
-.category-card {
-  background: white;
-  border-radius: 20px;
-  overflow: hidden;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
-  cursor: pointer;
-}
-
-.category-card:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
-}
-
-.category-image {
-  position: relative;
-  height: 200px;
-  overflow: hidden;
-}
-
-.category-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.3s ease;
-}
-
-.category-card:hover .category-image img {
-  transform: scale(1.1);
-}
-
-.category-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(45deg, rgba(231, 76, 60, 0.9), rgba(192, 57, 43, 0.9));
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0;
-  transition: all 0.3s ease;
-}
-
-.category-card:hover .category-overlay {
-  opacity: 1;
-}
-
-.overlay-content {
-  text-align: center;
-  color: white;
-}
-
-.overlay-content h3 {
-  font-size: 1.5rem;
-  margin-bottom: 8px;
-}
-
-.overlay-content p {
-  margin-bottom: 20px;
-  opacity: 0.9;
-}
-
-.category-icon {
-  width: 60px;
-  height: 60px;
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0 auto;
-  font-size: 24px;
-}
-
-.category-info {
-  padding: 25px;
-}
-
-.category-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 10px;
-}
-
-.category-header h3 {
-  color: #333;
-  font-size: 1.3rem;
-  margin: 0;
-}
-
-.product-count {
-  background: #e74c3c;
-  color: white;
-  padding: 4px 8px;
-  border-radius: 12px;
-  font-size: 12px;
-  font-weight: 600;
-}
-
-.category-description {
-  color: #666;
-  line-height: 1.6;
-  margin-bottom: 15px;
-  font-size: 14px;
-}
-
-.category-stats {
-  display: flex;
-  gap: 20px;
-  margin-bottom: 15px;
-}
-
-.stat-item {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  color: #666;
-  font-size: 14px;
-}
-
-.stat-item i {
-  color: #e74c3c;
-}
-
-.category-tags {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 20px;
-  flex-wrap: wrap;
-}
-
-.tag {
-  background: #f8f9fa;
-  color: #666;
-  padding: 4px 8px;
-  border-radius: 12px;
-  font-size: 12px;
-  border: 1px solid #e1e5e9;
-}
-
-.category-actions {
-  display: flex;
-  gap: 10px;
-}
-
-.btn {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 16px;
-  border-radius: 8px;
-  border: none;
-  cursor: pointer;
-  font-weight: 600;
-  font-size: 14px;
-  transition: all 0.3s ease;
-  flex: 1;
-  justify-content: center;
-}
-
-.btn-primary {
-  background: #e74c3c;
-  color: white;
-}
-
-.btn-primary:hover {
-  background: #c0392b;
-}
-
-.btn-outline {
-  background: transparent;
-  color: #e74c3c;
-  border: 2px solid #e74c3c;
-}
-
-.btn-outline:hover {
-  background: #e74c3c;
-  color: white;
-}
-
-.subcategories-section,
-.brands-section,
-.trends-section {
-  margin-bottom: 60px;
-}
-
-.subcategories-section h2,
-.brands-section h2,
-.trends-section h2 {
-  font-size: 2rem;
-  color: #333;
-  margin-bottom: 30px;
-  text-align: center;
-}
-
-.subcategories-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 20px;
-}
-
-.subcategory-item {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  padding: 20px;
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.subcategory-item:hover {
-  transform: translateX(5px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
-}
-
-.subcategory-icon {
-  width: 50px;
-  height: 50px;
-  background: linear-gradient(135deg, #667eea, #764ba2);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-size: 20px;
-}
-
-.subcategory-content {
-  flex: 1;
-}
-
-.subcategory-content h4 {
-  color: #333;
-  margin-bottom: 5px;
-}
-
-.subcategory-content p {
-  color: #666;
-  font-size: 14px;
-}
-
-.subcategory-arrow {
-  color: #ccc;
-  transition: color 0.3s ease;
-}
-
-.subcategory-item:hover .subcategory-arrow {
-  color: #e74c3c;
-}
-
-.brands-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 25px;
-}
-
-.brand-item {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  padding: 25px;
-  background: white;
-  border-radius: 15px;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
-  cursor: pointer;
-  transition: all 0.3s ease;
-  position: relative;
-}
-
-.brand-item:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-}
-
-.brand-logo {
-  width: 60px;
-  height: 60px;
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
   border-radius: 10px;
-  overflow: hidden;
 }
 
-.brand-logo img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, #3b82f6, #8b5cf6);
+  border-radius: 10px;
 }
 
-.brand-info {
-  flex: 1;
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(to bottom, #2563eb, #7c3aed);
 }
 
-.brand-info h4 {
-  color: #333;
-  margin-bottom: 5px;
-}
-
-.brand-info p {
-  color: #666;
-  font-size: 14px;
-  margin-bottom: 8px;
-}
-
-.brand-rating {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.stars {
-  color: #ffc107;
-}
-
-.brand-rating span {
-  color: #666;
-  font-size: 14px;
-}
-
-.brand-badge {
-  position: absolute;
-  top: 15px;
-  right: 15px;
-  background: #28a745;
-  color: white;
-  padding: 4px 8px;
-  border-radius: 12px;
-  font-size: 11px;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.trends-chart {
-  background: white;
-  padding: 30px;
-  border-radius: 15px;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
-}
-
-.trend-item {
-  margin-bottom: 25px;
-}
-
-.trend-item:last-child {
-  margin-bottom: 0;
-}
-
-.trend-info {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 8px;
-}
-
-.trend-info h4 {
-  color: #333;
-  font-size: 16px;
-}
-
-.trend-percentage {
-  font-weight: 600;
-  color: #28a745;
-}
-
-.trend-bar {
-  height: 8px;
-  background: #f1f3f4;
-  border-radius: 4px;
-  overflow: hidden;
-}
-
-.trend-fill {
-  height: 100%;
-  border-radius: 4px;
-  transition: width 0.5s ease;
-}
-
-.cta-section {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  padding: 60px 0;
-  text-align: center;
-}
-
-.cta-section h2 {
-  font-size: 2rem;
-  margin-bottom: 15px;
-}
-
-.cta-section p {
-  font-size: 1.1rem;
-  margin-bottom: 30px;
-  opacity: 0.9;
-}
-
-.cta-section .btn {
-  background: #e74c3c;
-  color: white;
-  padding: 15px 30px;
-  border-radius: 30px;
-  text-decoration: none;
-  font-weight: 600;
-}
-
-.cta-section .btn:hover {
-  background: #c0392b;
-  transform: translateY(-2px);
-}
-
-.text-center {
-  text-align: center;
-}
-
-.py-5 {
-  padding: 3rem 0;
-}
-
-@media (max-width: 768px) {
-  .page-header {
-    padding: 40px 0;
-  }
-  
-  .page-header h1 {
-    font-size: 2rem;
-  }
-  
-  .category-filters {
-    flex-direction: column;
-    align-items: stretch;
-  }
-  
-  .filter-tabs {
-    justify-content: center;
-  }
-  
-  .view-options {
-    align-self: center;
-  }
-  
-  .categories-grid {
-    grid-template-columns: 1fr;
-  }
-  
-  .categories-list .category-card {
-    flex-direction: column;
-  }
-  
-  .categories-list .category-image {
-    width: 100%;
-    height: 200px;
-  }
-  
-  .subcategories-grid {
-    grid-template-columns: 1fr;
-  }
-  
-  .brands-grid {
-    grid-template-columns: 1fr;
-  }
-  
-  .brand-item {
-    flex-direction: column;
-    text-align: center;
-  }
-  
-  .brand-badge {
-    position: static;
-    margin-top: 10px;
-  }
+/* Ensure text doesn't overflow */
+h1, h2, h3, h4, h5 {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 </style>

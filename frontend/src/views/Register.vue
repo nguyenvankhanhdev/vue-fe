@@ -1,183 +1,377 @@
 <template>
-  <div class="register-page">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="register-wrapper">
-        <!-- Left -->
-        <div class="register-illustration">
-          <div class="illustration-content">
-            <h3>Tham gia cùng chúng tôi</h3>
-            <p>Tạo tài khoản để trải nghiệm những ưu đãi tuyệt vời và dịch vụ chăm sóc khách hàng tốt nhất</p>
-            <div class="benefits">
-              <div class="benefit"><i class="fas fa-gift"></i><span>Ưu đãi độc quyền</span></div>
-              <div class="benefit"><i class="fas fa-star"></i><span>Tích điểm thưởng</span></div>
-              <div class="benefit"><i class="fas fa-truck"></i><span>Miễn phí vận chuyển</span></div>
-            </div>
-          </div>
-        </div>
+  <div class="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-blue-50 relative overflow-hidden">
+    <!-- Background Elements -->
+    <div class="absolute inset-0">
+      <div class="absolute top-10 left-10 w-32 h-32 bg-blue-200/20 rounded-full animate-pulse"></div>
+      <div class="absolute top-32 right-20 w-24 h-24 bg-purple-200/30 rounded-full animate-bounce"></div>
+      <div class="absolute bottom-20 left-1/4 w-20 h-20 bg-blue-300/20 rounded-full animate-pulse"></div>
+      <div class="absolute bottom-40 right-1/3 w-16 h-16 bg-purple-300/20 rounded-full animate-bounce"></div>
+    </div>
 
-        <!-- Right -->
-        <div class="register-card">
-          <div class="register-header">
-            <h2>Đăng ký tài khoản</h2>
-            <p>Tạo tài khoản mới để bắt đầu mua sắm</p>
-
-            <!-- General Error -->
-            <div v-if="generalError" class="p-4 rounded-lg border alert-error" role="alert">
-              <i class="fas fa-exclamation-circle"></i>
-              {{ generalError }}
-            </div>
-          </div>
-
-          <form @submit.prevent="handleRegister" class="register-form" novalidate>
-            <div class="form-row">
-              <div class="mb-4">
-                <label for="firstName">Họ</label>
-                <input id="firstName" type="text" v-model.trim="registerForm.firstName" placeholder="Nhập họ" required
-                  :class="{ 'error': hasFieldError('first_name') }" @input="clearErrors">
-                <p v-if="hasFieldError('first_name')" class="error-message">
-                  {{ getFieldError('first_name') }}
-                </p>
-              </div>
-              <div class="mb-4">
-                <label for="lastName">Tên</label>
-                <input id="lastName" type="text" v-model.trim="registerForm.lastName" placeholder="Nhập tên" required
-                  :class="{ 'error': hasFieldError('last_name') }" @input="clearErrors">
-                <p v-if="hasFieldError('last_name')" class="error-message">
-                  {{ getFieldError('last_name') }}
-                </p>
-              </div>
-            </div>
-
-            <div class="mb-4">
-              <label for="email">Email</label>
-              <input id="email" type="email" v-model.trim="registerForm.email" placeholder="Nhập địa chỉ email" required
-                :class="{ 'error': hasFieldError('email') || (registerForm.email && !isValidEmail) }"
-                @input="clearErrors">
-              <p v-if="hasFieldError('email')" class="error-message">
-                {{ getFieldError('email') }}
-              </p>
-              <p v-else-if="registerForm.email && !isValidEmail" class="error-message">
-                Email không hợp lệ
-              </p>
-            </div>
-
-            <div class="mb-4">
-              <label for="phone">Số điện thoại</label>
-              <input id="phone" type="tel" v-model.trim="registerForm.phone" placeholder="Nhập số điện thoại" required
-                :class="{ 'error': hasFieldError('phone') || (registerForm.phone && !isValidPhone) }"
-                @input="clearErrors">
-              <p v-if="hasFieldError('phone')" class="error-message">
-                {{ getFieldError('phone') }}
-              </p>
-              <p v-else-if="registerForm.phone && !isValidPhone" class="error-message">
-                Số điện thoại không hợp lệ
-              </p>
-            </div>
-
-            <div class="mb-4">
-              <label for="password">Mật khẩu</label>
-              <div class="password-input">
-                <input :type="showPassword ? 'text' : 'password'" id="password" v-model="registerForm.password"
-                  placeholder="Nhập mật khẩu" required :class="{ 'error': hasFieldError('password') }"
-                  @input="clearErrors">
-                <button type="button" class="password-toggle" @click="togglePassword" aria-label="Hiện/ẩn mật khẩu">
-                  <i :class="showPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
-                </button>
-              </div>
-
-              <div class="password-strength" aria-live="polite">
-                <div class="strength-bar" :class="passwordStrength.class">
-                  <div class="strength-fill" :style="{ width: passwordStrength.width }"></div>
+    <div class="relative flex items-center justify-center min-h-screen py-8 px-4">
+      <div class="max-w-6xl w-full">
+        <div class="grid lg:grid-cols-2 bg-white/80 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/20 overflow-hidden">
+          <!-- Left Illustration -->
+          <div class="bg-gradient-to-br from-blue-600 via-purple-600 to-blue-800 p-12 flex items-center justify-center relative overflow-hidden">
+            <!-- Floating Elements -->
+            <div class="absolute top-8 left-8 w-16 h-16 bg-white/10 rounded-full animate-pulse"></div>
+            <div class="absolute bottom-12 right-12 w-20 h-20 bg-blue-300/20 rounded-full animate-bounce"></div>
+            <div class="absolute top-1/3 right-8 w-12 h-12 bg-purple-300/30 rounded-full animate-pulse"></div>
+            
+            <div class="text-center text-white relative z-10">
+              <div class="mb-8">
+                <div class="w-24 h-24 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center mx-auto mb-6 animate-bounce">
+                  <i class="fas fa-shopping-cart text-4xl text-white"></i>
                 </div>
-                <span class="strength-text">{{ passwordStrength.text }}</span>
+                <h3 class="text-3xl font-bold mb-4 animate-fade-in">Tham gia cùng chúng tôi</h3>
+                <p class="text-lg text-white/90 leading-relaxed animate-fade-in">Tạo tài khoản để trải nghiệm những ưu đãi tuyệt vời và dịch vụ chăm sóc khách hàng tốt nhất</p>
               </div>
+              
+              <div class="space-y-6 animate-fade-in">
+                <div class="flex items-center gap-4 text-left">
+                  <div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
+                    <i class="fas fa-gift text-xl"></i>
+                  </div>
+                  <span class="text-lg font-medium">Ưu đãi độc quyền</span>
+                </div>
+                <div class="flex items-center gap-4 text-left">
+                  <div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
+                    <i class="fas fa-star text-xl"></i>
+                  </div>
+                  <span class="text-lg font-medium">Tích điểm thưởng</span>
+                </div>
+                <div class="flex items-center gap-4 text-left">
+                  <div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
+                    <i class="fas fa-truck text-xl"></i>
+                  </div>
+                  <span class="text-lg font-medium">Miễn phí vận chuyển</span>
+                </div>
+              </div>
+            </div>
+          </div>
 
-              <p v-if="hasFieldError('password')" class="error-message">
-                {{ getFieldError('password') }}
-              </p>
+          <!-- Right Form -->
+          <div class="p-8 lg:p-12 max-h-[90vh] overflow-y-auto">
+            <div class="text-center mb-8">
+              <h2 class="text-3xl font-bold text-gray-900 mb-2">Đăng ký tài khoản</h2>
+              <p class="text-gray-600">Tạo tài khoản mới để bắt đầu mua sắm</p>
+
+              <!-- General Error -->
+              <div v-if="generalError" class="mt-6 p-4 bg-gradient-to-r from-red-50 to-rose-50 border border-red-200 rounded-xl flex items-center gap-3" role="alert">
+                <div class="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center">
+                  <i class="fas fa-exclamation-triangle text-white text-sm"></i>
+                </div>
+                <span class="text-red-800 font-medium">{{ generalError }}</span>
+              </div>
             </div>
 
-            <div class="mb-4">
-              <label for="confirmPassword">Xác nhận mật khẩu</label>
-              <div class="password-input">
-                <input :type="showConfirmPassword ? 'text' : 'password'" id="confirmPassword"
-                  v-model="registerForm.confirmPassword" placeholder="Nhập lại mật khẩu" required
-                  :class="{ 'error': registerForm.confirmPassword && !passwordsMatch }" @input="clearErrors">
-                <button type="button" class="password-toggle" @click="toggleConfirmPassword"
-                  aria-label="Hiện/ẩn xác nhận mật khẩu">
-                  <i :class="showConfirmPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+            <form @submit.prevent="handleRegister" class="space-y-6" novalidate>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label for="firstName" class="block text-sm font-semibold text-gray-700 mb-2">Họ</label>
+                  <input 
+                    id="firstName" 
+                    type="text" 
+                    v-model.trim="registerForm.firstName" 
+                    placeholder="Nhập họ" 
+                    required
+                    :class="[
+                      'w-full px-4 py-3 border-2 rounded-xl transition-all duration-200 focus:outline-none',
+                      hasFieldError('first_name') 
+                        ? 'border-red-300 bg-red-50 focus:border-red-500' 
+                        : 'border-gray-200 focus:border-blue-500 focus:bg-white'
+                    ]"
+                    @input="clearErrors"
+                  >
+                  <p v-if="hasFieldError('first_name')" class="text-red-500 text-sm mt-1 flex items-center gap-1">
+                    <i class="fas fa-exclamation-triangle text-xs"></i>
+                    {{ getFieldError('first_name') }}
+                  </p>
+                </div>
+                <div>
+                  <label for="lastName" class="block text-sm font-semibold text-gray-700 mb-2">Tên</label>
+                  <input 
+                    id="lastName" 
+                    type="text" 
+                    v-model.trim="registerForm.lastName" 
+                    placeholder="Nhập tên" 
+                    required
+                    :class="[
+                      'w-full px-4 py-3 border-2 rounded-xl transition-all duration-200 focus:outline-none',
+                      hasFieldError('last_name') 
+                        ? 'border-red-300 bg-red-50 focus:border-red-500' 
+                        : 'border-gray-200 focus:border-blue-500 focus:bg-white'
+                    ]"
+                    @input="clearErrors"
+                  >
+                  <p v-if="hasFieldError('last_name')" class="text-red-500 text-sm mt-1 flex items-center gap-1">
+                    <i class="fas fa-exclamation-triangle text-xs"></i>
+                    {{ getFieldError('last_name') }}
+                  </p>
+                </div>
+              </div>
+
+              <div>
+                <label for="email" class="block text-sm font-semibold text-gray-700 mb-2">Email</label>
+                <input 
+                  id="email" 
+                  type="email" 
+                  v-model.trim="registerForm.email" 
+                  placeholder="Nhập địa chỉ email" 
+                  required
+                  :class="[
+                    'w-full px-4 py-3 border-2 rounded-xl transition-all duration-200 focus:outline-none',
+                    (hasFieldError('email') || (registerForm.email && !isValidEmail))
+                      ? 'border-red-300 bg-red-50 focus:border-red-500' 
+                      : 'border-gray-200 focus:border-blue-500 focus:bg-white'
+                  ]"
+                  @input="clearErrors"
+                >
+                <p v-if="hasFieldError('email')" class="text-red-500 text-sm mt-1 flex items-center gap-1">
+                  <i class="fas fa-exclamation-triangle text-xs"></i>
+                  {{ getFieldError('email') }}
+                </p>
+                <p v-else-if="registerForm.email && !isValidEmail" class="text-red-500 text-sm mt-1 flex items-center gap-1">
+                  <i class="fas fa-exclamation-triangle text-xs"></i>
+                  Email không hợp lệ
+                </p>
+              </div>
+
+              <div>
+                <label for="phone" class="block text-sm font-semibold text-gray-700 mb-2">Số điện thoại</label>
+                <input 
+                  id="phone" 
+                  type="tel" 
+                  v-model.trim="registerForm.phone" 
+                  placeholder="Nhập số điện thoại" 
+                  required
+                  :class="[
+                    'w-full px-4 py-3 border-2 rounded-xl transition-all duration-200 focus:outline-none',
+                    (hasFieldError('phone') || (registerForm.phone && !isValidPhone))
+                      ? 'border-red-300 bg-red-50 focus:border-red-500' 
+                      : 'border-gray-200 focus:border-blue-500 focus:bg-white'
+                  ]"
+                  @input="clearErrors"
+                >
+                <p v-if="hasFieldError('phone')" class="text-red-500 text-sm mt-1 flex items-center gap-1">
+                  <i class="fas fa-exclamation-triangle text-xs"></i>
+                  {{ getFieldError('phone') }}
+                </p>
+                <p v-else-if="registerForm.phone && !isValidPhone" class="text-red-500 text-sm mt-1 flex items-center gap-1">
+                  <i class="fas fa-exclamation-triangle text-xs"></i>
+                  Số điện thoại không hợp lệ
+                </p>
+              </div>
+
+              <div>
+                <label for="password" class="block text-sm font-semibold text-gray-700 mb-2">Mật khẩu</label>
+                <div class="relative">
+                  <input 
+                    :type="showPassword ? 'text' : 'password'" 
+                    id="password" 
+                    v-model="registerForm.password"
+                    placeholder="Nhập mật khẩu" 
+                    required 
+                    :class="[
+                      'w-full px-4 py-3 pr-12 border-2 rounded-xl transition-all duration-200 focus:outline-none',
+                      hasFieldError('password') 
+                        ? 'border-red-300 bg-red-50 focus:border-red-500' 
+                        : 'border-gray-200 focus:border-blue-500 focus:bg-white'
+                    ]"
+                    @input="clearErrors"
+                  >
+                  <button 
+                    type="button" 
+                    class="absolute right-3 top-1/2 -translate-y-1/2 p-2 text-gray-500 hover:text-gray-700 transition-colors duration-200" 
+                    @click="togglePassword" 
+                    aria-label="Hiện/ẩn mật khẩu"
+                  >
+                    <i :class="showPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+                  </button>
+                </div>
+
+                <div class="mt-2" aria-live="polite">
+                  <div class="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
+                    <div 
+                      class="h-full rounded-full transition-all duration-300"
+                      :class="{
+                        'bg-red-500': passwordStrength.class === 'weak',
+                        'bg-orange-500': passwordStrength.class === 'fair', 
+                        'bg-yellow-500': passwordStrength.class === 'good',
+                        'bg-green-500': passwordStrength.class === 'strong',
+                        'bg-emerald-600': passwordStrength.class === 'very-strong'
+                      }"
+                      :style="{ width: passwordStrength.width }"
+                    ></div>
+                  </div>
+                  <span class="text-xs text-gray-600 mt-1 block">{{ passwordStrength.text }}</span>
+                </div>
+
+                <p v-if="hasFieldError('password')" class="text-red-500 text-sm mt-1 flex items-center gap-1">
+                  <i class="fas fa-exclamation-triangle text-xs"></i>
+                  {{ getFieldError('password') }}
+                </p>
+              </div>
+
+              <div>
+                <label for="confirmPassword" class="block text-sm font-semibold text-gray-700 mb-2">Xác nhận mật khẩu</label>
+                <div class="relative">
+                  <input 
+                    :type="showConfirmPassword ? 'text' : 'password'" 
+                    id="confirmPassword"
+                    v-model="registerForm.confirmPassword" 
+                    placeholder="Nhập lại mật khẩu" 
+                    required
+                    :class="[
+                      'w-full px-4 py-3 pr-12 border-2 rounded-xl transition-all duration-200 focus:outline-none',
+                      (registerForm.confirmPassword && !passwordsMatch)
+                        ? 'border-red-300 bg-red-50 focus:border-red-500' 
+                        : 'border-gray-200 focus:border-blue-500 focus:bg-white'
+                    ]"
+                    @input="clearErrors"
+                  >
+                  <button 
+                    type="button" 
+                    class="absolute right-3 top-1/2 -translate-y-1/2 p-2 text-gray-500 hover:text-gray-700 transition-colors duration-200" 
+                    @click="toggleConfirmPassword"
+                    aria-label="Hiện/ẩn xác nhận mật khẩu"
+                  >
+                    <i :class="showConfirmPassword ? 'fas fa-eye-slash' : 'fas fa-eye'"></i>
+                  </button>
+                </div>
+                <p v-if="registerForm.confirmPassword && !passwordsMatch" class="text-red-500 text-sm mt-1 flex items-center gap-1">
+                  <i class="fas fa-exclamation-triangle text-xs"></i>
+                  Mật khẩu xác nhận không khớp
+                </p>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label for="birthDate" class="block text-sm font-semibold text-gray-700 mb-2">Ngày sinh</label>
+                  <input 
+                    id="birthDate" 
+                    type="date" 
+                    v-model="registerForm.birthDate" 
+                    required
+                    :class="[
+                      'w-full px-4 py-3 border-2 rounded-xl transition-all duration-200 focus:outline-none',
+                      hasFieldError('birth_date') 
+                        ? 'border-red-300 bg-red-50 focus:border-red-500' 
+                        : 'border-gray-200 focus:border-blue-500 focus:bg-white'
+                    ]"
+                    @change="clearErrors"
+                  >
+                  <p v-if="hasFieldError('birth_date')" class="text-red-500 text-sm mt-1 flex items-center gap-1">
+                    <i class="fas fa-exclamation-triangle text-xs"></i>
+                    {{ getFieldError('birth_date') }}
+                  </p>
+                </div>
+                <div>
+                  <label for="gender" class="block text-sm font-semibold text-gray-700 mb-2">Giới tính</label>
+                  <select 
+                    id="gender" 
+                    v-model="registerForm.gender" 
+                    required 
+                    :class="[
+                      'w-full px-4 py-3 border-2 rounded-xl transition-all duration-200 focus:outline-none',
+                      hasFieldError('gender') 
+                        ? 'border-red-300 bg-red-50 focus:border-red-500' 
+                        : 'border-gray-200 focus:border-blue-500 focus:bg-white'
+                    ]"
+                    @change="clearErrors"
+                  >
+                    <option value="">Chọn giới tính</option>
+                    <option value="male">Nam</option>
+                    <option value="female">Nữ</option>
+                    <option value="other">Khác</option>
+                  </select>
+                  <p v-if="hasFieldError('gender')" class="text-red-500 text-sm mt-1 flex items-center gap-1">
+                    <i class="fas fa-exclamation-triangle text-xs"></i>
+                    {{ getFieldError('gender') }}
+                  </p>
+                </div>
+              </div>
+
+              <!-- Checkboxes -->
+              <div class="space-y-4">
+                <label class="flex items-start gap-3 cursor-pointer group">
+                  <div class="relative flex-shrink-0 mt-1">
+                    <input type="checkbox" v-model="agreeTerms" required class="sr-only peer">
+                    <div class="w-5 h-5 border-2 border-gray-300 rounded peer-checked:bg-gradient-to-r peer-checked:from-blue-600 peer-checked:to-purple-600 peer-checked:border-transparent transition-all duration-200 flex items-center justify-center">
+                      <i class="fas fa-check text-white text-xs opacity-0 peer-checked:opacity-100 transition-opacity duration-200"></i>
+                    </div>
+                  </div>
+                  <span class="text-sm text-gray-700 leading-relaxed">Tôi đồng ý với
+                    <a href="/terms" target="_blank" class="text-blue-600 hover:text-purple-600 font-medium transition-colors duration-200">Điều khoản sử dụng</a>
+                    và
+                    <a href="/privacy" target="_blank" class="text-blue-600 hover:text-purple-600 font-medium transition-colors duration-200">Chính sách bảo mật</a>
+                  </span>
+                </label>
+
+                <label class="flex items-start gap-3 cursor-pointer group">
+                  <div class="relative flex-shrink-0 mt-1">
+                    <input type="checkbox" v-model="subscribeNewsletter" class="sr-only peer">
+                    <div class="w-5 h-5 border-2 border-gray-300 rounded peer-checked:bg-gradient-to-r peer-checked:from-blue-600 peer-checked:to-purple-600 peer-checked:border-transparent transition-all duration-200 flex items-center justify-center">
+                      <i class="fas fa-check text-white text-xs opacity-0 peer-checked:opacity-100 transition-opacity duration-200"></i>
+                    </div>
+                  </div>
+                  <span class="text-sm text-gray-700 leading-relaxed">Đăng ký nhận tin khuyến mãi qua email</span>
+                </label>
+              </div>
+
+              <button 
+                type="submit" 
+                class="w-full flex items-center justify-center gap-2 px-6 py-4 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-xl hover:from-blue-700 hover:to-purple-700 focus:ring-4 focus:ring-blue-300 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg transform hover:-translate-y-0.5" 
+                :disabled="!isFormValid || loading"
+              >
+                <div v-if="loading" class="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                <i v-else class="fas fa-user-plus"></i>
+                {{ loading ? 'Đang đăng ký...' : 'Đăng ký tài khoản' }}
+              </button>
+
+              <div class="relative text-center my-6">
+                <div class="absolute inset-0 flex items-center">
+                  <div class="w-full border-t border-gray-200"></div>
+                </div>
+                <span class="bg-white px-4 text-gray-500 text-sm">hoặc</span>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <button 
+                  type="button" 
+                  class="flex items-center justify-center gap-2 px-4 py-3 border-2 border-gray-200 hover:border-red-400 hover:text-red-500 text-gray-600 font-medium rounded-xl transition-all duration-200"
+                >
+                  <i class="fab fa-google"></i>
+                  Google
+                </button>
+                <button 
+                  type="button" 
+                  class="flex items-center justify-center gap-2 px-4 py-3 border-2 border-gray-200 hover:border-blue-500 hover:text-blue-600 text-gray-600 font-medium rounded-xl transition-all duration-200"
+                >
+                  <i class="fab fa-facebook-f"></i>
+                  Facebook
                 </button>
               </div>
-              <p v-if="registerForm.confirmPassword && !passwordsMatch" class="error-message">Mật khẩu xác nhận không
-                khớp</p>
-            </div>
 
-            <div class="form-row">
-              <div class="mb-4">
-                <label for="birthDate">Ngày sinh</label>
-                <input id="birthDate" type="date" v-model="registerForm.birthDate" required
-                  :class="{ 'error': hasFieldError('birth_date') }" @change="clearErrors">
-                <p v-if="hasFieldError('birth_date')" class="error-message">
-                  {{ getFieldError('birth_date') }}
+              <div class="text-center pt-4">
+                <p class="text-gray-600">
+                  Đã có tài khoản?
+                  <router-link to="/login" class="text-blue-600 hover:text-purple-600 font-semibold transition-colors duration-200 ml-1">Đăng nhập ngay</router-link>
                 </p>
               </div>
-              <div class="mb-4">
-                <label for="gender">Giới tính</label>
-                <select id="gender" v-model="registerForm.gender" required :class="{ 'error': hasFieldError('gender') }"
-                  @change="clearErrors">
-                  <option value="">Chọn giới tính</option>
-                  <option value="male">Nam</option>
-                  <option value="female">Nữ</option>
-                  <option value="other">Khác</option>
-                </select>
-                <p v-if="hasFieldError('gender')" class="error-message">
-                  {{ getFieldError('gender') }}
-                </p>
-              </div>
-            </div>
-
-            <!-- Checkboxes with tick -->
-            <div class="form-options">
-              <label class="checkbox">
-                <input type="checkbox" v-model="agreeTerms" required>
-                <span class="box" aria-hidden="true"></span>
-                <span class="text">Tôi đồng ý với
-                  <a href="/terms" target="_blank">Điều khoản sử dụng</a>
-                  và
-                  <a href="/privacy" target="_blank">Chính sách bảo mật</a>
-                </span>
-              </label>
-
-              <label class="checkbox">
-                <input type="checkbox" v-model="subscribeNewsletter">
-                <span class="box" aria-hidden="true"></span>
-                <span class="text">Đăng ký nhận tin khuyến mãi qua email</span>
-              </label>
-            </div>
-
-            <button type="submit" class="register-btn" :disabled="!isFormValid || loading">
-              <span v-if="loading" class="spinner"></span>
-              {{ loading ? 'Đang đăng ký...' : 'Đăng ký tài khoản' }}
-            </button>
-
-            <div class="divider"><span>hoặc</span></div>
-
-            <div class="social-register">
-              <button type="button" class="social-btn google-btn"><i class="fab fa-google"></i>Đăng ký với
-                Google</button>
-              <button type="button" class="social-btn facebook-btn"><i class="fab fa-facebook-f"></i>Đăng ký với
-                Facebook</button>
-            </div>
-
-            <div class="login-prompt">
-              <p>Đã có tài khoản?
-                <router-link to="/login" class="login-link">Đăng nhập ngay</router-link>
-              </p>
-            </div>
-          </form>
+            </form>
+          </div>
         </div>
       </div>
     </div>
+
+    <!-- Verify Email Modal -->
+    <VerifyEmailModal 
+      :show="showVerifyModal"
+      :email="verifyEmail"
+      @close="handleVerifyModalClose"
+      @verified="handleEmailVerified"
+    />
   </div>
 </template>
 
@@ -187,6 +381,7 @@ import { useRouter } from 'vue-router'
 import { authService, ApiError } from '../services/api.js'
 import { useToast } from '../services/toast.js'
 import { useAuth } from '../composables/useAuth.js'
+import VerifyEmailModal from '../components/VerifyEmailModal.vue'
 
 const router = useRouter()
 const { success, error, warning } = useToast()
@@ -210,6 +405,10 @@ const subscribeNewsletter = ref(false)
 const loading = ref(false)
 const serverErrors = ref({})
 const generalError = ref('')
+
+// Modal state
+const showVerifyModal = ref(false)
+const verifyEmail = ref('')
 
 const isValidEmail = computed(() => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(registerForm.value.email))
 const isValidPhone = computed(() => /^0\d{9,10}$/.test(registerForm.value.phone))
@@ -296,14 +495,17 @@ const handleRegister = async () => {
 
     if (userData.email) {
       localStorage.setItem('pendingVerifyEmail', userData.email)
+      verifyEmail.value = userData.email
     }
 
     // setAuthState(response.token, response.user)
 
-    // Hiển thị thông báo và chuyển sang bước xác minh email
+    // Hiển thị thông báo và hiển thị modal xác minh email
     const displayName = response?.user?.first_name || response?.user?.name || 'bạn'
     success(`Chào mừng ${displayName}! Vui lòng kiểm tra email để xác minh tài khoản.`, 6000)
-    router.push({ name: 'VerifyEmail' })
+    
+    // Hiển thị modal thay vì chuyển hướng
+    showVerifyModal.value = true
 
   } catch (err) {
     console.error('Registration error:', err)
@@ -352,458 +554,89 @@ const handleRegister = async () => {
     loading.value = false
   }
 }
+
+// Modal event handlers
+const handleVerifyModalClose = () => {
+  showVerifyModal.value = false
+  // Có thể chuyển hướng về trang chủ hoặc login sau khi đóng modal
+  router.push('/')
+}
+
+const handleEmailVerified = () => {
+  showVerifyModal.value = false
+  // Xử lý khi email đã được xác minh
+  success('Email đã được xác minh thành công!', 3000)
+  // Chuyển hướng về trang chủ hoặc dashboard
+  router.push('/')
+}
 </script>
 
 <style scoped>
-/* Layout */
-.register-page {
-  min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px
-}
-
-.container {
-  max-width: 1200px;
-  width: 100%
-}
-
-.register-wrapper {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  background: #fff;
-  border-radius: 20px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, .1);
-  overflow: hidden
-}
-
-/* Left */
-.register-illustration {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #fff;
-  text-align: center;
-  padding: 60px 40px
-}
-
-.illustration-content h3 {
-  font-size: 28px;
-  font-weight: 700;
-  margin-bottom: 16px
-}
-
-.illustration-content p {
-  font-size: 16px;
-  opacity: .9;
-  margin-bottom: 40px;
-  line-height: 1.6
-}
-
-.benefits {
-  display: flex;
-  flex-direction: column;
-  gap: 20px
-}
-
-.benefit {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  font-size: 14px
-}
-
-.benefit i {
-  font-size: 18px;
-  opacity: .85
-}
-
-/* Right */
-.register-card {
-  padding: 48px 44px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  /* FIX: bỏ chiều cao cứng + scroll nội bộ gây thanh cuộn trong card */
-}
-
-.register-header {
-  text-align: center;
-  margin-bottom: 26px
-}
-
-.register-header h2 {
-  font-size: 28px;
-  font-weight: 700;
-  color: #1f2937;
-  margin-bottom: 8px
-}
-
-.register-header p {
-  color: #6b7280;
-  font-size: 14px
-}
-
-/* Form */
-.register-form {
-  width: 100%
-}
-
-.form-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px
-}
-
-.form-group {
-  margin-bottom: 18px
-}
-
-.form-group label {
-  display: block;
-  margin-bottom: 6px;
-  font-weight: 600;
-  color: #374151;
-  font-size: 14px
-}
-
-.form-group input,
-.form-group select {
-  width: 100%;
-  padding: 12px 14px;
-  border: 2px solid #e5e7eb;
-  border-radius: 10px;
-  font-size: 14px;
-  transition: all .2s ease;
-  background: #f9fafb
-}
-
-.form-group input:focus,
-.form-group select:focus {
-  outline: none;
-  border-color: #3b82f6;
-  background: #fff;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, .12)
-}
-
-/* Password */
-.password-input {
-  position: relative
-}
-
-.password-toggle {
-  position: absolute;
-  right: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  background: none;
-  border: none;
-  color: #6b7280;
-  cursor: pointer;
-  padding: 4px
-}
-
-.password-strength {
-  margin-top: 8px
-}
-
-.strength-bar {
-  height: 4px;
-  background: #e5e7eb;
-  border-radius: 2px;
-  overflow: hidden;
-  margin-bottom: 4px
-}
-
-.strength-fill {
-  height: 100%;
-  transition: all .25s ease
-}
-
-.strength-bar.weak .strength-fill {
-  background: #ef4444
-}
-
-.strength-bar.fair .strength-fill {
-  background: #f59e0b
-}
-
-.strength-bar.good .strength-fill {
-  background: #eab308
-}
-
-.strength-bar.strong .strength-fill {
-  background: #22c55e
-}
-
-.strength-bar.very-strong .strength-fill {
-  background: #16a34a
-}
-
-.strength-text {
-  font-size: 12px;
-  color: #6b7280
-}
-
-/* Errors */
-.error-message {
-  color: #ef4444;
-  font-size: 12px;
-  margin-top: 6px
-}
-
-/* Input error state */
-input.error,
-select.error {
-  border-color: #ef4444 !important;
-  background-color: #fef2f2 !important;
-}
-
-input.error:focus,
-select.error:focus {
-  border-color: #dc2626 !important;
-  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.12) !important;
-}
-
-/* Alert styles */
-.alert {
-  padding: 12px 16px;
-  border-radius: 8px;
-  margin-bottom: 16px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 14px;
-  line-height: 1.5;
-}
-
-.alert-error {
-  background-color: #fef2f2;
-  border: 1px solid #fecaca;
-  color: #dc2626;
-}
-
-.alert-error i {
-  color: #ef4444;
-}
-
-/* Checkboxes with real tick */
-.form-options {
-  margin: 10px 0 22px
-}
-
-.checkbox {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  margin-bottom: 12px;
-  cursor: pointer;
-  user-select: none
-}
-
-.checkbox input {
-  position: absolute;
-  opacity: 0;
-  width: 0;
-  height: 0
-}
-
-.checkbox .box {
-  width: 18px;
-  height: 18px;
-  border: 2px solid #cbd5e1;
-  border-radius: 6px;
-  background: #fff;
-  display: inline-block;
-  transition: all .15s ease;
-  position: relative;
-  flex: 0 0 18px;
-  margin-top: 2px
-}
-
-.checkbox input:focus+.box {
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, .15)
-}
-
-.checkbox input:checked+.box {
-  background: #3b82f6;
-  border-color: #3b82f6;
-}
-
-.checkbox input:checked+.box::after {
-  content: "";
-  position: absolute;
-  left: 4px;
-  top: 1px;
-  width: 6px;
-  height: 10px;
-  border: 2px solid #fff;
-  border-top: none;
-  border-left: none;
-  transform: rotate(45deg)
-}
-
-.checkbox .text {
-  font-size: 13px;
-  color: #6b7280;
-  line-height: 1.45
-}
-
-.checkbox a {
-  color: #3b82f6;
-  text-decoration: none
-}
-
-.checkbox a:hover {
-  text-decoration: underline
-}
-
-/* Buttons */
-.register-btn {
-  width: 100%;
-  padding: 14px;
-  background: #3b82f6;
-  color: #fff;
-  border: none;
-  border-radius: 10px;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all .2s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px
-}
-
-.register-btn:hover:not(:disabled) {
-  background: #2563eb;
-  transform: translateY(-1px)
-}
-
-.register-btn:disabled {
-  opacity: .7;
-  cursor: not-allowed
-}
-
-.spinner {
-  width: 16px;
-  height: 16px;
-  border: 2px solid transparent;
-  border-top: 2px solid #fff;
-  border-radius: 50%;
-  animation: spin 1s linear infinite
-}
-
-@keyframes spin {
+@keyframes animate-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
   to {
-    transform: rotate(360deg)
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
-/* Others */
-.divider {
-  text-align: center;
-  margin: 22px 0;
-  position: relative
-}
-
-.divider::before {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: #e5e7eb
-}
-
-.divider span {
-  background: #fff;
-  padding: 0 16px;
-  color: #6b7280;
-  font-size: 14px
-}
-
-.social-register {
-  display: flex;
-  gap: 12px;
-  margin-bottom: 20px
-}
-
-.social-btn {
-  flex: 1;
-  padding: 10px;
-  border: 2px solid #e5e7eb;
-  border-radius: 10px;
-  background: #fff;
-  font-size: 13px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all .2s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px
-}
-
-.google-btn:hover {
-  border-color: #ea4335;
-  color: #ea4335
-}
-
-.facebook-btn:hover {
-  border-color: #1877f2;
-  color: #1877f2
-}
-
-.login-prompt {
-  text-align: center
-}
-
-.login-prompt p {
-  color: #6b7280;
-  margin: 0;
-  font-size: 14px
-}
-
-.login-link {
-  color: #3b82f6;
-  text-decoration: none;
-  font-weight: 600
-}
-
-.login-link:hover {
-  text-decoration: underline
-}
-
-/* Responsive */
-@media (max-width: 992px) {
-  .register-wrapper {
-    grid-template-columns: 1fr
+@keyframes animate-pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.7;
   }
-
-  .register-illustration {
-    order: -1;
-    padding: 40px 24px
+  50% {
+    transform: scale(1.05);
+    opacity: 0.9;
   }
 }
 
-@media (max-width:768px) {
-  .register-card {
-    padding: 36px 24px
+@keyframes animate-bounce {
+  0%, 20%, 53%, 80%, 100% {
+    transform: translateY(0);
   }
+  40%, 43% {
+    transform: translateY(-30px);
+  }
+  70% {
+    transform: translateY(-15px);
+  }
+  90% {
+    transform: translateY(-4px);
+  }
+}
 
-  .form-row {
-    grid-template-columns: 1fr;
-    gap: 0
-  }
+.animate-fade-in {
+  animation: animate-fade-in 0.6s ease-out;
+}
 
-  .social-register {
-    flex-direction: column
-  }
+.animate-pulse {
+  animation: animate-pulse 3s ease-in-out infinite;
+}
+
+.animate-bounce {
+  animation: animate-bounce 2s infinite;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, #3b82f6, #8b5cf6);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(to bottom, #2563eb, #7c3aed);
 }
 </style>
