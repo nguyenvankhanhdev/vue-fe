@@ -32,7 +32,7 @@
         
         <!-- Cart Stats -->
         <div class="mt-8 flex flex-wrap gap-6">
-          <div class="bg-white bg-opacity-20 backdrop-blur-sm rounded-lg px-6 py-4">
+          <div class="bg-black bg-opacity-20 backdrop-blur-sm rounded-lg px-6 py-4 border border-white border-opacity-20">
             <div class="flex items-center">
               <i class="fas fa-box text-white text-xl mr-3"></i>
               <div>
@@ -41,12 +41,12 @@
               </div>
             </div>
           </div>
-          <div class="bg-white bg-opacity-20 backdrop-blur-sm rounded-lg px-6 py-4">
+          <div class="bg-black bg-opacity-20 backdrop-blur-sm rounded-lg px-6 py-4 border border-white border-opacity-20">
             <div class="flex items-center">
               <i class="fas fa-dollar-sign text-white text-xl mr-3"></i>
               <div>
-                <div class="text-2xl font-bold text-white">${{ formatPrice(finalTotal) }}</div>
-                <div class="text-white text-opacity-80 text-sm">Tổng cộng</div>
+                <div class="text-2xl font-bold text-white">${{ formatPrice(selectedTotal) }}</div>
+                <div class="text-white text-opacity-80 text-sm">Đã chọn</div>
               </div>
             </div>
           </div>
@@ -91,114 +91,139 @@
               <div class="cart-header px-8 py-6 border-b border-gray-100">
                 <div class="flex items-center justify-between">
                   <div class="flex items-center">
-                    <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center mr-4">
-                      <i class="fas fa-shopping-bag text-white text-lg"></i>
+                    <div class="flex items-center mr-4">
+                      <input 
+                        type="checkbox" 
+                        :checked="isAllSelected"
+                        @change="toggleSelectAll"
+                        class="w-5 h-5 text-blue-600 border-2 border-gray-300 rounded focus:ring-blue-500 focus:ring-2 mr-3"
+                      />
+                      <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-shopping-bag text-white text-lg"></i>
+                      </div>
                     </div>
                     <div>
                       <h2 class="text-2xl font-bold text-gray-900">Sản phẩm trong giỏ hàng</h2>
-                      <p class="text-gray-500 text-sm">{{ cartItems.length }} sản phẩm đã chọn</p>
+                      <p class="text-gray-500 text-sm">{{ selectedItems.length }} / {{ cartItems.length }} sản phẩm đã chọn</p>
                     </div>
                   </div>
-                  <button @click="clearCart" class="clear-cart-btn flex items-center px-4 py-2 bg-red-50 text-red-600 hover:bg-red-100 rounded-lg transition-colors font-medium">
-                    <i class="fas fa-trash mr-2"></i>
-                    Xóa tất cả
-                  </button>
+                  <div class="flex items-center space-x-3">
+                    <button @click="selectAllItems" class="select-all-btn flex items-center px-4 py-2 bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-lg transition-colors font-medium">
+                      <i class="fas fa-check-square mr-2"></i>
+                      Chọn tất cả
+                    </button>
+                    <button @click="clearCart" class="clear-cart-btn flex items-center px-4 py-2 bg-red-50 text-red-600 hover:bg-red-100 rounded-lg transition-colors font-medium">
+                      <i class="fas fa-trash mr-2"></i>
+                      Xóa tất cả
+                    </button>
+                  </div>
                 </div>
               </div>
 
+              
               <div class="items-list px-8 py-6 space-y-6">
-                <div 
-                  v-for="item in cartItems" 
-                  :key="`${item.id}-${item.selectedSize}-${item.selectedColor?.name}`"
-                  class="cart-item group bg-gray-50 hover:bg-gray-100 rounded-xl p-6 transition-all duration-300 hover:shadow-md"
-                >
-                  <!-- Product Image -->
-                  <div class="item-image">
-                    <div class="relative overflow-hidden rounded-xl">
-                      <img :src="item.image" :alt="item.name" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"/>
-                      <div v-if="item.discount" class="absolute top-2 left-2 bg-red-500 text-white px-2 py-1 rounded-full text-xs font-bold">
-                        -{{ item.discount }}%
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <!-- Product Details -->
-                  <div class="item-details flex-1">
-                    <div class="item-info mb-4">
-                      <h3 class="text-xl font-bold text-gray-900 mb-2 hover:text-blue-600 transition-colors">
-                        <router-link :to="`/products/${item.id}`">
-                          {{ item.name }}
-                        </router-link>
-                      </h3>
-                      <div class="item-meta space-y-1">
-                        <div class="flex items-center">
-                          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                            {{ item.category }}
-                          </span>
-                        </div>
-                        <div v-if="item.selectedSize || item.selectedColor" class="flex flex-wrap gap-2 mt-2">
-                          <span v-if="item.selectedSize" class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-gray-200 text-gray-800">
-                            <i class="fas fa-ruler mr-1"></i>{{ item.selectedSize }}
-                          </span>
-                          <span v-if="item.selectedColor" class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-gray-200 text-gray-800">
-                            <span class="w-3 h-3 rounded-full mr-1" :style="{ backgroundColor: item.selectedColor.value }"></span>
-                            {{ item.selectedColor.name }}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    <div class="item-price">
-                      <div class="flex items-baseline space-x-2">
-                        <span class="text-2xl font-bold text-red-600">${{ formatPrice(getItemPrice(item)) }}</span>
-                        <span v-if="item.originalPrice && item.discount" class="text-lg text-gray-500 line-through">
-                          ${{ formatPrice(item.originalPrice) }}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <!-- Quantity Controls -->
-                  <div class="item-quantity">
-                    <div class="quantity-controls flex items-center bg-white border-2 border-gray-200 rounded-xl overflow-hidden hover:border-blue-300 transition-colors">
-                      <button @click="decreaseQuantity(item)" :disabled="item.quantity <= 1" 
-                              class="w-12 h-12 flex items-center justify-center hover:bg-blue-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
-                        <i class="fas fa-minus text-sm"></i>
-                      </button>
-                      <span class="quantity px-6 py-3 font-bold text-gray-900 min-w-16 text-center">{{ item.quantity }}</span>
-                      <button @click="increaseQuantity(item)" :disabled="item.quantity >= item.stockQuantity"
-                              class="w-12 h-12 flex items-center justify-center hover:bg-blue-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
-                        <i class="fas fa-plus text-sm"></i>
-                      </button>
-                    </div>
-                    <div class="text-xs text-gray-500 text-center mt-1">
-                      Còn {{ item.stockQuantity }} sản phẩm
-                    </div>
-                  </div>
-                  
-                  <!-- Item Total -->
-                  <div class="item-total text-right">
-                    <div class="text-2xl font-bold text-gray-900 mb-1">
-                      ${{ formatPrice(getItemTotal(item)) }}
-                    </div>
-                    <div class="text-sm text-gray-500">
-                      {{ item.quantity }} × ${{ formatPrice(getItemPrice(item)) }}
-                    </div>
-                  </div>
-                  
-                  <!-- Action Buttons -->
-                  <div class="item-actions flex flex-col space-y-3">
-                    <button @click="addToWishlist(item)" 
-                            class="wishlist-btn w-12 h-12 flex items-center justify-center bg-white border-2 border-gray-200 hover:border-red-300 hover:bg-red-50 hover:text-red-600 rounded-xl transition-all duration-300">
-                      <i class="fas fa-heart"></i>
-                    </button>
-                    <button @click="removeItem(item)" 
-                            class="remove-btn w-12 h-12 flex items-center justify-center bg-white border-2 border-gray-200 hover:border-red-500 hover:bg-red-50 hover:text-red-600 rounded-xl transition-all duration-300">
-                      <i class="fas fa-trash"></i>
-                    </button>
-                  </div>
-                </div>
-              </div>
+  <div
+    v-for="item in cartItems"
+    :key="`${item.id}-${item.selectedSize}-${item.selectedColor?.name}`"
+    class="group bg-gray-50 hover:bg-gray-100 rounded-xl p-6 transition-all duration-300 hover:shadow-md
+           flex flex-col gap-6
+           lg:grid lg:grid-cols-[auto,1fr,auto,auto] lg:items-center lg:gap-6"
+    :class="{ 'ring-2 ring-blue-500 bg-blue-50': item.selected }"
+  >
+    <!-- Cột 1: Checkbox + Ảnh (cố định kích thước) -->
+    <div class="flex items-start gap-4 lg:col-[1]">
+      <input
+        type="checkbox"
+        v-model="item.selected"
+        @change="updateSelectedItems"
+        class="w-5 h-5 text-blue-600 border-2 border-gray-300 rounded focus:ring-blue-500 focus:ring-2 mt-1"
+      />
+      <div class="w-28 h-28 lg:w-32 lg:h-32 relative overflow-hidden rounded-xl flex-shrink-0">
+        <img :src="item.image" :alt="item.name"
+             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+        <div v-if="item.discount"
+             class="absolute top-2 left-2 bg-red-500 text-white px-2 py-1 rounded-full text-xs font-bold">
+          -{{ item.discount }}%
+        </div>
+      </div>
+    </div>
+
+    <!-- Cột 2: Thông tin sản phẩm (chiếm hết phần co giãn) -->
+    <div class="min-w-0 lg:col-[2]">
+      <h3 class="text-lg lg:text-xl font-bold text-gray-900 mb-2 hover:text-blue-600 transition-colors">
+        <router-link :to="`/products/${item.id}`">{{ item.name }}</router-link>
+      </h3>
+
+      <div class="flex items-center mb-2">
+        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+          {{ item.category }}
+        </span>
+      </div>
+
+      <div v-if="item.selectedSize || item.selectedColor" class="flex flex-wrap gap-2 mb-3">
+        <span v-if="item.selectedSize"
+              class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-gray-200 text-gray-800">
+          <i class="fas fa-ruler mr-1"></i>{{ item.selectedSize }}
+        </span>
+        <span v-if="item.selectedColor"
+              class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-gray-200 text-gray-800">
+          <span class="w-3 h-3 rounded-full mr-1" :style="{ backgroundColor: item.selectedColor.value }"></span>
+          {{ item.selectedColor.name }}
+        </span>
+      </div>
+
+      <div class="flex items-baseline gap-2">
+        <span class="text-xl lg:text-2xl font-bold text-red-600">${{ formatPrice(getItemPrice(item)) }}</span>
+        <span v-if="item.originalPrice && item.discount" class="text-lg text-gray-500 line-through">
+          ${{ formatPrice(item.originalPrice) }}
+        </span>
+      </div>
+    </div>
+
+    <!-- Cột 3: Số lượng (giữ chiều rộng ổn định) -->
+    <div class="flex flex-col items-center gap-2 lg:gap-3 lg:col-[3] lg:justify-self-center">
+      <div class="flex items-center bg-white border-2 border-gray-200 rounded-xl overflow-hidden hover:border-blue-300 transition-colors
+                  w-[152px]">
+        <button @click="decreaseQuantity(item)" :disabled="item.quantity <= 1"
+                class="w-12 h-12 flex items-center justify-center hover:bg-blue-50 disabled:opacity-50 disabled:cursor-not-allowed">
+          <i class="fas fa-minus text-sm"></i>
+        </button>
+        <span class="px-4 py-3 font-bold text-gray-900 min-w-16 text-center select-none">{{ item.quantity }}</span>
+        <button @click="increaseQuantity(item)" :disabled="item.quantity >= item.stockQuantity"
+                class="w-12 h-12 flex items-center justify-center hover:bg-blue-50 disabled:opacity-50 disabled:cursor-not-allowed">
+          <i class="fas fa-plus text-sm"></i>
+        </button>
+      </div>
+      <div class="text-xs text-gray-500 text-center whitespace-nowrap">
+        Còn {{ item.stockQuantity }}
+      </div>
+    </div>
+
+    <!-- Cột 4: Thành tiền & actions (căn phải) -->
+    <div class="flex flex-col items-end gap-3 lg:gap-4 lg:col-[4] lg:justify-self-end">
+      <div class="text-right">
+        <div class="text-xl lg:text-2xl font-bold text-gray-900">
+          ${{ formatPrice(getItemTotal(item)) }}
+        </div>
+        <div class="text-sm text-gray-500">
+          {{ item.quantity }} × ${{ formatPrice(getItemPrice(item)) }}
+        </div>
+      </div>
+
+      <div class="flex gap-2">
+        <button @click="addToWishlist(item)"
+                class="w-10 h-10 flex items-center justify-center bg-white border-2 border-gray-200 hover:border-red-300 hover:bg-red-50 hover:text-red-600 rounded-xl transition-all">
+          <i class="fas fa-heart text-sm"></i>
+        </button>
+        <button @click="removeItem(item)"
+                class="w-10 h-10 flex items-center justify-center bg-white border-2 border-gray-200 hover:border-red-500 hover:bg-red-50 hover:text-red-600 rounded-xl transition-all">
+          <i class="fas fa-trash text-sm"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
 
               <!-- Continue Shopping -->
               <div class="continue-shopping px-8 py-6 border-t border-gray-100">
@@ -224,41 +249,41 @@
                 
                 <div class="summary-details px-8 py-6 space-y-4">
                   <div class="summary-row flex justify-between items-center py-2">
-                    <span class="text-gray-600">Tạm tính ({{ totalItems }} sản phẩm):</span>
-                    <span class="font-semibold text-gray-900">${{ formatPrice(subtotal) }}</span>
+                    <span class="text-gray-600">Tạm tính ({{ selectedItems.length }} sản phẩm đã chọn):</span>
+                    <span class="font-semibold text-gray-900">${{ formatPrice(selectedSubtotal) }}</span>
                   </div>
                   
-                  <div v-if="totalDiscount > 0" class="summary-row flex justify-between items-center py-2">
+                  <div v-if="selectedDiscount > 0" class="summary-row flex justify-between items-center py-2">
                     <span class="text-gray-600">Giảm giá sản phẩm:</span>
-                    <span class="font-semibold text-green-600">-${{ formatPrice(totalDiscount) }}</span>
+                    <span class="font-semibold text-green-600">-${{ formatPrice(selectedDiscount) }}</span>
                   </div>
                   
                   <div v-if="appliedCoupon" class="summary-row flex justify-between items-center py-2">
                     <span class="text-gray-600">Mã giảm giá:</span>
-                    <span class="font-semibold text-green-600">-${{ formatPrice(couponDiscount) }}</span>
+                    <span class="font-semibold text-green-600">-${{ formatPrice(selectedCouponDiscount) }}</span>
                   </div>
                   
                   <div class="summary-row flex justify-between items-center py-2">
                     <span class="text-gray-600">Phí vận chuyển:</span>
                     <span class="font-semibold">
-                      <span v-if="isEligibleForFreeShipping" class="text-green-600 flex items-center">
+                      <span v-if="isSelectedEligibleForFreeShipping" class="text-green-600 flex items-center">
                         <i class="fas fa-check-circle mr-1"></i>Miễn phí
                       </span>
-                      <span v-else class="text-gray-900">${{ formatPrice(shippingFee) }}</span>
+                      <span v-else class="text-gray-900">${{ formatPrice(selectedShippingFee) }}</span>
                     </span>
                   </div>
                   
                   <!-- Free Shipping Progress -->
-                  <div v-if="!isEligibleForFreeShipping" class="free-shipping-notice bg-gradient-to-r from-green-50 to-blue-50 border border-green-200 rounded-xl p-4">
+                  <div v-if="!isSelectedEligibleForFreeShipping && selectedItems.length > 0" class="free-shipping-notice bg-gradient-to-r from-green-50 to-blue-50 border border-green-200 rounded-xl p-4">
                     <div class="flex items-center justify-between mb-2">
                       <span class="text-green-700 font-medium text-sm">
                         <i class="fas fa-truck mr-1"></i>
-                        Mua thêm ${{ formatPrice(amountForFreeShipping) }} để được miễn phí vận chuyển
+                        Mua thêm ${{ formatPrice(selectedAmountForFreeShipping) }} để được miễn phí vận chuyển
                       </span>
                     </div>
                     <div class="w-full bg-green-200 rounded-full h-2">
                       <div class="bg-gradient-to-r from-green-400 to-green-600 h-2 rounded-full transition-all duration-500" 
-                           :style="{ width: Math.min(100, (afterCouponTotal / FREE_SHIPPING_THRESHOLD) * 100) + '%' }"></div>
+                           :style="{ width: Math.min(100, (selectedAfterCouponTotal / FREE_SHIPPING_THRESHOLD) * 100) + '%' }"></div>
                     </div>
                   </div>
                   
@@ -266,7 +291,7 @@
                     <div class="summary-row total-row flex justify-between items-center py-2">
                       <span class="text-xl font-bold text-gray-900">Tổng cộng:</span>
                       <span class="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                        ${{ formatPrice(finalTotal) }}
+                        ${{ formatPrice(selectedTotal) }}
                       </span>
                     </div>
                   </div>
@@ -328,9 +353,11 @@
                 <!-- Checkout Button -->
                 <div class="px-8 py-6 border-t border-gray-100">
                   <button @click="proceedToCheckout" 
-                          class="checkout-btn w-full py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold text-lg rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl flex items-center justify-center">
+                          :disabled="selectedItems.length === 0"
+                          class="checkout-btn w-full py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 disabled:from-gray-400 disabled:to-gray-500 disabled:cursor-not-allowed text-white font-bold text-lg rounded-xl transition-all duration-300 transform hover:scale-105 disabled:hover:scale-100 shadow-lg hover:shadow-xl disabled:shadow-none flex items-center justify-center">
                     <i class="fas fa-lock mr-3"></i>
-                    Thanh toán an toàn
+                    <span v-if="selectedItems.length > 0">Thanh toán {{ selectedItems.length }} sản phẩm</span>
+                    <span v-else>Chọn sản phẩm để thanh toán</span>
                     <i class="fas fa-arrow-right ml-3"></i>
                   </button>
                   
@@ -547,6 +574,58 @@ const finalTotal = computed(() => {
   return afterCouponTotal.value + shippingFee.value
 })
 
+// Selected items computed properties
+const selectedItems = computed(() => {
+  return cartItems.value.filter(item => item.selected)
+})
+
+const selectedSubtotal = computed(() => {
+  return selectedItems.value.reduce((total, item) => {
+    return total + (getItemPrice(item) * item.quantity)
+  }, 0)
+})
+
+const selectedDiscount = computed(() => {
+  return selectedItems.value.reduce((total, item) => {
+    if (item.discount && item.originalPrice) {
+      const discountAmount = item.originalPrice * (item.discount / 100)
+      return total + (discountAmount * item.quantity)
+    }
+    return total
+  }, 0)
+})
+
+const selectedCouponDiscount = computed(() => {
+  if (appliedCoupon.value) {
+    return selectedSubtotal.value * (appliedCoupon.value.discount / 100)
+  }
+  return 0
+})
+
+const selectedAfterCouponTotal = computed(() => {
+  return selectedSubtotal.value - selectedCouponDiscount.value
+})
+
+const isSelectedEligibleForFreeShipping = computed(() => {
+  return selectedAfterCouponTotal.value >= FREE_SHIPPING_THRESHOLD
+})
+
+const selectedShippingFee = computed(() => {
+  return isSelectedEligibleForFreeShipping.value ? 0 : STANDARD_SHIPPING_FEE
+})
+
+const selectedAmountForFreeShipping = computed(() => {
+  return Math.max(0, FREE_SHIPPING_THRESHOLD - selectedAfterCouponTotal.value)
+})
+
+const selectedTotal = computed(() => {
+  return selectedAfterCouponTotal.value + selectedShippingFee.value
+})
+
+const isAllSelected = computed(() => {
+  return cartItems.value.length > 0 && cartItems.value.every(item => item.selected)
+})
+
 // Methods
 const formatPrice = (price) => {
   return new Intl.NumberFormat('vi-VN').format(price)
@@ -598,18 +677,54 @@ const confirmRemoveItem = () => {
   itemToRemove.value = null
 }
 
-const clearCart = () => {
-  if (confirm('Bạn có chắc chắn muốn xóa tất cả sản phẩm trong giỏ hàng?')) {
+const clearCart = async () => {
+  const result = await Swal.fire({
+    title: 'Xóa tất cả sản phẩm?',
+    text: 'Bạn có chắc chắn muốn xóa tất cả sản phẩm trong giỏ hàng?',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#ef4444',
+    cancelButtonColor: '#6b7280',
+    confirmButtonText: 'Đồng ý xóa',
+    cancelButtonText: 'Hủy bỏ',
+    customClass: {
+      popup: 'rounded-2xl',
+      confirmButton: 'rounded-xl px-6 py-3 font-semibold',
+      cancelButton: 'rounded-xl px-6 py-3 font-semibold'
+    }
+  })
+
+  if (result.isConfirmed) {
     cartItems.value = []
     appliedCoupon.value = null
     saveCartToStorage()
+    
+    Swal.fire({
+      title: 'Đã xóa thành công!',
+      text: 'Tất cả sản phẩm đã được xóa khỏi giỏ hàng',
+      icon: 'success',
+      timer: 2000,
+      showConfirmButton: false,
+      customClass: {
+        popup: 'rounded-2xl'
+      }
+    })
   }
 }
 
 const addToWishlist = (item) => {
   console.log('Add to wishlist:', item)
   // Handle add to wishlist logic
-  alert('Đã thêm vào danh sách yêu thích!')
+  Swal.fire({
+    title: 'Thành công!',
+    text: 'Đã thêm sản phẩm vào danh sách yêu thích',
+    icon: 'success',
+    timer: 2000,
+    showConfirmButton: false,
+    customClass: {
+      popup: 'rounded-2xl'
+    }
+  })
 }
 
 const applyCoupon = () => {
@@ -624,9 +739,27 @@ const applyCoupon = () => {
   
   if (coupon) {
     appliedCoupon.value = coupon
-    Swal.fire(`Đã áp dụng mã giảm giá ${coupon.code} - Giảm ${coupon.discount}%`)
+    Swal.fire({
+      title: 'Thành công!',
+      text: `Đã áp dụng mã giảm giá ${coupon.code} - Giảm ${coupon.discount}%`,
+      icon: 'success',
+      timer: 2500,
+      showConfirmButton: false,
+      customClass: {
+        popup: 'rounded-2xl'
+      }
+    })
   } else {
-    Swal.fire('Mã giảm giá không hợp lệ!')
+    Swal.fire({
+      title: 'Lỗi!',
+      text: 'Mã giảm giá không hợp lệ',
+      icon: 'error',
+      timer: 2500,
+      showConfirmButton: false,
+      customClass: {
+        popup: 'rounded-2xl'
+      }
+    })
   }
 }
 
@@ -635,7 +768,39 @@ const removeCoupon = () => {
   couponCode.value = ''
 }
 
+// Selection methods
+const toggleSelectAll = () => {
+  const allSelected = isAllSelected.value
+  cartItems.value.forEach(item => {
+    item.selected = !allSelected
+  })
+}
+
+const selectAllItems = () => {
+  cartItems.value.forEach(item => {
+    item.selected = true
+  })
+}
+
+const updateSelectedItems = () => {
+  // This method is called when individual checkboxes change
+  saveCartToStorage()
+}
+
 const proceedToCheckout = () => {
+  if (selectedItems.value.length === 0) {
+    Swal.fire({
+      title: 'Chưa chọn sản phẩm!',
+      text: 'Vui lòng chọn ít nhất một sản phẩm để thanh toán',
+      icon: 'warning',
+      confirmButtonText: 'Đồng ý',
+      customClass: {
+        popup: 'rounded-2xl'
+      }
+    })
+    return
+  }
+  
   // Save cart state and navigate to checkout
   saveCartToStorage()
   router.push('/checkout')
@@ -653,12 +818,23 @@ const handleAddToCart = (product) => {
       quantity: 1,
       selectedSize: null,
       selectedColor: null,
-      stockQuantity: 10
+      stockQuantity: 10,
+      selected: false
     })
   }
   
   saveCartToStorage()
-  alert('Đã thêm vào giỏ hàng!')
+  
+  Swal.fire({
+    title: 'Thành công!',
+    text: 'Đã thêm sản phẩm vào giỏ hàng',
+    icon: 'success',
+    timer: 2000,
+    showConfirmButton: false,
+    customClass: {
+      popup: 'rounded-2xl'
+    }
+  })
 }
 
 const saveCartToStorage = () => {
@@ -697,7 +873,8 @@ onMounted(() => {
         quantity: 1,
         selectedSize: '256GB',
         selectedColor: { name: 'Đen', value: '#000000' },
-        stockQuantity: 5
+        stockQuantity: 5,
+        selected: false
       },
       {
         id: 2,
@@ -710,7 +887,8 @@ onMounted(() => {
         quantity: 2,
         selectedSize: 'L',
         selectedColor: { name: 'Xanh', value: '#1E3A8A' },
-        stockQuantity: 10
+        stockQuantity: 10,
+        selected: false
       },
       {
         id: 3,
@@ -721,7 +899,8 @@ onMounted(() => {
         quantity: 1,
         selectedSize: '42',
         selectedColor: { name: 'Trắng', value: '#FFFFFF' },
-        stockQuantity: 3
+        stockQuantity: 3,
+        selected: false
       }
     ]
   }

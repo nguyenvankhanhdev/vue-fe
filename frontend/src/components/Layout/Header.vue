@@ -1,74 +1,84 @@
 <template>
-  <header class="bg-white shadow-lg border-b border-gray-200 sticky top-0 z-50 transition-all duration-300" :class="{ 'bg-white/95 backdrop-blur-md shadow-xl': isScrolled }">
+  <header class="bg-white/95 backdrop-blur-md shadow-xl border-b border-blue-100/50 sticky top-0 z-50 transition-all duration-300" :class="{ 'shadow-2xl': isScrolled }">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex items-center justify-between h-16 lg:h-20">
         <!-- Logo -->
         <div class="flex-shrink-0">
-          <router-link to="/" class="flex items-center space-x-2 text-gray-900 hover:text-blue-600 transition-colors duration-200">
-            <div class="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
+          <router-link to="/" class="group flex items-center space-x-2 text-gray-900 hover:text-blue-600 transition-all duration-200">
+            <div class="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center shadow-md group-hover:shadow-lg group-hover:scale-105 transition-all duration-200">
               <i class="fas fa-store text-white text-sm"></i>
             </div>
-            <h1 class="text-2xl font-bold tracking-tight">VueShop</h1>
+            <h1 class="text-xl font-bold tracking-tight bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">VueShop</h1>
           </router-link>
         </div>
 
         <!-- Desktop Navigation -->
-        <nav class="hidden lg:flex items-center space-x-8">
-          <router-link to="/" class="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-lg font-medium transition-colors duration-200" 
-            active-class="text-blue-600 bg-blue-50">
+        <nav class="hidden lg:flex items-center space-x-1">
+          <router-link to="/" class="group decoration-none no-underline relative text-gray-700 hover:text-blue-600 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 hover:bg-blue-50" 
+            active-class="text-blue-600 bg-blue-50 font-semibold"
+            style="text-decoration: none !important;">
+            <i class="fas fa-home text-xs mr-1.5"></i>
             Trang chủ
           </router-link>
-          <router-link to="/products" class="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-lg font-medium transition-colors duration-200"
-            active-class="text-blue-600 bg-blue-50">
+          <router-link to="/products" class="group decoration-none no-underline relative text-gray-700 hover:text-blue-600 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 hover:bg-blue-50"
+            active-class="text-blue-600 bg-blue-50 font-semibold"
+            style="text-decoration: none !important;">
+            <i class="fas fa-shopping-bag text-xs mr-1.5"></i>
             Sản phẩm
           </router-link>
-          <router-link to="/categories" class="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-lg font-medium transition-colors duration-200"
-            active-class="text-blue-600 bg-blue-50">
+          <router-link to="/categories" class="group decoration-none no-underline relative text-gray-700 hover:text-blue-600 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 hover:bg-blue-50"
+            active-class="text-blue-600 bg-blue-50 font-semibold"
+            style="text-decoration: none !important;">
+            <i class="fas fa-th-large text-xs mr-1.5"></i>
             Danh mục
           </router-link>
-          <router-link to="/contact" class="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-lg font-medium transition-colors duration-200"
-            active-class="text-blue-600 bg-blue-50">
+          <router-link to="/contact" class="group decoration-none no-underline relative text-gray-700 hover:text-blue-600 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 hover:bg-blue-50"
+            active-class="text-blue-600 bg-blue-50 font-semibold"
+            style="text-decoration: none !important;">
+            <i class="fas fa-envelope text-xs mr-1.5"></i>
             Liên hệ
           </router-link>
         </nav>
 
         <!-- Search Bar -->
-        <div class="hidden md:flex flex-1 max-w-lg mx-8">
-          <div class="relative w-full">
+        <div class="hidden md:flex flex-1 max-w-lg mx-6">
+          <div class="relative w-full group">
             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <i class="fas fa-search text-gray-400"></i>
+              <i class="fas fa-search text-gray-400 text-sm group-focus-within:text-blue-600 transition-colors"></i>
             </div>
             <input 
               v-model="searchQuery" 
               @keyup.enter="handleSearch"
               type="text" 
-              class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-gray-50 focus:bg-white" 
-              placeholder="Tìm kiếm sản phẩm..."
+              class="w-full pl-10 pr-12 py-2 text-sm border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white placeholder-gray-500" 
+              placeholder="Tìm kiếm..."
             />
-            <button @click="handleSearch" class="absolute inset-y-0 right-0 flex items-center pr-3">
-              <div class="bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-lg transition-colors duration-200">
-                <i class="fas fa-search text-sm"></i>
+            <button @click="handleSearch" class="absolute inset-y-0 right-1 flex items-center">
+              <div class="bg-blue-600 hover:bg-blue-700 text-white p-1.5 rounded-md transition-colors duration-200">
+                <i class="fas fa-search text-xs"></i>
               </div>
             </button>
           </div>
         </div>
 
         <!-- Right Side Actions -->
-        <div class="flex items-center space-x-4">
+        <div class="flex items-center space-x-2">
           <!-- Cart -->
-          <router-link to="/cart" class="relative p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all duration-200">
-            <i class="fas fa-shopping-cart text-xl"></i>
-            <span v-if="cartCount > 0" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+          <router-link to="/cart" class="group relative p-2 text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all duration-200">
+            <i class="fas fa-shopping-cart text-lg"></i>
+            <span v-if="cartCount > 0" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-semibold rounded-full h-5 w-5 flex items-center justify-center">
               {{ cartCount }}
             </span>
           </router-link>
 
           <!-- Auth Links (Not Logged In) -->
-          <div v-if="!isLoggedIn" class="hidden lg:flex items-center space-x-3">
-            <router-link to="/login" class="text-gray-600 hover:text-blue-600 px-4 py-2 rounded-lg font-medium transition-colors duration-200">
+          <div v-if="!isLoggedIn" class="hidden lg:flex items-center space-x-2">
+            <router-link to="/login" class="text-gray-700 decoration-none hover:text-blue-600 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 hover:bg-blue-50 border border-gray-200 hover:border-blue-300"style="text-decoration: none !important;">
+              <i class="fas fa-sign-in-alt mr-1.5 text-xs"></i>
               Đăng nhập
             </router-link>
-            <router-link to="/register" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors duration-200">
+            <router-link to="/register" class="bg-blue-600 decoration-none hover:bg-blue-700 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-200"style="text-decoration: none !important;">
+              <i class="fas fa-user-plus mr-1.5 text-xs"></i>
               Đăng ký
             </router-link>
           </div>
@@ -78,11 +88,11 @@
             <button 
               ref="userMenuBtn"
               @click="toggleUserMenu" 
-              class="flex items-center space-x-2 bg-gray-100 hover:bg-gray-200 px-3 py-2 rounded-lg transition-colors duration-200"
-              :class="{ 'bg-blue-100 text-blue-600': showUserMenu }"
+              class="flex items-center space-x-2 bg-gray-50 hover:bg-gray-100 px-2.5 py-1.5 rounded-lg transition-colors duration-200"
+              :class="{ 'bg-blue-50 text-blue-600': showUserMenu }"
             >
-              <div class="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center">
-                <i class="fas fa-user text-sm"></i>
+              <div class="w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center">
+                <i class="fas fa-user text-xs"></i>
               </div>
               <span class="hidden lg:block text-sm font-medium text-gray-700">{{ userName || 'User' }}</span>
               <i class="fas fa-chevron-down text-xs transition-transform duration-200" :class="{ 'rotate-180': showUserMenu }"></i>
@@ -90,22 +100,22 @@
 
             <!-- Dropdown Menu -->
             <Transition name="dropdown">
-              <div v-if="showUserMenu" ref="userMenu" class="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-gray-200 py-2 z-50">
-                <router-link to="/profile" @click="showUserMenu = false" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors duration-200">
-                  <i class="fas fa-user-circle w-5 text-center mr-3"></i>
+              <div v-if="showUserMenu" ref="userMenu" class="absolute right-0 mt-2 w-44 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-50">
+                <router-link to="/profile" @click="showUserMenu = false" class="flex items-center px-3 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors duration-200">
+                  <i class="fas fa-user-circle w-4 text-center mr-2 text-xs"></i>
                   Tài khoản
                 </router-link>
-                <router-link to="/orders" @click="showUserMenu = false" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors duration-200">
-                  <i class="fas fa-shopping-bag w-5 text-center mr-3"></i>
+                <router-link to="/orders" @click="showUserMenu = false" class="flex items-center px-3 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors duration-200">
+                  <i class="fas fa-shopping-bag w-4 text-center mr-2 text-xs"></i>
                   Đơn hàng
                 </router-link>
-                <router-link v-if="currentUser?.role === 'admin'" to="/admin" @click="showUserMenu = false" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors duration-200">
-                  <i class="fas fa-cogs w-5 text-center mr-3"></i>
+                <router-link v-if="currentUser?.role === 'admin'" to="/admin" @click="showUserMenu = false" class="flex items-center px-3 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors duration-200">
+                  <i class="fas fa-cogs w-4 text-center mr-2 text-xs"></i>
                   Quản trị
                 </router-link>
-                <hr class="my-2 border-gray-200">
-                <button @click="logout" class="w-full flex items-center px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors duration-200">
-                  <i class="fas fa-sign-out-alt w-5 text-center mr-3"></i>
+                <hr class="my-1 border-gray-200">
+                <button @click="logout" class="w-full flex items-center px-3 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors duration-200">
+                  <i class="fas fa-sign-out-alt w-4 text-center mr-2 text-xs"></i>
                   Đăng xuất
                 </button>
               </div>
@@ -299,6 +309,21 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
+/* Remove underline from router links */
+nav a,
+nav router-link,
+.router-link-active,
+.router-link-exact-active {
+  text-decoration: none !important;
+}
+
+nav a:hover,
+nav a:focus,
+nav a:active,
+nav a:visited {
+  text-decoration: none !important;
+}
+
 /* Dropdown transitions */
 .dropdown-enter-active {
   transition: all 0.2s ease-out;

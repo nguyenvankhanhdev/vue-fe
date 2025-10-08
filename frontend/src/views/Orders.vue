@@ -1,45 +1,64 @@
 <template>
-  <div class="orders-page">
+  <div class="min-h-screen bg-gray-50">
     <!-- Page Header -->
-    <section class="page-header">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1>Đơn hàng của tôi</h1>
-        <p>Theo dõi và quản lý các đơn hàng của bạn</p>
+    <section class="bg-gradient-to-br from-blue-600 via-purple-600 to-blue-800 text-white relative overflow-hidden">
+      <div class="absolute inset-0 bg-black/10"></div>
+      <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-20">
+        <div class="text-center">
+          <div class="inline-flex items-center justify-center w-16 h-16 bg-white/10 backdrop-blur-sm rounded-2xl mb-6">
+            <i class="fas fa-shopping-bag text-2xl"></i>
+          </div>
+          <h1 class="text-4xl lg:text-5xl font-bold mb-4 bg-gradient-to-r from-white to-blue-100 bg-clip-text text-transparent">
+            Đơn hàng của tôi
+          </h1>
+          <p class="text-xl text-blue-100 max-w-2xl mx-auto">
+            Theo dõi và quản lý các đơn hàng của bạn một cách dễ dàng
+          </p>
+        </div>
       </div>
+      
+      <!-- Decorative elements -->
+      <div class="absolute top-10 left-10 w-20 h-20 bg-white/5 rounded-full animate-float"></div>
+      <div class="absolute top-40 right-20 w-16 h-16 bg-white/5 rounded-full animate-float-delay"></div>
+      <div class="absolute bottom-20 left-1/4 w-12 h-12 bg-white/5 rounded-full animate-float"></div>
     </section>
 
     <!-- Orders Content -->
-    <section class="orders-section py-5">
+    <section class="py-12">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <!-- Order Filters -->
-        <div class="orders-filters">
-          <div class="filter-tabs">
+        <div class="bg-white rounded-2xl shadow-xl p-6 mb-8 backdrop-blur-sm border border-blue-100/50">
+          <div class="flex flex-wrap gap-3 mb-6">
             <button 
               v-for="status in orderStatuses" 
               :key="status.key"
               @click="activeFilter = status.key"
-              :class="{ active: activeFilter === status.key }"
-              class="filter-tab"
+              :class="activeFilter === status.key ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg' : 'bg-gray-100 text-gray-700 hover:bg-blue-50 hover:text-blue-600'"
+              class="px-4 py-2 rounded-xl font-medium transition-all duration-200 flex items-center gap-2"
             >
               {{ status.label }}
-              <span v-if="getOrderCount(status.key) > 0" class="count">
+              <span v-if="getOrderCount(status.key) > 0" 
+                :class="activeFilter === status.key ? 'bg-white/20' : 'bg-blue-100 text-blue-600'"
+                class="px-2 py-0.5 rounded-full text-xs font-semibold">
                 {{ getOrderCount(status.key) }}
               </span>
             </button>
           </div>
           
-          <div class="filter-actions">
-            <div class="search-box">
+          <div class="flex flex-col sm:flex-row gap-4">
+            <div class="relative flex-1 max-w-md">
+              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <i class="fas fa-search text-gray-400"></i>
+              </div>
               <input 
                 type="text" 
                 v-model="searchQuery"
                 placeholder="Tìm kiếm đơn hàng..."
-                class="search-input"
+                class="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white"
               />
-              <i class="fas fa-search"></i>
             </div>
             
-            <select v-model="sortBy" class="sort-select">
+            <select v-model="sortBy" class="px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-gray-700 font-medium">
               <option value="newest">Mới nhất</option>
               <option value="oldest">Cũ nhất</option>
               <option value="highest">Giá trị cao nhất</option>
@@ -49,162 +68,221 @@
         </div>
 
         <!-- Orders List -->
-        <div class="orders-list">
-          <div v-if="loading" class="loading-state">
-            <div class="spinner"></div>
-            <p>Đang tải đơn hàng...</p>
+        <div>
+          <div v-if="loading" class="flex flex-col items-center justify-center py-20 bg-white rounded-2xl shadow-xl">
+            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mb-4"></div>
+            <p class="text-gray-600 font-medium">Đang tải đơn hàng...</p>
           </div>
 
-          <div v-else-if="filteredOrders.length === 0" class="empty-state">
-            <i class="fas fa-shopping-bag"></i>
-            <h3>Không có đơn hàng nào</h3>
-            <p>{{ getEmptyMessage() }}</p>
-            <router-link to="/products" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md transition-colors duration-200 bg-blue-600 hover:bg-blue-700 text-white">
+          <div v-else-if="filteredOrders.length === 0" class="flex flex-col items-center justify-center py-20 bg-white rounded-2xl shadow-xl text-center">
+            <div class="w-20 h-20 bg-gradient-to-br from-blue-100 to-purple-100 rounded-2xl flex items-center justify-center mb-6">
+              <i class="fas fa-shopping-bag text-3xl text-blue-600"></i>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-800 mb-2">Không có đơn hàng nào</h3>
+            <p class="text-gray-600 mb-6 max-w-md">{{ getEmptyMessage() }}</p>
+            <router-link to="/products" class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-xl hover:from-blue-700 hover:to-purple-700 transition-all duration-200 transform hover:scale-105 shadow-lg">
+              <i class="fas fa-shopping-cart mr-2"></i>
               Tiếp tục mua sắm
             </router-link>
           </div>
 
-          <div v-else class="orders-container">
+          <div v-else class="space-y-6">
             <div 
               v-for="order in filteredOrders" 
               :key="order.id"
-              class="order-card"
-              :class="`status-${order.status}`"
+              class="bg-white rounded-2xl shadow-xl overflow-hidden border-l-4 transition-all duration-300 hover:shadow-2xl hover:scale-[1.02]"
+              :class="{
+                'border-l-yellow-500': order.status === 'pending',
+                'border-l-blue-500': order.status === 'confirmed',
+                'border-l-purple-500': order.status === 'shipping',
+                'border-l-green-500': order.status === 'delivered',
+                'border-l-red-500': order.status === 'cancelled'
+              }"
             >
               <!-- Order Header -->
-              <div class="order-header">
-                <div class="order-info">
-                  <h3>Đơn hàng #{{ order.orderNumber }}</h3>
-                  <div class="order-meta">
-                    <span class="order-date">
-                      <i class="fas fa-calendar"></i>
+              <div class="flex flex-col lg:flex-row lg:items-center justify-between p-6 border-b border-gray-100">
+                <div class="mb-4 lg:mb-0">
+                  <h3 class="text-xl font-bold text-gray-800 mb-2">Đơn hàng #{{ order.orderNumber }}</h3>
+                  <div class="flex flex-wrap gap-4 text-sm text-gray-600">
+                    <span class="flex items-center gap-1">
+                      <i class="fas fa-calendar text-blue-500"></i>
                       {{ formatDate(order.createdAt) }}
                     </span>
-                    <span class="order-total">
-                      <i class="fas fa-dollar-sign"></i>
+                    <span class="flex items-center gap-1 font-semibold text-blue-600">
+                      <i class="fas fa-money-bill-wave text-blue-500"></i>
                       {{ formatPrice(order.total) }}đ
                     </span>
                   </div>
                 </div>
                 
-                <div class="order-status">
-                  <span class="status-badge" :class="`status-${order.status}`">
+                <div class="flex items-center gap-3">
+                  <span 
+                    class="px-3 py-1 rounded-full text-sm font-semibold text-white"
+                    :class="{
+                      'bg-yellow-500': order.status === 'pending',
+                      'bg-blue-500': order.status === 'confirmed', 
+                      'bg-purple-500': order.status === 'shipping',
+                      'bg-green-500': order.status === 'delivered',
+                      'bg-red-500': order.status === 'cancelled'
+                    }"
+                  >
                     {{ getStatusLabel(order.status) }}
                   </span>
-                  <button @click="toggleOrderDetails(order)" class="toggle-btn">
+                  <button 
+                    @click="toggleOrderDetails(order)" 
+                    class="p-2 rounded-lg bg-gray-100 hover:bg-blue-50 text-gray-600 hover:text-blue-600 transition-colors duration-200"
+                  >
                     <i :class="order.showDetails ? 'fas fa-chevron-up' : 'fas fa-chevron-down'"></i>
                   </button>
                 </div>
               </div>
 
               <!-- Order Items Preview -->
-              <div class="order-preview">
-                <div class="items-preview">
-                  <div 
-                    v-for="(item, index) in order.items.slice(0, 3)" 
-                    :key="item.id"
-                    class="preview-item"
-                  >
-                    <img :src="item.image" :alt="item.name" />
+              <div class="flex flex-col lg:flex-row lg:items-center justify-between p-6 gap-4">
+                <div class="flex items-center gap-4">
+                  <div class="flex items-center gap-2">
+                    <div 
+                      v-for="(item, index) in order.items.slice(0, 3)" 
+                      :key="item.id"
+                      class="w-12 h-12 rounded-lg overflow-hidden shadow-sm"
+                    >
+                      <img :src="item.image" :alt="item.name" class="w-full h-full object-cover" />
+                    </div>
+                    <div v-if="order.items.length > 3" class="w-12 h-12 bg-gradient-to-br from-gray-100 to-gray-200 rounded-lg flex items-center justify-center text-xs font-bold text-gray-600">
+                      +{{ order.items.length - 3 }}
+                    </div>
                   </div>
-                  <div v-if="order.items.length > 3" class="more-items">
-                    +{{ order.items.length - 3 }}
-                  </div>
+                  
+                  <p class="text-sm text-gray-600 font-medium">{{ order.items.length }} sản phẩm</p>
                 </div>
                 
-                <div class="order-summary">
-                  <p class="items-count">{{ order.items.length }} sản phẩm</p>
-                  <div class="order-actions">
-                    <button 
-                      v-if="canTrackOrder(order)"
-                      @click="trackOrder(order)"
-                      class="action-btn track-btn"
-                    >
-                      <i class="fas fa-truck"></i>
-                      Theo dõi
-                    </button>
-                    <button 
-                      v-if="canReorder(order)"
-                      @click="reorder(order)"
-                      class="action-btn reorder-btn"
-                    >
-                      <i class="fas fa-redo"></i>
-                      Mua lại
-                    </button>
-                    <button 
-                      v-if="canCancel(order)"
-                      @click="cancelOrder(order)"
-                      class="action-btn cancel-btn"
-                    >
-                      <i class="fas fa-times"></i>
-                      Hủy
-                    </button>
-                    <button 
-                      v-if="canReview(order)"
-                      @click="reviewOrder(order)"
-                      class="action-btn review-btn"
-                    >
-                      <i class="fas fa-star"></i>
-                      Đánh giá
-                    </button>
-                  </div>
+                <div class="flex flex-wrap gap-2">
+                  <button 
+                    v-if="canTrackOrder(order)"
+                    @click="trackOrder(order)"
+                    class="inline-flex items-center gap-2 px-3 py-2 bg-purple-50 text-purple-600 rounded-lg hover:bg-purple-100 transition-colors duration-200 text-sm font-medium"
+                  >
+                    <i class="fas fa-truck"></i>
+                    Theo dõi
+                  </button>
+                  <button 
+                    v-if="canReorder(order)"
+                    @click="reorder(order)"
+                    class="inline-flex items-center gap-2 px-3 py-2 bg-green-50 text-green-600 rounded-lg hover:bg-green-100 transition-colors duration-200 text-sm font-medium"
+                  >
+                    <i class="fas fa-redo"></i>
+                    Mua lại
+                  </button>
+                  <button 
+                    v-if="canCancel(order)"
+                    @click="cancelOrder(order)"
+                    class="inline-flex items-center gap-2 px-3 py-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors duration-200 text-sm font-medium"
+                  >
+                    <i class="fas fa-times"></i>
+                    Hủy
+                  </button>
+                  <button 
+                    v-if="canReview(order)"
+                    @click="reviewOrder(order)"
+                    class="inline-flex items-center gap-2 px-3 py-2 bg-yellow-50 text-yellow-600 rounded-lg hover:bg-yellow-100 transition-colors duration-200 text-sm font-medium"
+                  >
+                    <i class="fas fa-star"></i>
+                    Đánh giá
+                  </button>
                 </div>
               </div>
 
               <!-- Order Details (Expanded) -->
-              <div v-if="order.showDetails" class="order-details">
+              <div v-if="order.showDetails" class="border-t border-gray-100 bg-gray-50/50 p-6 space-y-6">
                 <!-- Shipping Info -->
-                <div class="detail-section">
-                  <h4>Thông tin giao hàng</h4>
-                  <div class="shipping-info">
-                    <p><strong>Người nhận:</strong> {{ order.shipping.name }}</p>
-                    <p><strong>Số điện thoại:</strong> {{ order.shipping.phone }}</p>
-                    <p><strong>Địa chỉ:</strong> {{ order.shipping.address }}</p>
-                    <p><strong>Phương thức:</strong> {{ order.shipping.method }}</p>
+                <div>
+                  <h4 class="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                    <i class="fas fa-shipping-fast text-blue-600"></i>
+                    Thông tin giao hàng
+                  </h4>
+                  <div class="bg-white rounded-xl p-4 space-y-3 shadow-sm border border-gray-100">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+                      <p class="flex items-center gap-2">
+                        <span class="font-semibold text-gray-700">Người nhận:</span> 
+                        <span class="text-gray-600">{{ order.shipping.name }}</span>
+                      </p>
+                      <p class="flex items-center gap-2">
+                        <span class="font-semibold text-gray-700">Số điện thoại:</span> 
+                        <span class="text-gray-600">{{ order.shipping.phone }}</span>
+                      </p>
+                      <p class="flex items-start gap-2 md:col-span-2">
+                        <span class="font-semibold text-gray-700">Địa chỉ:</span> 
+                        <span class="text-gray-600">{{ order.shipping.address }}</span>
+                      </p>
+                      <p class="flex items-center gap-2">
+                        <span class="font-semibold text-gray-700">Phương thức:</span> 
+                        <span class="text-gray-600">{{ order.shipping.method }}</span>
+                      </p>
+                    </div>
                   </div>
                 </div>
 
                 <!-- Order Timeline -->
-                <div class="detail-section">
-                  <h4>Trạng thái đơn hàng</h4>
-                  <div class="order-timeline">
-                    <div 
-                      v-for="event in order.timeline" 
-                      :key="event.id"
-                      class="timeline-item"
-                      :class="{ completed: event.completed }"
-                    >
-                      <div class="timeline-dot"></div>
-                      <div class="timeline-content">
-                        <div class="timeline-title">{{ event.title }}</div>
-                        <div class="timeline-time">{{ formatDateTime(event.time) }}</div>
-                        <div v-if="event.note" class="timeline-note">{{ event.note }}</div>
+                <div>
+                  <h4 class="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                    <i class="fas fa-clock text-blue-600"></i>
+                    Trạng thái đơn hàng
+                  </h4>
+                  <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+                    <div class="space-y-4">
+                      <div 
+                        v-for="(event, index) in order.timeline" 
+                        :key="event.id"
+                        class="relative flex gap-4"
+                        :class="{ 'pb-4': index < order.timeline.length - 1 }"
+                      >
+                        <div class="flex flex-col items-center">
+                          <div 
+                            :class="event.completed ? 'bg-green-500 ring-green-200' : 'bg-gray-300 ring-gray-200'"
+                            class="w-4 h-4 rounded-full ring-4 ring-offset-2"
+                          ></div>
+                          <div 
+                            v-if="index < order.timeline.length - 1"
+                            :class="event.completed ? 'bg-green-200' : 'bg-gray-200'"
+                            class="w-0.5 h-full mt-2"
+                          ></div>
+                        </div>
+                        <div class="flex-1 min-w-0 pb-4">
+                          <div class="bg-gray-50 rounded-lg p-3 border border-gray-100">
+                            <div class="font-semibold text-gray-800 mb-1">{{ event.title }}</div>
+                            <div class="text-sm text-gray-500 mb-2">{{ formatDateTime(event.time) }}</div>
+                            <div v-if="event.note" class="text-sm text-gray-600 italic">{{ event.note }}</div>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
 
                 <!-- Order Items -->
-                <div class="detail-section">
-                  <h4>Chi tiết sản phẩm</h4>
-                  <div class="order-items">
+                <div>
+                  <h4 class="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                    <i class="fas fa-box text-blue-600"></i>
+                    Chi tiết sản phẩm
+                  </h4>
+                  <div class="bg-white rounded-xl shadow-sm border border-gray-100 divide-y divide-gray-100">
                     <div 
                       v-for="item in order.items" 
                       :key="item.id"
-                      class="order-item"
+                      class="flex items-center gap-4 p-4"
                     >
-                      <div class="item-image">
-                        <img :src="item.image" :alt="item.name" />
+                      <div class="w-16 h-16 rounded-lg overflow-hidden shadow-sm flex-shrink-0">
+                        <img :src="item.image" :alt="item.name" class="w-full h-full object-cover" />
                       </div>
-                      <div class="item-info">
-                        <h5>{{ item.name }}</h5>
-                        <div class="item-details">
+                      <div class="flex-1 min-w-0">
+                        <h5 class="font-semibold text-gray-800 mb-2">{{ item.name }}</h5>
+                        <div class="flex gap-4 text-sm text-gray-600 mb-1">
                           <span v-if="item.size">Size: {{ item.size }}</span>
                           <span v-if="item.color">Màu: {{ item.color }}</span>
                         </div>
-                        <div class="item-quantity">Số lượng: {{ item.quantity }}</div>
+                        <div class="text-sm text-gray-600">Số lượng: {{ item.quantity }}</div>
                       </div>
-                      <div class="item-price">
+                      <div class="text-lg font-bold text-blue-600">
                         {{ formatPrice(item.price * item.quantity) }}đ
                       </div>
                     </div>
@@ -212,21 +290,25 @@
                 </div>
 
                 <!-- Order Totals -->
-                <div class="detail-section">
-                  <div class="order-totals">
-                    <div class="total-row">
+                <div>
+                  <h4 class="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                    <i class="fas fa-calculator text-blue-600"></i>
+                    Tổng tiền
+                  </h4>
+                  <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100 space-y-3">
+                    <div class="flex justify-between items-center text-gray-700">
                       <span>Tạm tính:</span>
-                      <span>{{ formatPrice(order.subtotal) }}đ</span>
+                      <span class="font-semibold">{{ formatPrice(order.subtotal) }}đ</span>
                     </div>
-                    <div v-if="order.discount > 0" class="total-row">
+                    <div v-if="order.discount > 0" class="flex justify-between items-center text-green-600">
                       <span>Giảm giá:</span>
-                      <span class="discount">-{{ formatPrice(order.discount) }}đ</span>
+                      <span class="font-semibold">-{{ formatPrice(order.discount) }}đ</span>
                     </div>
-                    <div class="total-row">
+                    <div class="flex justify-between items-center text-gray-700">
                       <span>Phí vận chuyển:</span>
-                      <span>{{ order.shippingFee === 0 ? 'Miễn phí' : formatPrice(order.shippingFee) + 'đ' }}</span>
+                      <span class="font-semibold">{{ order.shippingFee === 0 ? 'Miễn phí' : formatPrice(order.shippingFee) + 'đ' }}</span>
                     </div>
-                    <div class="total-row final-total">
+                    <div class="flex justify-between items-center pt-3 border-t-2 border-blue-600 text-lg font-bold text-blue-600">
                       <span>Tổng cộng:</span>
                       <span>{{ formatPrice(order.total) }}đ</span>
                     </div>
@@ -234,16 +316,36 @@
                 </div>
 
                 <!-- Payment Info -->
-                <div class="detail-section">
-                  <h4>Thông tin thanh toán</h4>
-                  <div class="payment-info">
-                    <p><strong>Phương thức:</strong> {{ order.payment.method }}</p>
-                    <p><strong>Trạng thái:</strong> 
-                      <span class="payment-status" :class="`status-${order.payment.status}`">
-                        {{ getPaymentStatusLabel(order.payment.status) }}
-                      </span>
-                    </p>
-                    <p v-if="order.payment.transactionId"><strong>Mã giao dịch:</strong> {{ order.payment.transactionId }}</p>
+                <div>
+                  <h4 class="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                    <i class="fas fa-credit-card text-blue-600"></i>
+                    Thông tin thanh toán
+                  </h4>
+                  <div class="bg-white rounded-xl p-4 space-y-3 shadow-sm border border-gray-100">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+                      <p class="flex items-center gap-2">
+                        <span class="font-semibold text-gray-700">Phương thức:</span> 
+                        <span class="text-gray-600">{{ order.payment.method }}</span>
+                      </p>
+                      <p class="flex items-center gap-2">
+                        <span class="font-semibold text-gray-700">Trạng thái:</span> 
+                        <span 
+                          class="px-2 py-1 rounded-full text-xs font-semibold"
+                          :class="{
+                            'bg-green-100 text-green-700': order.payment.status === 'paid',
+                            'bg-yellow-100 text-yellow-700': order.payment.status === 'pending',
+                            'bg-red-100 text-red-700': order.payment.status === 'failed',
+                            'bg-blue-100 text-blue-700': order.payment.status === 'refunded'
+                          }"
+                        >
+                          {{ getPaymentStatusLabel(order.payment.status) }}
+                        </span>
+                      </p>
+                      <p v-if="order.payment.transactionId" class="flex items-center gap-2 md:col-span-2">
+                        <span class="font-semibold text-gray-700">Mã giao dịch:</span> 
+                        <span class="text-gray-600 font-mono text-xs">{{ order.payment.transactionId }}</span>
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -252,18 +354,18 @@
         </div>
 
         <!-- Pagination -->
-        <div v-if="totalPages > 1" class="pagination">
+        <div v-if="totalPages > 1" class="flex justify-center items-center gap-2 mt-12">
           <button 
             @click="currentPage = 1"
             :disabled="currentPage === 1"
-            class="page-btn"
+            class="p-2 rounded-lg border border-gray-200 bg-white text-gray-600 hover:bg-blue-50 hover:text-blue-600 hover:border-blue-300 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
           >
             <i class="fas fa-angle-double-left"></i>
           </button>
           <button 
             @click="currentPage--"
             :disabled="currentPage === 1"
-            class="page-btn"
+            class="p-2 rounded-lg border border-gray-200 bg-white text-gray-600 hover:bg-blue-50 hover:text-blue-600 hover:border-blue-300 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
           >
             <i class="fas fa-angle-left"></i>
           </button>
@@ -272,8 +374,8 @@
             v-for="page in visiblePages" 
             :key="page"
             @click="currentPage = page"
-            :class="{ active: currentPage === page }"
-            class="page-btn"
+            :class="currentPage === page ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg' : 'bg-white text-gray-600 hover:bg-blue-50 hover:text-blue-600 hover:border-blue-300'"
+            class="px-4 py-2 rounded-lg border border-gray-200 font-medium transition-all duration-200 min-w-[40px]"
           >
             {{ page }}
           </button>
@@ -281,14 +383,14 @@
           <button 
             @click="currentPage++"
             :disabled="currentPage === totalPages"
-            class="page-btn"
+            class="p-2 rounded-lg border border-gray-200 bg-white text-gray-600 hover:bg-blue-50 hover:text-blue-600 hover:border-blue-300 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
           >
             <i class="fas fa-angle-right"></i>
           </button>
           <button 
             @click="currentPage = totalPages"
             :disabled="currentPage === totalPages"
-            class="page-btn"
+            class="p-2 rounded-lg border border-gray-200 bg-white text-gray-600 hover:bg-blue-50 hover:text-blue-600 hover:border-blue-300 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
           >
             <i class="fas fa-angle-double-right"></i>
           </button>
@@ -652,709 +754,22 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-.orders-page {
-  min-height: 100vh;
-  background: #f8f9fa;
+/* Animation classes */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
 }
 
-.page-header {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  padding: 60px 0;
-  text-align: center;
+@keyframes float-delay {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-15px); }
 }
 
-.page-header h1 {
-  font-size: 2.5rem;
-  margin-bottom: 10px;
+.animate-float {
+  animation: float 3s ease-in-out infinite;
 }
 
-.page-header p {
-  font-size: 1.1rem;
-  opacity: 0.9;
-}
-
-.orders-filters {
-  background: white;
-  border-radius: 15px;
-  padding: 25px;
-  margin-bottom: 30px;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
-}
-
-.filter-tabs {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 20px;
-  flex-wrap: wrap;
-}
-
-.filter-tab {
-  padding: 12px 20px;
-  border: 2px solid #e1e5e9;
-  background: white;
-  border-radius: 25px;
-  cursor: pointer;
-  font-weight: 500;
-  transition: all 0.3s ease;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.filter-tab:hover,
-.filter-tab.active {
-  border-color: #e74c3c;
-  background: #e74c3c;
-  color: white;
-}
-
-.filter-tab .count {
-  background: rgba(255, 255, 255, 0.2);
-  padding: 2px 8px;
-  border-radius: 12px;
-  font-size: 12px;
-  font-weight: 600;
-}
-
-.filter-tab.active .count {
-  background: rgba(255, 255, 255, 0.3);
-}
-
-.filter-actions {
-  display: flex;
-  gap: 20px;
-  align-items: center;
-  flex-wrap: wrap;
-}
-
-.search-box {
-  position: relative;
-  flex: 1;
-  max-width: 300px;
-}
-
-.search-input {
-  width: 100%;
-  padding: 12px 40px 12px 15px;
-  border: 2px solid #e1e5e9;
-  border-radius: 25px;
-  font-size: 14px;
-  outline: none;
-  transition: border-color 0.3s ease;
-}
-
-.search-input:focus {
-  border-color: #e74c3c;
-}
-
-.search-box i {
-  position: absolute;
-  right: 15px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #999;
-}
-
-.sort-select {
-  padding: 12px 15px;
-  border: 2px solid #e1e5e9;
-  border-radius: 8px;
-  font-size: 14px;
-  outline: none;
-  background: white;
-  cursor: pointer;
-}
-
-.loading-state,
-.empty-state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 60px 20px;
-  text-align: center;
-  background: white;
-  border-radius: 15px;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
-}
-
-.spinner {
-  width: 40px;
-  height: 40px;
-  border: 4px solid #f3f3f3;
-  border-top: 4px solid #e74c3c;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-  margin-bottom: 20px;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-.empty-state i {
-  font-size: 64px;
-  color: #ccc;
-  margin-bottom: 20px;
-}
-
-.empty-state h3 {
-  font-size: 24px;
-  color: #666;
-  margin-bottom: 10px;
-}
-
-.empty-state p {
-  color: #999;
-  margin-bottom: 30px;
-  line-height: 1.6;
-}
-
-.orders-container {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.order-card {
-  background: white;
-  border-radius: 15px;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
-  border-left: 5px solid #e1e5e9;
-  overflow: hidden;
-  transition: all 0.3s ease;
-}
-
-.order-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
-}
-
-.order-card.status-pending {
-  border-left-color: #ffc107;
-}
-
-.order-card.status-confirmed {
-  border-left-color: #17a2b8;
-}
-
-.order-card.status-shipping {
-  border-left-color: #6f42c1;
-}
-
-.order-card.status-delivered {
-  border-left-color: #28a745;
-}
-
-.order-card.status-cancelled {
-  border-left-color: #dc3545;
-}
-
-.order-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 25px 30px;
-  border-bottom: 1px solid #eee;
-}
-
-.order-info h3 {
-  margin: 0 0 10px 0;
-  color: #333;
-  font-size: 18px;
-}
-
-.order-meta {
-  display: flex;
-  gap: 20px;
-  color: #666;
-  font-size: 14px;
-}
-
-.order-meta span {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-
-.order-meta i {
-  color: #e74c3c;
-}
-
-.order-status {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-}
-
-.status-badge {
-  padding: 6px 12px;
-  border-radius: 20px;
-  font-size: 12px;
-  font-weight: 600;
-  color: white;
-}
-
-.status-badge.status-pending {
-  background: #ffc107;
-}
-
-.status-badge.status-confirmed {
-  background: #17a2b8;
-}
-
-.status-badge.status-shipping {
-  background: #6f42c1;
-}
-
-.status-badge.status-delivered {
-  background: #28a745;
-}
-
-.status-badge.status-cancelled {
-  background: #dc3545;
-}
-
-.toggle-btn {
-  background: none;
-  border: none;
-  color: #666;
-  cursor: pointer;
-  padding: 8px;
-  border-radius: 50%;
-  transition: all 0.3s ease;
-}
-
-.toggle-btn:hover {
-  background: #f8f9fa;
-  color: #e74c3c;
-}
-
-.order-preview {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px 30px;
-}
-
-.items-preview {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.preview-item {
-  width: 50px;
-  height: 50px;
-  border-radius: 8px;
-  overflow: hidden;
-}
-
-.preview-item img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.more-items {
-  width: 50px;
-  height: 50px;
-  background: #f8f9fa;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 12px;
-  font-weight: 600;
-  color: #666;
-}
-
-.order-summary {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-}
-
-.items-count {
-  color: #666;
-  font-size: 14px;
-  margin: 0;
-}
-
-.order-actions {
-  display: flex;
-  gap: 10px;
-}
-
-.action-btn {
-  padding: 8px 12px;
-  border: 1px solid #ddd;
-  background: white;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 12px;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  transition: all 0.3s ease;
-}
-
-.action-btn:hover {
-  background: #f8f9fa;
-}
-
-.track-btn:hover {
-  border-color: #6f42c1;
-  color: #6f42c1;
-}
-
-.reorder-btn:hover {
-  border-color: #28a745;
-  color: #28a745;
-}
-
-.cancel-btn:hover {
-  border-color: #dc3545;
-  color: #dc3545;
-}
-
-.review-btn:hover {
-  border-color: #ffc107;
-  color: #ffc107;
-}
-
-.order-details {
-  padding: 30px;
-  background: #fafbfc;
-  border-top: 1px solid #eee;
-}
-
-.detail-section {
-  margin-bottom: 30px;
-}
-
-.detail-section:last-child {
-  margin-bottom: 0;
-}
-
-.detail-section h4 {
-  margin: 0 0 15px 0;
-  color: #333;
-  font-size: 16px;
-}
-
-.shipping-info,
-.payment-info {
-  background: white;
-  padding: 20px;
-  border-radius: 10px;
-  border: 1px solid #eee;
-}
-
-.shipping-info p,
-.payment-info p {
-  margin: 8px 0;
-  color: #666;
-}
-
-.payment-status {
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 12px;
-  font-weight: 600;
-}
-
-.payment-status.status-paid {
-  background: #d4edda;
-  color: #155724;
-}
-
-.payment-status.status-pending {
-  background: #fff3cd;
-  color: #856404;
-}
-
-.order-timeline {
-  position: relative;
-}
-
-.timeline-item {
-  position: relative;
-  padding-left: 40px;
-  margin-bottom: 20px;
-}
-
-.timeline-item:last-child {
-  margin-bottom: 0;
-}
-
-.timeline-item::before {
-  content: '';
-  position: absolute;
-  left: 15px;
-  top: 15px;
-  bottom: -20px;
-  width: 2px;
-  background: #e1e5e9;
-}
-
-.timeline-item:last-child::before {
-  display: none;
-}
-
-.timeline-dot {
-  position: absolute;
-  left: 10px;
-  top: 0;
-  width: 12px;
-  height: 12px;
-  background: #e1e5e9;
-  border-radius: 50%;
-  border: 3px solid white;
-  box-shadow: 0 0 0 2px #e1e5e9;
-}
-
-.timeline-item.completed .timeline-dot {
-  background: #28a745;
-  box-shadow: 0 0 0 2px #28a745;
-}
-
-.timeline-content {
-  background: white;
-  padding: 15px;
-  border-radius: 8px;
-  border: 1px solid #eee;
-}
-
-.timeline-title {
-  font-weight: 600;
-  color: #333;
-  margin-bottom: 5px;
-}
-
-.timeline-time {
-  font-size: 12px;
-  color: #999;
-  margin-bottom: 8px;
-}
-
-.timeline-note {
-  font-size: 14px;
-  color: #666;
-  font-style: italic;
-}
-
-.order-items {
-  background: white;
-  border-radius: 10px;
-  border: 1px solid #eee;
-  overflow: hidden;
-}
-
-.order-item {
-  display: flex;
-  align-items: center;
-  padding: 20px;
-  border-bottom: 1px solid #eee;
-}
-
-.order-item:last-child {
-  border-bottom: none;
-}
-
-.item-image {
-  width: 60px;
-  height: 60px;
-  border-radius: 8px;
-  overflow: hidden;
-  margin-right: 15px;
-}
-
-.item-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.item-info {
-  flex: 1;
-}
-
-.item-info h5 {
-  margin: 0 0 8px 0;
-  color: #333;
-  font-size: 14px;
-}
-
-.item-details {
-  display: flex;
-  gap: 15px;
-  margin-bottom: 5px;
-  font-size: 12px;
-  color: #666;
-}
-
-.item-quantity {
-  font-size: 12px;
-  color: #666;
-}
-
-.item-price {
-  font-weight: 600;
-  color: #e74c3c;
-}
-
-.order-totals {
-  background: white;
-  padding: 20px;
-  border-radius: 10px;
-  border: 1px solid #eee;
-}
-
-.total-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 10px;
-  font-size: 14px;
-}
-
-.total-row:last-child {
-  margin-bottom: 0;
-}
-
-.discount {
-  color: #28a745;
-  font-weight: 600;
-}
-
-.final-total {
-  font-size: 16px;
-  font-weight: 700;
-  padding-top: 15px;
-  border-top: 2px solid #e74c3c;
-  color: #e74c3c;
-}
-
-.pagination {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  margin-top: 40px;
-}
-
-.page-btn {
-  padding: 8px 12px;
-  border: 1px solid #ddd;
-  background: white;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  min-width: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.page-btn:hover:not(:disabled) {
-  background: #e74c3c;
-  color: white;
-  border-color: #e74c3c;
-}
-
-.page-btn.active {
-  background: #e74c3c;
-  color: white;
-  border-color: #e74c3c;
-}
-
-.page-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 12px 24px;
-  border-radius: 8px;
-  border: none;
-  cursor: pointer;
-  font-weight: 600;
-  text-decoration: none;
-  transition: all 0.3s ease;
-}
-
-.btn-primary {
-  background: #e74c3c;
-  color: white;
-}
-
-.btn-primary:hover {
-  background: #c0392b;
-}
-
-@media (max-width: 768px) {
-  .page-header {
-    padding: 40px 0;
-  }
-  
-  .page-header h1 {
-    font-size: 2rem;
-  }
-  
-  .orders-filters {
-    padding: 20px;
-  }
-  
-  .filter-actions {
-    flex-direction: column;
-    align-items: stretch;
-  }
-  
-  .search-box {
-    max-width: none;
-  }
-  
-  .order-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 15px;
-    padding: 20px;
-  }
-  
-  .order-preview {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 15px;
-    padding: 20px;
-  }
-  
-  .order-actions {
-    align-self: stretch;
-    justify-content: space-between;
-  }
-  
-  .order-details {
-    padding: 20px;
-  }
-  
-  .order-item {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 10px;
-  }
-  
-  .item-info {
-    width: 100%;
-  }
-  
-  .item-price {
-    align-self: flex-end;
-  }
+.animate-float-delay {
+  animation: float-delay 3s ease-in-out infinite 0.5s;
 }
 </style>

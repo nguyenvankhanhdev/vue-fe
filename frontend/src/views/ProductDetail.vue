@@ -1,19 +1,22 @@
 <template>
-  <div class="product-detail-page">
+  <div class="min-h-screen bg-gradient-to-br from-green-50 via-white to-blue-50">
     <!-- Loading State -->
-    <div v-if="loading" class="loading-container">
-      <div class="spinner"></div>
-      <p>Đang tải sản phẩm...</p>
+    <div v-if="loading" class="flex flex-col items-center justify-center min-h-[60vh]">
+      <div class="w-12 h-12 border-4 border-green-200 border-t-green-600 rounded-full animate-spin mb-4"></div>
+      <p class="text-gray-600 font-medium">Đang tải sản phẩm...</p>
     </div>
 
     <!-- Product Not Found -->
-    <div v-else-if="!product" class="not-found-container">
+    <div v-else-if="!product" class="flex items-center justify-center min-h-[60vh]">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="not-found-content">
-          <i class="fas fa-exclamation-triangle"></i>
-          <h2>Sản phẩm không tồn tại</h2>
-          <p>Sản phẩm bạn tìm kiếm không tồn tại hoặc đã bị xóa.</p>
-          <router-link to="/products" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md transition-colors duration-200">Quay lại danh sách sản phẩm</router-link>
+        <div class="text-center">
+          <i class="fas fa-exclamation-triangle text-5xl text-gray-400 mb-6"></i>
+          <h2 class="text-2xl font-bold text-gray-800 mb-4">Sản phẩm không tồn tại</h2>
+          <p class="text-gray-600 mb-8">Sản phẩm bạn tìm kiếm không tồn tại hoặc đã bị xóa.</p>
+          <router-link to="/products" class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-green-500 to-green-600 text-white font-semibold rounded-xl hover:from-green-600 hover:to-green-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+            <i class="fas fa-arrow-left mr-2"></i>
+            Quay lại danh sách sản phẩm
+          </router-link>
         </div>
       </div>
     </div>
@@ -21,109 +24,156 @@
     <!-- Product Details -->
     <div v-else>
       <!-- Breadcrumb -->
-      <section class="breadcrumb-section">
+      <section class="bg-white/60 backdrop-blur-sm border-b border-green-100 py-4">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <nav class="breadcrumb">
-            <router-link to="/">Trang chủ</router-link>
-            <span>/</span>
-            <router-link to="/products">Sản phẩm</router-link>
-            <span>/</span>
-            <span>{{ product.name }}</span>
+          <nav class="flex items-center space-x-2 text-sm">
+            <router-link to="/" class="text-gray-600 hover:text-green-600 transition-colors duration-200 font-medium">
+              <i class="fas fa-home mr-1"></i>
+              Trang chủ
+            </router-link>
+            <i class="fas fa-chevron-right text-gray-400 text-xs"></i>
+            <router-link to="/products" class="text-gray-600 hover:text-green-600 transition-colors duration-200 font-medium">
+              Sản phẩm
+            </router-link>
+            <i class="fas fa-chevron-right text-gray-400 text-xs"></i>
+            <span class="text-gray-800 font-semibold">{{ product.name }}</span>
           </nav>
         </div>
       </section>
 
       <!-- Product Details -->
-      <section class="product-section py-5">
+      <section class="py-8 lg:py-12">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div class="product-layout">
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16">
             <!-- Product Images -->
-            <div class="product-images">
-              <div class="main-image">
-                <img :src="selectedImage" :alt="product.name" />
-                <div class="image-badges">
-                  <span v-if="product.isNew" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium new-badge">Mới</span>
-                  <span v-if="product.discount" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium discount-badge">
+            <div class="space-y-6">
+              <div class="relative aspect-square rounded-3xl overflow-hidden bg-gradient-to-br from-white to-gray-50 shadow-2xl">
+                <img :src="selectedImage" :alt="product.name" class="w-full h-full object-cover"/>
+                <div class="absolute top-6 left-6 flex flex-col space-y-3">
+                  <span v-if="product.isNew" class="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-bold bg-gradient-to-r from-green-500 to-green-600 text-white shadow-lg">
+                    <i class="fas fa-star mr-1"></i>
+                    Mới
+                  </span>
+                  <span v-if="product.discount" class="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-bold bg-gradient-to-r from-red-500 to-red-600 text-white shadow-lg">
+                    <i class="fas fa-tag mr-1"></i>
                     -{{ product.discount }}%
                   </span>
                 </div>
+                <!-- Zoom indicator -->
+                <div class="absolute bottom-6 right-6 bg-black/20 backdrop-blur-sm rounded-full p-3 text-white opacity-0 hover:opacity-100 transition-opacity duration-300">
+                  <i class="fas fa-search-plus text-sm"></i>
+                </div>
               </div>
-              <div class="thumbnail-images">
+              <div class="flex space-x-4 overflow-x-auto pb-2">
                 <div 
                   v-for="(image, index) in product.images" 
                   :key="index"
-                  class="thumbnail"
-                  :class="{ active: selectedImage === image }"
+                  class="flex-shrink-0 w-20 h-20 lg:w-24 lg:h-24 rounded-2xl overflow-hidden cursor-pointer border-3 transition-all duration-300 hover:shadow-lg"
+                  :class="selectedImage === image ? 'border-green-500 shadow-lg ring-2 ring-green-200' : 'border-gray-200 hover:border-green-300'"
                   @click="selectedImage = image"
                 >
-                  <img :src="image" :alt="`${product.name} ${index + 1}`" />
+                  <img :src="image" :alt="`${product.name} ${index + 1}`" class="w-full h-full object-cover"/>
                 </div>
               </div>
             </div>
 
             <!-- Product Info -->
-            <div class="product-info">
-              <div class="product-header">
-                <h1>{{ product.name }}</h1>
-                <div class="product-meta">
-                  <span class="product-sku">SKU: {{ product.sku }}</span>
-                  <span class="product-category">
-                    <router-link :to="`/products?category=${product.categorySlug}`">
-                      {{ product.category }}
-                    </router-link>
+            <div class="space-y-8">
+              <div>
+                <div class="flex items-start justify-between mb-4">
+                  <h1 class="text-3xl lg:text-4xl font-bold text-gray-900 leading-tight">{{ product.name }}</h1>
+                  <button @click="addToWishlist" class="p-3 rounded-full border-2 transition-all duration-300 hover:shadow-lg" 
+                          :class="isWishlisted ? 'border-red-500 bg-red-50 text-red-500' : 'border-gray-200 hover:border-red-300 text-gray-400 hover:text-red-400'">
+                    <i class="fas fa-heart text-lg"></i>
+                  </button>
+                </div>
+                <div class="flex items-center space-x-6 text-sm text-gray-600">
+                  <span class="flex items-center">
+                    <i class="fas fa-barcode mr-2"></i>
+                    SKU: {{ product.sku }}
                   </span>
+                  <router-link :to="`/products?category=${product.categorySlug}`" 
+                               class="flex items-center text-green-600 hover:text-green-700 font-medium transition-colors duration-200">
+                    <i class="fas fa-tag mr-2"></i>
+                    {{ product.category }}
+                  </router-link>
                 </div>
               </div>
 
               <!-- Rating -->
-              <div class="product-rating">
-                <div class="stars">
-                  <i 
-                    v-for="star in 5" 
-                    :key="star"
-                    class="fas fa-star"
-                    :class="{ active: star <= product.rating }"
-                  ></i>
+              <div class="flex items-center space-x-6 pb-6 border-b border-gray-100">
+                <div class="flex items-center space-x-2">
+                  <div class="flex space-x-1">
+                    <i 
+                      v-for="star in 5" 
+                      :key="star"
+                      class="fas fa-star text-lg"
+                      :class="star <= product.rating ? 'text-yellow-400' : 'text-gray-300'"
+                    ></i>
+                  </div>
+                  <span class="text-lg font-semibold text-gray-900">{{ product.rating }}</span>
                 </div>
-                <span class="rating-text">{{ product.rating }} ({{ product.reviewCount }} đánh giá)</span>
-                <a href="#reviews" class="reviews-link">Xem đánh giá</a>
+                <span class="text-gray-600">({{ product.reviewCount }} đánh giá)</span>
+                <a href="#reviews" class="text-green-600 hover:text-green-700 font-medium transition-colors duration-200">
+                  Xem tất cả đánh giá
+                </a>
               </div>
 
               <!-- Price -->
-              <div class="product-price">
-                <span class="current-price">${{ formatPrice(currentPrice) }}</span>
-                <span v-if="product.originalPrice" class="original-price">
-                  ${{ formatPrice(product.originalPrice) }}
-                </span>
-                <span v-if="product.discount" class="savings">
-                  Tiết kiệm ${{ formatPrice(product.originalPrice - currentPrice) }}
-                </span>
+              <div class="space-y-2">
+                <div class="flex items-baseline space-x-4">
+                  <span class="text-4xl lg:text-5xl font-bold bg-gradient-to-r from-green-600 to-green-700 bg-clip-text text-transparent">
+                    {{ formatPrice(currentPrice) }}đ
+                  </span>
+                  <span v-if="product.originalPrice" class="text-xl text-gray-500 line-through">
+                    {{ formatPrice(product.originalPrice) }}đ
+                  </span>
+                </div>
+                <div v-if="product.discount" class="flex items-center space-x-3">
+                  <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-bold bg-gradient-to-r from-red-500 to-red-600 text-white">
+                    <i class="fas fa-fire mr-1"></i>
+                    Tiết kiệm {{ formatPrice(product.originalPrice - currentPrice) }}đ
+                  </span>
+                  <span class="text-sm text-gray-600">(-{{ product.discount }}%)</span>
+                </div>
               </div>
 
               <!-- Stock Status -->
-              <div class="stock-status">
-                <span v-if="product.inStock" class="in-stock">
-                  <i class="fas fa-check-circle"></i>
-                  Còn hàng ({{ product.stockQuantity }} sản phẩm)
-                </span>
-                <span v-else class="out-of-stock">
-                  <i class="fas fa-times-circle"></i>
-                  Hết hàng
-                </span>
+              <div class="p-4 rounded-2xl border-2" 
+                   :class="product.inStock ? 'border-green-200 bg-green-50' : 'border-red-200 bg-red-50'">
+                <div class="flex items-center space-x-3">
+                  <div class="flex-shrink-0">
+                    <i class="fas text-xl" 
+                       :class="product.inStock ? 'fa-check-circle text-green-600' : 'fa-times-circle text-red-600'"></i>
+                  </div>
+                  <div>
+                    <span v-if="product.inStock" class="text-green-800 font-semibold">
+                      Còn hàng
+                    </span>
+                    <span v-else class="text-red-800 font-semibold">
+                      Hết hàng
+                    </span>
+                    <p v-if="product.inStock" class="text-sm text-green-600 mt-1">
+                      {{ product.stockQuantity }} sản phẩm có sẵn
+                    </p>
+                  </div>
+                </div>
               </div>
 
               <!-- Product Options -->
-              <div class="product-options">
+              <div class="space-y-6">
                 <!-- Size Selection -->
-                <div v-if="product.sizes && product.sizes.length" class="option-group">
-                  <label>Kích thước:</label>
-                  <div class="size-options">
+                <div v-if="product.sizes && product.sizes.length" class="space-y-3">
+                  <label class="text-lg font-semibold text-gray-900">Kích thước:</label>
+                  <div class="flex flex-wrap gap-3">
                     <button 
                       v-for="size in product.sizes" 
                       :key="size"
                       @click="selectedSize = size"
-                      :class="{ active: selectedSize === size }"
-                      class="size-btn"
+                      class="px-6 py-3 border-2 rounded-xl font-semibold transition-all duration-300 hover:shadow-md"
+                      :class="selectedSize === size 
+                        ? 'border-green-500 bg-green-50 text-green-700' 
+                        : 'border-gray-200 text-gray-700 hover:border-green-300'"
                     >
                       {{ size }}
                     </button>
@@ -131,70 +181,102 @@
                 </div>
 
                 <!-- Color Selection -->
-                <div v-if="product.colors && product.colors.length" class="option-group">
-                  <label>Màu sắc:</label>
-                  <div class="color-options">
+                <div v-if="product.colors && product.colors.length" class="space-y-3">
+                  <label class="text-lg font-semibold text-gray-900">Màu sắc:</label>
+                  <div class="flex flex-wrap gap-3">
                     <button 
                       v-for="color in product.colors" 
                       :key="color.name"
                       @click="selectedColor = color"
-                      :class="{ active: selectedColor === color }"
+                      class="w-12 h-12 rounded-full border-4 transition-all duration-300 hover:scale-110 shadow-lg"
                       :style="{ backgroundColor: color.value }"
-                      class="color-btn"
+                      :class="selectedColor === color ? 'border-gray-800' : 'border-gray-200'"
                       :title="color.name"
                     ></button>
                   </div>
+                  <p v-if="selectedColor" class="text-sm text-gray-600 ml-1">
+                    Đã chọn: <span class="font-medium">{{ selectedColor.name }}</span>
+                  </p>
                 </div>
 
                 <!-- Quantity -->
-                <div class="option-group">
-                  <label>Số lượng:</label>
-                  <div class="quantity-selector">
-                    <button @click="decreaseQuantity" :disabled="quantity <= 1">-</button>
-                    <input type="number" v-model="quantity" min="1" :max="product.stockQuantity" />
-                    <button @click="increaseQuantity" :disabled="quantity >= product.stockQuantity">+</button>
+                <div class="space-y-3">
+                  <label class="text-lg font-semibold text-gray-900">Số lượng:</label>
+                  <div class="flex items-center space-x-4">
+                    <div class="flex items-center border-2 border-gray-200 rounded-xl overflow-hidden">
+                      <button @click="decreaseQuantity" 
+                              :disabled="quantity <= 1"
+                              class="px-4 py-3 bg-gray-50 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200">
+                        <i class="fas fa-minus text-gray-600"></i>
+                      </button>
+                      <input type="number" 
+                             v-model="quantity" 
+                             min="1" 
+                             :max="product.stockQuantity"
+                             class="w-20 px-4 py-3 text-center border-0 outline-none"/>
+                      <button @click="increaseQuantity" 
+                              :disabled="quantity >= product.stockQuantity"
+                              class="px-4 py-3 bg-gray-50 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200">
+                        <i class="fas fa-plus text-gray-600"></i>
+                      </button>
+                    </div>
+                    <span class="text-sm text-gray-500">
+                      Tối đa {{ product.stockQuantity }} sản phẩm
+                    </span>
                   </div>
                 </div>
               </div>
 
               <!-- Action Buttons -->
-              <div class="product-actions">
+              <div class="flex flex-col sm:flex-row gap-4">
                 <button 
                   @click="addToCart" 
                   :disabled="!product.inStock"
-                  class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md transition-colors duration-200 add-to-cart-btn"
+                  class="flex-1 sm:min-w-[200px] flex items-center justify-center px-8 py-4 rounded-2xl font-bold text-lg transition-all duration-300 transform hover:-translate-y-0.5 disabled:transform-none disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl"
+                  :class="product.inStock 
+                    ? 'bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white' 
+                    : 'bg-gray-300 text-gray-500'"
                 >
-                  <i class="fas fa-shopping-cart"></i>
+                  <i class="fas fa-shopping-cart mr-3"></i>
                   {{ product.inStock ? 'Thêm vào giỏ hàng' : 'Hết hàng' }}
                 </button>
-                <button @click="buyNow" :disabled="!product.inStock" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md transition-colors duration-200 buy-now-btn">
+                <button @click="buyNow" 
+                        :disabled="!product.inStock" 
+                        class="flex-1 sm:min-w-[150px] flex items-center justify-center px-8 py-4 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-bold text-lg rounded-2xl transition-all duration-300 transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none shadow-lg hover:shadow-xl">
+                  <i class="fas fa-bolt mr-3"></i>
                   Mua ngay
                 </button>
-                <button @click="addToWishlist" class="btn-icon wishlist-btn">
-                  <i class="fas fa-heart" :class="{ active: isWishlisted }"></i>
-                </button>
-                <button @click="shareProduct" class="btn-icon share-btn">
-                  <i class="fas fa-share-alt"></i>
+                <button @click="shareProduct" 
+                        class="p-4 border-2 border-gray-200 hover:border-green-300 rounded-2xl transition-all duration-300 hover:shadow-lg text-gray-600 hover:text-green-600">
+                  <i class="fas fa-share-alt text-lg"></i>
                 </button>
               </div>
 
               <!-- Product Features -->
-              <div class="product-features">
-                <div class="feature-item">
-                  <i class="fas fa-shipping-fast"></i>
-                  <span>Giao hàng miễn phí</span>
+              <div class="grid grid-cols-2 gap-4 p-6 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-3xl border border-blue-100">
+                <div class="flex items-center space-x-3">
+                  <div class="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center">
+                    <i class="fas fa-shipping-fast text-white text-sm"></i>
+                  </div>
+                  <span class="text-sm font-medium text-gray-700">Giao hàng miễn phí</span>
                 </div>
-                <div class="feature-item">
-                  <i class="fas fa-undo-alt"></i>
-                  <span>Đổi trả trong 30 ngày</span>
+                <div class="flex items-center space-x-3">
+                  <div class="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center">
+                    <i class="fas fa-undo-alt text-white text-sm"></i>
+                  </div>
+                  <span class="text-sm font-medium text-gray-700">Đổi trả 30 ngày</span>
                 </div>
-                <div class="feature-item">
-                  <i class="fas fa-shield-alt"></i>
-                  <span>Bảo hành chính hãng</span>
+                <div class="flex items-center space-x-3">
+                  <div class="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center">
+                    <i class="fas fa-shield-alt text-white text-sm"></i>
+                  </div>
+                  <span class="text-sm font-medium text-gray-700">Bảo hành chính hãng</span>
                 </div>
-                <div class="feature-item">
-                  <i class="fas fa-headset"></i>
-                  <span>Hỗ trợ 24/7</span>
+                <div class="flex items-center space-x-3">
+                  <div class="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center">
+                    <i class="fas fa-headset text-white text-sm"></i>
+                  </div>
+                  <span class="text-sm font-medium text-gray-700">Hỗ trợ 24/7</span>
                 </div>
               </div>
             </div>
@@ -203,140 +285,201 @@
       </section>
 
       <!-- Product Details Tabs -->
-      <section class="product-tabs py-5">
+      <section class="py-8 lg:py-12 bg-white/60 backdrop-blur-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div class="tabs-container">
-            <div class="tabs-header">
+          <div class="bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100">
+            <div class="flex border-b border-gray-100 bg-gradient-to-r from-gray-50 to-blue-50">
               <button 
                 v-for="tab in tabs" 
                 :key="tab.id"
                 @click="activeTab = tab.id"
-                :class="{ active: activeTab === tab.id }"
-                class="tab-btn"
+                class="flex-1 px-6 py-4 font-semibold text-center transition-all duration-300 relative overflow-hidden"
+                :class="activeTab === tab.id 
+                  ? 'text-green-600 bg-white shadow-md' 
+                  : 'text-gray-600 hover:text-green-600 hover:bg-white/50'"
               >
-                {{ tab.label }}
+                <span class="relative z-10">{{ tab.label }}</span>
+                <div v-if="activeTab === tab.id" 
+                     class="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-green-500 to-green-600"></div>
               </button>
             </div>
             
-            <div class="tabs-content">
+            <div class="p-6 lg:p-8">
               <!-- Description Tab -->
-              <div v-if="activeTab === 'description'" class="tab-content">
-                <div class="description-content">
-                  <div v-html="product.description"></div>
+              <div v-if="activeTab === 'description'" class="space-y-8">
+                <div class="prose max-w-none">
+                  <div v-html="product.description" class="text-gray-700 leading-relaxed"></div>
+                </div>
                   
-                  <div class="specifications" v-if="product.specifications">
-                    <h3>Thông số kỹ thuật</h3>
-                    <table class="specs-table">
-                      <tr v-for="(value, key) in product.specifications" :key="key">
-                        <td class="spec-name">{{ key }}</td>
-                        <td class="spec-value">{{ value }}</td>
-                      </tr>
-                    </table>
+                <div v-if="product.specifications" class="space-y-4">
+                  <h3 class="text-2xl font-bold text-gray-900 flex items-center">
+                    <i class="fas fa-cogs text-green-600 mr-3"></i>
+                    Thông số kỹ thuật
+                  </h3>
+                  <div class="overflow-hidden rounded-2xl border border-gray-200">
+                    <div v-for="(value, key, index) in product.specifications" 
+                         :key="key"
+                         class="flex border-b border-gray-100 last:border-b-0"
+                         :class="index % 2 === 0 ? 'bg-gray-50' : 'bg-white'">
+                      <div class="flex-1 px-6 py-4 font-semibold text-gray-800 bg-gradient-to-r from-gray-100 to-gray-50">
+                        {{ key }}
+                      </div>
+                      <div class="flex-1 px-6 py-4 text-gray-700">
+                        {{ value }}
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
 
               <!-- Reviews Tab -->
-              <div v-if="activeTab === 'reviews'" class="tab-content" id="reviews">
-                <div class="reviews-summary">
-                  <div class="rating-summary">
-                    <div class="overall-rating">
-                      <span class="rating-number">{{ product.rating }}</span>
-                      <div class="stars">
+              <div v-if="activeTab === 'reviews'" class="space-y-8" id="reviews">
+                <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+                  <div class="flex items-center space-x-8">
+                    <div class="text-center">
+                      <div class="text-5xl font-bold text-green-600 mb-2">{{ product.rating }}</div>
+                      <div class="flex justify-center space-x-1 mb-2">
                         <i 
                           v-for="star in 5" 
                           :key="star"
-                          class="fas fa-star"
-                          :class="{ active: star <= product.rating }"
+                          class="fas fa-star text-2xl"
+                          :class="star <= product.rating ? 'text-yellow-400' : 'text-gray-300'"
                         ></i>
                       </div>
-                      <span class="total-reviews">{{ product.reviewCount }} đánh giá</span>
+                      <span class="text-gray-600">{{ product.reviewCount }} đánh giá</span>
                     </div>
                   </div>
                   
-                  <button @click="showReviewForm = !showReviewForm" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md transition-colors duration-200">
+                  <button @click="showReviewForm = !showReviewForm" 
+                          class="flex items-center px-6 py-3 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-semibold rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+                    <i class="fas fa-pen mr-2"></i>
                     Viết đánh giá
                   </button>
                 </div>
 
                 <!-- Review Form -->
-                <form v-if="showReviewForm" @submit.prevent="submitReview" class="review-form">
-                  <h3>Viết đánh giá của bạn</h3>
-                  <div class="mb-4">
-                    <label>Đánh giá:</label>
-                    <div class="rating-input">
+                <form v-if="showReviewForm" @submit.prevent="submitReview" 
+                      class="bg-gradient-to-br from-green-50 to-blue-50 p-6 rounded-2xl border border-green-100 space-y-6">
+                  <h3 class="text-xl font-bold text-gray-900 flex items-center">
+                    <i class="fas fa-edit text-green-600 mr-3"></i>
+                    Viết đánh giá của bạn
+                  </h3>
+                  <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-3">Đánh giá:</label>
+                    <div class="flex space-x-2">
                       <button 
                         v-for="star in 5" 
                         :key="star"
                         type="button"
                         @click="reviewRating = star"
-                        class="star-btn"
-                        :class="{ active: star <= reviewRating }"
+                        class="text-3xl transition-colors duration-200 hover:scale-110 transform"
+                        :class="star <= reviewRating ? 'text-yellow-400' : 'text-gray-300 hover:text-yellow-200'"
                       >
                         <i class="fas fa-star"></i>
                       </button>
                     </div>
                   </div>
-                  <div class="mb-4">
-                    <label>Tiêu đề:</label>
-                    <input type="text" v-model="reviewTitle" required />
+                  <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-3">Tiêu đề:</label>
+                    <input type="text" 
+                           v-model="reviewTitle" 
+                           required 
+                           class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-colors duration-200" 
+                           placeholder="Nhập tiêu đề đánh giá..."/>
                   </div>
-                  <div class="mb-4">
-                    <label>Nội dung:</label>
-                    <textarea v-model="reviewContent" rows="4" required></textarea>
+                  <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-3">Nội dung:</label>
+                    <textarea v-model="reviewContent" 
+                              rows="4" 
+                              required 
+                              class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-colors duration-200 resize-none"
+                              placeholder="Chia sẻ trải nghiệm của bạn về sản phẩm..."></textarea>
                   </div>
-                  <div class="form-actions">
-                    <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md transition-colors duration-200">Gửi đánh giá</button>
-                    <button type="button" @click="showReviewForm = false" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md transition-colors duration-200 bg-gray-600 hover:bg-gray-700 text-white">
+                  <div class="flex space-x-4">
+                    <button type="submit" 
+                            class="flex-1 flex items-center justify-center px-6 py-3 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-semibold rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+                      <i class="fas fa-paper-plane mr-2"></i>
+                      Gửi đánh giá
+                    </button>
+                    <button type="button" 
+                            @click="showReviewForm = false" 
+                            class="px-6 py-3 bg-gray-500 hover:bg-gray-600 text-white font-semibold rounded-xl transition-all duration-300">
                       Hủy
                     </button>
                   </div>
                 </form>
 
                 <!-- Reviews List -->
-                <div class="reviews-list">
-                  <div v-for="review in product.reviews" :key="review.id" class="review-item">
-                    <div class="review-header">
-                      <div class="reviewer-info">
-                        <span class="reviewer-name">{{ review.userName }}</span>
-                        <span class="review-date">{{ formatDate(review.date) }}</span>
-                      </div>
-                      <div class="review-rating">
-                        <div class="stars">
-                          <i 
-                            v-for="star in 5" 
-                            :key="star"
-                            class="fas fa-star"
-                            :class="{ active: star <= review.rating }"
-                          ></i>
+                <div class="space-y-6">
+                  <div v-for="review in product.reviews" 
+                       :key="review.id" 
+                       class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow duration-300">
+                    <div class="flex justify-between items-start mb-4">
+                      <div class="flex items-center space-x-4">
+                        <div class="w-12 h-12 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
+                          {{ review.userName.charAt(0) }}
+                        </div>
+                        <div>
+                          <h4 class="font-semibold text-gray-900">{{ review.userName }}</h4>
+                          <p class="text-sm text-gray-500">{{ formatDate(review.date) }}</p>
                         </div>
                       </div>
+                      <div class="flex space-x-1">
+                        <i 
+                          v-for="star in 5" 
+                          :key="star"
+                          class="fas fa-star text-lg"
+                          :class="star <= review.rating ? 'text-yellow-400' : 'text-gray-300'"
+                        ></i>
+                      </div>
                     </div>
-                    <h4 class="review-title">{{ review.title }}</h4>
-                    <p class="review-content">{{ review.content }}</p>
+                    <h5 class="font-semibold text-gray-900 mb-2">{{ review.title }}</h5>
+                    <p class="text-gray-700 leading-relaxed">{{ review.content }}</p>
                   </div>
                 </div>
               </div>
 
               <!-- Shipping Tab -->
-              <div v-if="activeTab === 'shipping'" class="tab-content">
-                <div class="shipping-info">
-                  <h3>Thông tin giao hàng</h3>
-                  <div class="shipping-options">
-                    <div class="shipping-option">
-                      <h4>Giao hàng tiêu chuẩn</h4>
-                      <p>Miễn phí cho đơn hàng trên 500.000đ</p>
-                      <p>Thời gian: 2-3 ngày làm việc</p>
+              <div v-if="activeTab === 'shipping'" class="space-y-6">
+                <h3 class="text-2xl font-bold text-gray-900 flex items-center">
+                  <i class="fas fa-shipping-fast text-green-600 mr-3"></i>
+                  Thông tin giao hàng
+                </h3>
+                <div class="grid gap-6 md:grid-cols-1 lg:grid-cols-1">
+                  <div class="p-6 bg-gradient-to-br from-green-50 to-green-100 rounded-2xl border border-green-200">
+                    <div class="flex items-start space-x-4">
+                      <div class="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-truck text-white"></i>
+                      </div>
+                      <div class="flex-1">
+                        <h4 class="text-lg font-bold text-green-800 mb-2">Giao hàng tiêu chuẩn</h4>
+                        <p class="text-green-700 mb-1">🆓 Miễn phí cho đơn hàng trên 500.000đ</p>
+                        <p class="text-green-600">⏰ Thời gian: 2-3 ngày làm việc</p>
+                      </div>
                     </div>
-                    <div class="shipping-option">
-                      <h4>Giao hàng nhanh</h4>
-                      <p>Phí ship: 50.000đ</p>
-                      <p>Thời gian: 1-2 ngày làm việc</p>
+                  </div>
+                  <div class="p-6 bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl border border-blue-200">
+                    <div class="flex items-start space-x-4">
+                      <div class="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-rocket text-white"></i>
+                      </div>
+                      <div class="flex-1">
+                        <h4 class="text-lg font-bold text-blue-800 mb-2">Giao hàng nhanh</h4>
+                        <p class="text-blue-700 mb-1">💰 Phí ship: 50.000đ</p>
+                        <p class="text-blue-600">⚡ Thời gian: 1-2 ngày làm việc</p>
+                      </div>
                     </div>
-                    <div class="shipping-option">
-                      <h4>Giao hàng trong ngày</h4>
-                      <p>Phí ship: 100.000đ (chỉ áp dụng trong nội thành)</p>
-                      <p>Thời gian: Trong ngày (đặt trước 14:00)</p>
+                  </div>
+                  <div class="p-6 bg-gradient-to-br from-purple-50 to-purple-100 rounded-2xl border border-purple-200">
+                    <div class="flex items-start space-x-4">
+                      <div class="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl flex items-center justify-center">
+                        <i class="fas fa-bolt text-white"></i>
+                      </div>
+                      <div class="flex-1">
+                        <h4 class="text-lg font-bold text-purple-800 mb-2">Giao hàng trong ngày</h4>
+                        <p class="text-purple-700 mb-1">🏃‍♂️ Phí ship: 100.000đ (chỉ áp dụng trong nội thành)</p>
+                        <p class="text-purple-600">🕐 Thời gian: Trong ngày (đặt trước 14:00)</p>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -347,10 +490,15 @@
       </section>
 
       <!-- Related Products -->
-      <section class="related-products py-5">
+      <section class="py-12 bg-gradient-to-br from-gray-50 via-white to-blue-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 class="section-title">Sản phẩm liên quan</h2>
-          <div class="products-grid">
+          <div class="text-center mb-12">
+            <h2 class="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent mb-4">
+              Sản phẩm liên quan
+            </h2>
+            <p class="text-gray-600 text-lg">Khám phá những sản phẩm tương tự khác</p>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             <ProductCard 
               v-for="product in relatedProducts" 
               :key="product.id"
@@ -628,707 +776,59 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-.product-detail-page {
-  min-height: 100vh;
-}
-
-.loading-container,
-.not-found-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 60vh;
-  text-align: center;
-}
-
-.spinner {
-  width: 40px;
-  height: 40px;
-  border: 4px solid #f3f3f3;
-  border-top: 4px solid #e74c3c;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-  margin-bottom: 20px;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-.not-found-content i {
-  font-size: 48px;
-  color: #ccc;
-  margin-bottom: 20px;
-}
-
-.breadcrumb-section {
-  background: #f8f9fa;
-  padding: 20px 0;
-}
-
-.breadcrumb {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 14px;
-}
-
-.breadcrumb a {
-  color: #666;
-  text-decoration: none;
-}
-
-.breadcrumb a:hover {
-  color: #e74c3c;
-}
-
-.breadcrumb span {
-  color: #999;
-}
-
-.product-layout {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 60px;
-}
-
-.product-images {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.main-image {
-  position: relative;
-  aspect-ratio: 1;
-  border-radius: 15px;
-  overflow: hidden;
-  background: #f8f9fa;
-}
-
-.main-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.image-badges {
-  position: absolute;
-  top: 20px;
-  left: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.badge {
-  padding: 6px 12px;
-  border-radius: 20px;
-  font-size: 12px;
-  font-weight: 600;
-  color: white;
-}
-
-.new-badge {
-  background: #27ae60;
-}
-
-.discount-badge {
-  background: #e74c3c;
-}
-
-.thumbnail-images {
-  display: flex;
-  gap: 15px;
-  overflow-x: auto;
-  padding-bottom: 10px;
-}
-
-.thumbnail {
-  flex-shrink: 0;
-  width: 80px;
-  height: 80px;
-  border-radius: 8px;
-  overflow: hidden;
-  cursor: pointer;
-  border: 2px solid transparent;
-  transition: border-color 0.3s ease;
-}
-
-.thumbnail.active {
-  border-color: #e74c3c;
-}
-
-.thumbnail img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.product-info {
-  display: flex;
-  flex-direction: column;
-  gap: 25px;
-}
-
-.product-header h1 {
-  font-size: 2rem;
-  margin-bottom: 10px;
-  color: #333;
-}
-
-.product-meta {
-  display: flex;
-  gap: 20px;
-  font-size: 14px;
-  color: #666;
-}
-
-.product-category a {
-  color: #e74c3c;
-  text-decoration: none;
-}
-
-.product-rating {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-}
-
-.stars {
-  display: flex;
-  gap: 2px;
-}
-
-.stars i {
-  color: #ddd;
-  font-size: 16px;
-}
-
-.stars i.active {
-  color: #ffd700;
-}
-
-.rating-text {
-  font-weight: 600;
-}
-
-.reviews-link {
-  color: #e74c3c;
-  text-decoration: none;
-  font-size: 14px;
-}
-
-.product-price {
-  display: flex;
-  align-items: baseline;
-  gap: 15px;
-  flex-wrap: wrap;
-}
-
-.current-price {
-  font-size: 2.5rem;
+/* Custom styles that complement Tailwind */
+.prose h3 {
+  font-size: 1.25rem;
   font-weight: 700;
-  color: #e74c3c;
+  color: #111827;
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
 }
 
-.original-price {
-  font-size: 1.2rem;
-  color: #999;
-  text-decoration: line-through;
+.prose ul {
+  list-style-type: disc;
+  list-style-position: inside;
+  color: #374151;
 }
 
-.savings {
-  background: #27ae60;
-  color: white;
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 14px;
-  font-weight: 600;
+.prose ul > li {
+  margin-left: 1rem;
+  margin-bottom: 0.5rem;
 }
 
-.stock-status {
-  padding: 12px 16px;
-  border-radius: 8px;
-  font-weight: 600;
-}
-
-.in-stock {
-  background: #d4edda;
-  color: #155724;
-  border: 1px solid #c3e6cb;
-}
-
-.out-of-stock {
-  background: #f8d7da;
-  color: #721c24;
-  border: 1px solid #f5c6cb;
-}
-
-.option-group {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.option-group label {
-  font-weight: 600;
-  color: #333;
-}
-
-.size-options {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-.size-btn {
-  padding: 8px 16px;
-  border: 2px solid #ddd;
-  background: white;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  font-weight: 500;
-}
-
-.size-btn:hover,
-.size-btn.active {
-  border-color: #e74c3c;
-  background: #e74c3c;
-  color: white;
-}
-
-.color-options {
-  display: flex;
-  gap: 10px;
-}
-
-.color-btn {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  border: 3px solid #ddd;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.color-btn.active {
-  border-color: #e74c3c;
-  transform: scale(1.1);
-}
-
-.quantity-selector {
-  display: flex;
-  align-items: center;
-  border: 2px solid #ddd;
-  border-radius: 8px;
-  overflow: hidden;
-  width: fit-content;
-}
-
-.quantity-selector button {
-  padding: 12px 16px;
-  border: none;
-  background: #f8f9fa;
-  cursor: pointer;
-  font-size: 18px;
-  font-weight: bold;
-  transition: background 0.3s ease;
-}
-
-.quantity-selector button:hover:not(:disabled) {
-  background: #e9ecef;
-}
-
-.quantity-selector button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.quantity-selector input {
-  border: none;
-  padding: 12px 16px;
-  width: 80px;
-  text-align: center;
-  font-size: 16px;
-  outline: none;
-}
-
-.product-actions {
-  display: flex;
-  gap: 15px;
-  align-items: center;
-  flex-wrap: wrap;
-}
-
-.add-to-cart-btn {
-  flex: 1;
-  min-width: 200px;
-  padding: 15px 25px;
-  font-size: 16px;
-  font-weight: 600;
-}
-
-.buy-now-btn {
-  background: #27ae60;
-  padding: 15px 25px;
-  font-size: 16px;
-  font-weight: 600;
-}
-
-.buy-now-btn:hover {
-  background: #229954;
-}
-
-.btn-icon {
-  width: 50px;
-  height: 50px;
-  border: 2px solid #ddd;
-  background: white;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.btn-icon:hover {
-  border-color: #e74c3c;
-  color: #e74c3c;
-}
-
-.wishlist-btn .fa-heart.active {
-  color: #e74c3c;
-}
-
-.product-features {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 15px;
-  padding: 20px;
-  background: #f8f9fa;
-  border-radius: 10px;
-}
-
-.feature-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 14px;
-}
-
-.feature-item i {
-  color: #e74c3c;
-  font-size: 16px;
-}
-
-.tabs-container {
-  background: white;
-  border-radius: 15px;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
-  overflow: hidden;
-}
-
-.tabs-header {
-  display: flex;
-  background: #f8f9fa;
-  border-bottom: 1px solid #dee2e6;
-}
-
-.tab-btn {
-  flex: 1;
-  padding: 20px;
-  border: none;
-  background: transparent;
-  cursor: pointer;
-  font-size: 16px;
-  font-weight: 500;
-  transition: all 0.3s ease;
-  border-bottom: 3px solid transparent;
-}
-
-.tab-btn:hover,
-.tab-btn.active {
-  background: white;
-  color: #e74c3c;
-  border-bottom-color: #e74c3c;
-}
-
-.tab-content {
-  padding: 30px;
-}
-
-.description-content {
-  line-height: 1.8;
-}
-
-.description-content h3 {
-  color: #333;
-  margin: 25px 0 15px;
-}
-
-.description-content ul {
-  margin: 15px 0;
-  padding-left: 20px;
-}
-
-.description-content li {
-  margin-bottom: 8px;
-}
-
-.specifications {
-  margin-top: 40px;
-}
-
-.specs-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
-}
-
-.specs-table td {
-  padding: 12px 16px;
-  border-bottom: 1px solid #eee;
-}
-
-.spec-name {
-  font-weight: 600;
-  width: 40%;
-  background: #f8f9fa;
-}
-
-.spec-value {
-  color: #666;
-}
-
-.reviews-summary {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 30px;
-  padding-bottom: 20px;
-  border-bottom: 1px solid #eee;
-}
-
-.overall-rating {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-}
-
-.rating-number {
-  font-size: 2rem;
-  font-weight: bold;
-  color: #e74c3c;
-}
-
-.total-reviews {
-  color: #666;
-  font-size: 14px;
-}
-
-.review-form {
-  background: #f8f9fa;
-  padding: 25px;
-  border-radius: 10px;
-  margin-bottom: 30px;
-}
-
-.review-form h3 {
-  margin-bottom: 20px;
-  color: #333;
-}
-
-.form-group {
-  margin-bottom: 20px;
-}
-
-.form-group label {
-  display: block;
-  margin-bottom: 8px;
-  font-weight: 600;
-  color: #333;
-}
-
-.rating-input {
-  display: flex;
-  gap: 5px;
-}
-
-.star-btn {
-  background: none;
-  border: none;
-  font-size: 20px;
-  color: #ddd;
-  cursor: pointer;
-  transition: color 0.3s ease;
-}
-
-.star-btn.active,
-.star-btn:hover {
-  color: #ffd700;
-}
-
-.form-group input,
-.form-group textarea {
-  width: 100%;
-  padding: 12px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  font-size: 14px;
-  outline: none;
-}
-
-.form-group input:focus,
-.form-group textarea:focus {
-  border-color: #e74c3c;
-}
-
-.form-actions {
-  display: flex;
-  gap: 15px;
-}
-
-.reviews-list {
-  display: flex;
-  flex-direction: column;
-  gap: 25px;
-}
-
-.review-item {
-  padding: 20px;
-  border: 1px solid #eee;
-  border-radius: 10px;
-}
-
-.review-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 10px;
-}
-
-.reviewer-info {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.reviewer-name {
-  font-weight: 600;
-  color: #333;
-}
-
-.review-date {
-  font-size: 12px;
-  color: #999;
-}
-
-.review-title {
-  font-size: 16px;
-  margin-bottom: 10px;
-  color: #333;
-}
-
-.review-content {
+.prose p {
+  margin-bottom: 1rem;
+  color: #374151;
   line-height: 1.6;
-  color: #666;
 }
 
-.shipping-info h3 {
-  margin-bottom: 25px;
-  color: #333;
+/* Smooth transitions for interactive elements */
+.transform {
+  transition: transform 0.3s ease;
 }
 
-.shipping-options {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+/* Custom scrollbar for thumbnail images */
+.overflow-x-auto::-webkit-scrollbar {
+  height: 4px;
 }
 
-.shipping-option {
-  padding: 20px;
-  border: 1px solid #eee;
-  border-radius: 10px;
-  background: #f8f9fa;
+.overflow-x-auto::-webkit-scrollbar-track {
+  background-color: #f3f4f6;
+  border-radius: 9999px;
 }
 
-.shipping-option h4 {
-  color: #e74c3c;
-  margin-bottom: 10px;
+.overflow-x-auto::-webkit-scrollbar-thumb {
+  background-color: #34d399;
+  border-radius: 9999px;
 }
 
-.shipping-option p {
-  margin-bottom: 5px;
-  color: #666;
+.overflow-x-auto::-webkit-scrollbar-thumb:hover {
+  background-color: #10b981;
 }
 
-.related-products {
-  background: #f8f9fa;
-}
-
-.section-title {
-  font-size: 2rem;
-  text-align: center;
-  margin-bottom: 40px;
-  color: #333;
-}
-
-.products-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 25px;
-}
-
-@media (max-width: 1024px) {
-  .product-layout {
-    grid-template-columns: 1fr;
-    gap: 40px;
-  }
-  
-  .product-features {
-    grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 768px) {
-  .current-price {
-    font-size: 2rem;
-  }
-  
-  .product-actions {
-    flex-direction: column;
-  }
-  
-  .add-to-cart-btn {
-    min-width: auto;
-  }
-  
-  .tabs-header {
-    overflow-x: auto;
-  }
-  
-  .tab-btn {
-    white-space: nowrap;
-    min-width: 150px;
-  }
-  
-  .tab-content {
-    padding: 20px;
-  }
-  
-  .reviews-summary {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 20px;
-  }
-  
-  .products-grid {
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  }
+/* Ensure text wrapping for long product names */
+h1 {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 </style>
