@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { toastService } from './services/toast'
+import { useLoading } from './composables/useLoading'
 
 // Khai báo danh sách route
 const routes = [
@@ -135,6 +136,26 @@ const router = createRouter({
 
 // Navigation guard để kiểm tra authentication
 router.beforeEach((to, from, next) => {
+  // Start loading với message tùy chỉnh theo route
+  const { startLoading } = useLoading()
+  
+  let loadingMessage = 'Đang tải...'
+  if (to.path.startsWith('/admin')) {
+    loadingMessage = 'Đang tải trang quản trị...'
+  } else if (to.name === 'Products') {
+    loadingMessage = 'Đang tải danh sách sản phẩm...'
+  } else if (to.name === 'ProductDetail') {
+    loadingMessage = 'Đang tải chi tiết sản phẩm...'
+  } else if (to.name === 'Cart') {
+    loadingMessage = 'Đang tải giỏ hàng...'
+  } else if (to.name === 'Profile') {
+    loadingMessage = 'Đang tải thông tin cá nhân...'
+  } else if (to.name === 'Orders') {
+    loadingMessage = 'Đang tải lịch sử đơn hàng...'
+  }
+  
+  startLoading(loadingMessage)
+  
   const isAuthenticated = localStorage.getItem('token')
   const user = localStorage.getItem('user')
   
@@ -190,8 +211,16 @@ router.beforeEach((to, from, next) => {
   next()
 })
 
-// Post-login toast after navigation completes
+// Post-navigation: Stop loading and show toasts
 router.afterEach((to, from) => {
+  // Stop loading after navigation completes
+  const { stopLoading } = useLoading()
+  
+  // Delay để trang có thời gian render trước khi tắt loading
+  setTimeout(() => {
+    stopLoading()
+  }, 300)
+  
   try {
     const flag = sessionStorage.getItem('justLoggedIn')
     const token = localStorage.getItem('token')

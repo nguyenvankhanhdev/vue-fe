@@ -4,6 +4,7 @@ import { useRoute } from 'vue-router'
 import Header from '@/components/Layout/Header.vue'
 import Footer from '@/components/Layout/Footer.vue'
 import ToastContainer from '@/views/ToastContainer.vue'
+import GlobalLoading from '@/components/Common/GlobalLoading.vue'
 
 const route = useRoute()
 
@@ -30,6 +31,9 @@ const isAdminRoute = computed(() => {
 
     <!-- Toast Notifications (luôn mounted ở root) -->
     <ToastContainer />
+
+    <!-- Global Loading Overlay -->
+    <GlobalLoading />
   </div>
 </template>
 
