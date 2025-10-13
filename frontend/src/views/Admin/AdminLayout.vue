@@ -17,66 +17,73 @@
         <!-- Navigation -->
         <ul class="space-y-2 font-medium">
           <li>
-            <router-link to="/admin/dashboard" 
-              class="flex items-center p-3 text-gray-300 rounded-lg hover:bg-gray-700 hover:text-white transition-all duration-200 group"
-              active-class="bg-blue-600 text-white shadow-lg">
-              <i class="fas fa-chart-line w-5 h-5 text-gray-400 transition duration-75 group-hover:text-white"></i>
+            <a @click="navigateWithLoading('/admin/dashboard', 'Đang tải Dashboard...')" 
+              class="flex items-center p-3 text-gray-300 rounded-lg hover:bg-gray-700 hover:text-white transition-all duration-200 group cursor-pointer"
+              :class="{ 'bg-blue-600 text-white shadow-lg': route.path === '/admin/dashboard' }">
+              <i class="fas fa-chart-line w-5 h-5 text-gray-400 transition duration-75 group-hover:text-white"
+                 :class="{ 'text-white': route.path === '/admin/dashboard' }"></i>
               <span class="ms-3">Dashboard</span>
-            </router-link>
+            </a>
           </li>
           
           <li>
-            <router-link to="/admin/products" 
-              class="flex items-center p-3 text-gray-300 rounded-lg hover:bg-gray-700 hover:text-white transition-all duration-200 group"
-              active-class="bg-blue-600 text-white shadow-lg">
-              <i class="fas fa-box w-5 h-5 text-gray-400 transition duration-75 group-hover:text-white"></i>
+            <a @click="navigateWithLoading('/admin/products', 'Đang tải danh sách sản phẩm...')" 
+              class="flex items-center p-3 text-gray-300 rounded-lg hover:bg-gray-700 hover:text-white transition-all duration-200 group cursor-pointer"
+              :class="{ 'bg-blue-600 text-white shadow-lg': route.path === '/admin/products' }">
+              <i class="fas fa-box w-5 h-5 text-gray-400 transition duration-75 group-hover:text-white"
+                 :class="{ 'text-white': route.path === '/admin/products' }"></i>
               <span class="ms-3">Sản phẩm</span>
-            </router-link>
+            </a>
           </li>
           
           <li>
-            <router-link to="/admin/categories" 
-              class="flex items-center p-3 text-gray-300 rounded-lg hover:bg-gray-700 hover:text-white transition-all duration-200 group"
-              active-class="bg-blue-600 text-white shadow-lg">
-              <i class="fas fa-tags w-5 h-5 text-gray-400 transition duration-75 group-hover:text-white"></i>
+            <a @click="navigateWithLoading('/admin/categories', 'Đang tải danh mục...')" 
+              class="flex items-center p-3 text-gray-300 rounded-lg hover:bg-gray-700 hover:text-white transition-all duration-200 group cursor-pointer"
+              :class="{ 'bg-blue-600 text-white shadow-lg': route.path === '/admin/categories' }">
+              <i class="fas fa-tags w-5 h-5 text-gray-400 transition duration-75 group-hover:text-white"
+                 :class="{ 'text-white': route.path === '/admin/categories' }"></i>
               <span class="ms-3">Danh mục</span>
-            </router-link>
+            </a>
           </li>
           
           <li>
-            <router-link to="/admin/orders" 
-              class="flex items-center p-3 text-gray-300 rounded-lg hover:bg-gray-700 hover:text-white transition-all duration-200 group"
-              active-class="bg-blue-600 text-white shadow-lg">
-              <i class="fas fa-shopping-cart w-5 h-5 text-gray-400 transition duration-75 group-hover:text-white"></i>
+            <a @click="navigateWithLoading('/admin/orders', 'Đang tải đơn hàng...')" 
+              class="flex items-center p-3 text-gray-300 rounded-lg hover:bg-gray-700 hover:text-white transition-all duration-200 group cursor-pointer"
+              :class="{ 'bg-blue-600 text-white shadow-lg': route.path === '/admin/orders' }">
+              <i class="fas fa-shopping-cart w-5 h-5 text-gray-400 transition duration-75 group-hover:text-white"
+                 :class="{ 'text-white': route.path === '/admin/orders' }"></i>
               <span class="ms-3">Đơn hàng</span>
-            </router-link>
+            </a>
           </li>
           
           <li>
-            <router-link to="/admin/users" 
-              class="flex items-center p-3 text-gray-300 rounded-lg hover:bg-gray-700 hover:text-white transition-all duration-200 group"
-              active-class="bg-blue-600 text-white shadow-lg">
-              <i class="fas fa-users w-5 h-5 text-gray-400 transition duration-75 group-hover:text-white"></i>
+            <a @click="navigateWithLoading('/admin/users', 'Đang tải người dùng...')" 
+              class="flex items-center p-3 text-gray-300 rounded-lg hover:bg-gray-700 hover:text-white transition-all duration-200 group cursor-pointer"
+              :class="{ 'bg-blue-600 text-white shadow-lg': route.path === '/admin/users' }">
+              <i class="fas fa-users w-5 h-5 text-gray-400 transition duration-75 group-hover:text-white"
+                 :class="{ 'text-white': route.path === '/admin/users' }"></i>
               <span class="ms-3">Người dùng</span>
-            </router-link>
+            </a>
           </li>
           
           <li>
-            <router-link to="/admin/reports" 
-              class="flex items-center p-3 text-gray-300 rounded-lg hover:bg-gray-700 hover:text-white transition-all duration-200 group"
-              active-class="bg-blue-600 text-white shadow-lg">
-              <i class="fas fa-chart-bar w-5 h-5 text-gray-400 transition duration-75 group-hover:text-white"></i>
+            <a @click="navigateWithLoading('/admin/reports', 'Đang tải báo cáo...')" 
+              class="flex items-center p-3 text-gray-300 rounded-lg hover:bg-gray-700 hover:text-white transition-all duration-200 group cursor-pointer"
+              :class="{ 'bg-blue-600 text-white shadow-lg': route.path === '/admin/reports' }">
+              <i class="fas fa-chart-bar w-5 h-5 text-gray-400 transition duration-75 group-hover:text-white"
+                 :class="{ 'text-white': route.path === '/admin/reports' }"></i>
               <span class="ms-3">Báo cáo</span>
-            </router-link>
+            </a>
           </li>
           
           <li>
-            <router-link to="/admin/settings" 
-              class="flex items-center p-3 text-gray-300 rounded-lg hover:bg-gray-700 hover:text-white transition-all duration-200 group"
-              active-class="bg-blue-600 text-white shadow-lg">
-              <i class="fas fa-cog w-5 h-5 text-gray-400 transition duration-75 group-hover:text-white"></i>
+            <a @click="navigateWithLoading('/admin/settings', 'Đang tải cài đặt...')" 
+              class="flex items-center p-3 text-gray-300 rounded-lg hover:bg-gray-700 hover:text-white transition-all duration-200 group cursor-pointer"
+              :class="{ 'bg-blue-600 text-white shadow-lg': route.path === '/admin/settings' }">
+              <i class="fas fa-cog w-5 h-5 text-gray-400 transition duration-75 group-hover:text-white"
+                 :class="{ 'text-white': route.path === '/admin/settings' }"></i>
               <span class="ms-3">Cài đặt</span>
-            </router-link>
+            </a>
           </li>
         </ul>
 
@@ -199,9 +206,11 @@
 import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import Swal from 'sweetalert2'
+import { useLoading } from '@/composables/useLoading'
 
 const route = useRoute()
 const router = useRouter()
+const { startLoading } = useLoading()
 
 const pageTitle = computed(() => {
   const routeName = route.name?.toString() || ''
@@ -219,6 +228,11 @@ const pageTitle = computed(() => {
 
 function getPageTitle() {
   return pageTitle.value
+}
+
+function navigateWithLoading(path, message) {
+  startLoading(message)
+  router.push(path)
 }
 
 function goToProfile() {
