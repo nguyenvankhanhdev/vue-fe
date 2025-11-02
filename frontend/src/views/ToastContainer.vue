@@ -33,16 +33,25 @@
               @click="removeToast(toast.id)"
               aria-label="Đóng thông báo"
             >
-              <i class="fas fa-times" style="font-family: 'Font Awesome 6 Free'; font-weight: 900;"></i>
+              <i class="fas fa-times"></i>
             </button>
           </div>
 
-          <!-- Progress bar for timed toasts -->
+          <!-- Enhanced Progress bar with gradient -->
           <div
             v-if="!toast.persistent && toast.duration > 0"
-            class="toast-progress"
-            :style="{ animationDuration: `${toast.duration}ms` }"
-          ></div>
+            class="toast-progress-container"
+          >
+            <!-- Progress bar (scale animation) -->
+            <div
+              class="toast-progress"
+              :class="`toast-progress-${toast.type}`"
+              :style="{ animationDuration: toast.duration + 'ms' }"
+            ></div>
+            
+            <!-- Shimmer overlay (separate - not affected by scale) -->
+            <div class="toast-progress-shine"></div>
+          </div>
         </div>
       </transition-group>
     </div>
@@ -82,7 +91,7 @@ const handleAction = (toast) => {
   right: 20px;
   z-index: 99999;
   pointer-events: none;
-  max-width: 400px;
+  max-width: 420px;
   width: 100%;
 }
 
@@ -97,14 +106,36 @@ const handleAction = (toast) => {
 
 .toast {
   background: white;
-  border-radius: 12px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1), 0 4px 16px rgba(0, 0, 0, 0.08);
-  margin-bottom: 12px;
+  border-radius: 16px;
+  box-shadow: 
+    0 20px 40px -12px rgba(0, 0, 0, 0.15),
+    0 4px 16px rgba(0, 0, 0, 0.08),
+    0 0 0 1px rgba(0, 0, 0, 0.04);
+  margin-bottom: 16px;
   overflow: hidden;
   pointer-events: auto;
   position: relative;
-  min-height: 64px;
+  min-height: 68px;
   border-left: 4px solid;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.toast::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 50%);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.toast:hover::before {
+  opacity: 1;
 }
 
 .toast-success {
@@ -126,18 +157,33 @@ const handleAction = (toast) => {
 .toast-content {
   display: flex;
   align-items: flex-start;
-  padding: 16px;
-  gap: 12px;
+  padding: 18px 20px;
+  gap: 14px;
 }
 
 .toast-icon {
   flex-shrink: 0;
-  width: 20px;
-  height: 20px;
+  width: 24px;
+  height: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: 2px;
+  font-size: 18px;
+  animation: iconPop 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+@keyframes iconPop {
+  0% {
+    transform: scale(0) rotate(-45deg);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2) rotate(10deg);
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
 }
 
 .toast-success .toast-icon {
@@ -146,10 +192,24 @@ const handleAction = (toast) => {
 
 .toast-error .toast-icon {
   color: #ef4444;
+  animation: iconShake 0.5s ease;
+}
+
+@keyframes iconShake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-3px); }
+  20%, 40%, 60%, 80% { transform: translateX(3px); }
 }
 
 .toast-warning .toast-icon {
   color: #f59e0b;
+  animation: iconBounce 0.6s ease;
+}
+
+@keyframes iconBounce {
+  0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+  40% { transform: translateY(-8px); }
+  60% { transform: translateY(-4px); }
 }
 
 .toast-info .toast-icon {
@@ -159,8 +219,9 @@ const handleAction = (toast) => {
 .toast-message {
   flex: 1;
   font-size: 14px;
-  line-height: 1.5;
-  color: #374151;
+  line-height: 1.6;
+  color: #1f2937;
+  font-weight: 500;
 }
 
 .toast-message p {
@@ -173,114 +234,212 @@ const handleAction = (toast) => {
   color: #3b82f6;
   cursor: pointer;
   font-size: 14px;
-  font-weight: 600;
-  padding: 4px 8px;
-  border-radius: 6px;
+  font-weight: 700;
+  padding: 6px 12px;
+  border-radius: 8px;
   transition: all 0.2s ease;
   flex-shrink: 0;
 }
 
 .toast-action:hover {
   background: #eff6ff;
+  transform: translateY(-1px);
+}
+
+.toast-action:active {
+  transform: translateY(0);
 }
 
 .toast-close {
   background: none;
   border: none;
-  color: #6b7280;
+  color: #9ca3af;
   cursor: pointer;
-  padding: 4px;
-  border-radius: 6px;
+  padding: 6px;
+  border-radius: 8px;
   transition: all 0.2s ease;
   flex-shrink: 0;
-  width: 28px;
-  height: 28px;
+  width: 32px;
+  height: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
+  font-size: 14px;
 }
 
 .toast-close:hover {
   background: #f3f4f6;
   color: #374151;
+  transform: rotate(90deg);
+}
+
+.toast-close:active {
+  transform: rotate(90deg) scale(0.95);
+}
+
+/* Enhanced Progress Bar */
+.toast-progress-container {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background: rgba(0, 0, 0, 0.1);
+  overflow: hidden; /* Container vẫn giữ overflow hidden */
+  border-radius: 0 0 16px 16px;
 }
 
 .toast-progress {
   position: absolute;
-  bottom: 0;
+  top: 0;
   left: 0;
-  height: 3px;
-  background: currentColor;
+  bottom: 0;
   width: 100%;
-  transform-origin: left;
-  animation: toast-progress linear forwards;
-  opacity: 0.3;
+  height: 100%;
+  transform-origin: left center;
+  animation: toastProgress linear forwards;
+  animation-duration: inherit;
+  border-radius: inherit;
+  /* BỎ overflow: hidden để shine không bị ảnh hưởng */
+  will-change: transform;
+  z-index: 1;
 }
 
-.toast-success .toast-progress {
-  color: #10b981;
+.toast-progress-success {
+  background: linear-gradient(90deg, 
+    #34d399 0%, 
+    #10b981 50%, 
+    #059669 100%
+  );
+  box-shadow: 
+    inset 0 1px 2px rgba(255, 255, 255, 0.3),
+    0 0 20px rgba(16, 185, 129, 0.7);
 }
 
-.toast-error .toast-progress {
-  color: #ef4444;
+.toast-progress-error {
+  background: linear-gradient(90deg, 
+    #f87171 0%, 
+    #ef4444 50%, 
+    #dc2626 100%
+  );
+  box-shadow: 
+    inset 0 1px 2px rgba(255, 255, 255, 0.3),
+    0 0 20px rgba(239, 68, 68, 0.7);
 }
 
-.toast-warning .toast-progress {
-  color: #f59e0b;
+.toast-progress-warning {
+  background: linear-gradient(90deg, 
+    #fbbf24 0%, 
+    #f59e0b 50%, 
+    #d97706 100%
+  );
+  box-shadow: 
+    inset 0 1px 2px rgba(255, 255, 255, 0.3),
+    0 0 20px rgba(245, 158, 11, 0.7);
 }
 
-.toast-info .toast-progress {
-  color: #3b82f6;
+.toast-progress-info {
+  background: linear-gradient(90deg, 
+    #60a5fa 0%, 
+    #3b82f6 50%, 
+    #2563eb 100%
+  );
+  box-shadow: 
+    inset 0 1px 2px rgba(255, 255, 255, 0.3),
+    0 0 20px rgba(59, 130, 246, 0.7);
 }
 
-@keyframes toast-progress {
-  from {
+/* Shimmer effect - TÁCH RA NGOÀI, không bị scale theo progress bar */
+.toast-progress-shine {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0) 20%,
+    rgba(255, 255, 255, 0.4) 40%,
+    rgba(255, 255, 255, 0.8) 50%,
+    rgba(255, 255, 255, 0.4) 60%,
+    rgba(255, 255, 255, 0) 80%,
+    transparent 100%
+  );
+  transform: translateX(-100%);
+  animation: shimmer 1.5s ease-in-out infinite;
+  will-change: transform;
+  pointer-events: none; /* Không chặn click */
+  z-index: 2; /* Nằm trên progress bar */
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(200%);
+  }
+}
+
+@keyframes toastProgress {
+  0% {
     transform: scaleX(1);
   }
-  to {
+  100% {
     transform: scaleX(0);
   }
 }
 
-/* Toast animations */
+/* Toast animations - smoother entrance */
 .toast-enter-active {
-  transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 }
 
 .toast-leave-active {
-  transition: all 0.3s ease-in;
+  transition: all 0.3s cubic-bezier(0.4, 0, 1, 1);
 }
 
 .toast-enter-from {
-  transform: translateX(100%);
+  transform: translateX(120%) scale(0.8);
   opacity: 0;
 }
 
 .toast-leave-to {
-  transform: translateX(100%);
+  transform: translateX(120%) scale(0.8);
   opacity: 0;
 }
 
 .toast-move {
-  transition: transform 0.3s ease;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Hover effects */
 .toast:hover {
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15), 0 8px 24px rgba(0, 0, 0, 0.12);
-  transform: translateY(-2px);
-  transition: all 0.2s ease;
+  box-shadow: 
+    0 24px 48px -12px rgba(0, 0, 0, 0.2),
+    0 8px 24px rgba(0, 0, 0, 0.12),
+    0 0 0 1px rgba(0, 0, 0, 0.06);
+  transform: translateY(-4px) scale(1.02);
 }
 
 .toast:hover .toast-progress {
   animation-play-state: paused;
 }
 
+.toast:hover .toast-progress-shine {
+  animation-play-state: paused;
+}
+
 /* Dark mode support */
 @media (prefers-color-scheme: dark) {
   .toast {
-    background: #1f2937;
+    background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
     color: #f9fafb;
+    box-shadow: 
+      0 20px 40px -12px rgba(0, 0, 0, 0.5),
+      0 4px 16px rgba(0, 0, 0, 0.3),
+      0 0 0 1px rgba(255, 255, 255, 0.1);
   }
   
   .toast-message {
@@ -297,7 +456,11 @@ const handleAction = (toast) => {
   }
   
   .toast-action:hover {
-    background: #1e40af;
+    background: #1e3a8a;
+  }
+  
+  .toast-progress-container {
+    background: rgba(255, 255, 255, 0.1);
   }
 }
 
@@ -305,20 +468,49 @@ const handleAction = (toast) => {
 @media (prefers-reduced-motion: reduce) {
   .toast-enter-active,
   .toast-leave-active,
-  .toast-move {
-    transition: none;
+  .toast-move,
+  .toast,
+  .toast::before,
+  .toast-close,
+  .toast-action {
+    transition: none !important;
   }
   
-  .toast-progress {
-    animation: none;
+  .toast-progress,
+  .toast-progress-shine,
+  .toast-icon {
+    animation: none !important;
   }
 }
 
 /* High contrast mode */
 @media (prefers-contrast: high) {
   .toast {
-    border: 2px solid;
+    border: 3px solid;
     border-color: currentColor;
+  }
+}
+
+/* Mobile optimizations */
+@media (max-width: 480px) {
+  .toast {
+    border-radius: 12px;
+    min-height: 64px;
+  }
+  
+  .toast-content {
+    padding: 14px 16px;
+    gap: 12px;
+  }
+  
+  .toast-icon {
+    width: 20px;
+    height: 20px;
+    font-size: 16px;
+  }
+  
+  .toast-message {
+    font-size: 13px;
   }
 }
 </style>

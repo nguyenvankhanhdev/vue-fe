@@ -14,8 +14,8 @@ export const TOAST_TYPES = {
 }
 
 // Toast configuration
-const DEFAULT_DURATION = 5000 // 5 seconds
-const MAX_TOASTS = 5
+const DEFAULT_DURATION = 2000 // 5 seconds (để dễ thấy progress bar)
+const MAX_TOASTS = 2
 
 // Toast service
 export const toastService = {
@@ -68,10 +68,7 @@ export const toastService = {
   },
 
   error(message, duration, options) {
-    return this.show(message, TOAST_TYPES.ERROR, duration, {
-      persistent: true, // Errors stay until dismissed
-      ...options
-    })
+    return this.show(message, TOAST_TYPES.ERROR, duration, options)
   },
 
   warning(message, duration, options) {
