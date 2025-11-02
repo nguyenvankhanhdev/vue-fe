@@ -1,4 +1,29 @@
-// API Service để quản lý tất cả các cuộc gọi API
+import axios from "axios";
+
+const apiClient = axios.create({
+  baseURL: "http://127.0.0.1:8000/api",
+  headers: {
+    'Content-Type': 'application/json',
+    'Accept': 'application/json',
+    'X-Requested-With': 'XMLHttpRequest',
+  }
+});
+
+apiClient.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      config.headers['Authorization'] = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
+
+
 const API_BASE_URL = "http://127.0.0.1:8000/api"; // Laravel backend URL
 
 class ApiService {
@@ -159,9 +184,9 @@ class AuthService extends ApiService {
   async login(credentials) {
     try {
       const res = await this.post("/auth/login", credentials);
-        const payload = res?.data || res; // fallback if API not wrapped
-        const token = payload?.token;
-        let user = payload?.user;
+      const payload = res?.data || res; // fallback if API not wrapped
+      const token = payload?.token;
+      let user = payload?.user;
 
       if (!token || !user) {
         throw new ApiError(500, "Invalid response format from server", {
@@ -231,105 +256,113 @@ class AuthService extends ApiService {
   // Kiểm tra trạng thái xác minh email từ server (chỉ khi có token và user đã đăng nhập)
   async checkEmailVerificationFromServer() {
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem("token");
       if (!token) {
-        return { verified: false, method: 'no_token' };
+        return { verified: false, method: "no_token" };
       }
 
       // Kiểm tra xem có đang trong trạng thái pending verification không
-      const pendingEmail = localStorage.getItem('pendingVerifyEmail');
+      const pendingEmail = localStorage.getItem("pendingVerifyEmail");
       if (pendingEmail) {
         // Nếu đang pending, chỉ check localStorage, không gọi API
-        const userStr = localStorage.getItem('user');
+        const userStr = localStorage.getItem("user");
         if (userStr) {
           const user = JSON.parse(userStr);
-          const isVerified = !!(user?.email_verified_at || user?.verified === true);
-          return { 
-            verified: isVerified, 
+          const isVerified = !!(
+            user?.email_verified_at || user?.verified === true
+          );
+          return {
+            verified: isVerified,
             user,
-            method: 'local_storage_check' 
+            method: "local_storage_check",
           };
         }
-        return { verified: false, method: 'pending_verification' };
+        return { verified: false, method: "pending_verification" };
       }
 
       // Chỉ gọi API khi không có pending verification
       const user = await this.reloadUser();
-      return { 
-        verified: !!(user?.email_verified_at || user?.verified === true), 
+      return {
+        verified: !!(user?.email_verified_at || user?.verified === true),
         user,
-        method: 'server_check' 
+        method: "server_check",
       };
     } catch (error) {
-      console.error('Error checking verification from server:', error);
+      console.error("Error checking verification from server:", error);
       // Nếu API fail, fallback sang localStorage
-      const userStr = localStorage.getItem('user');
+      const userStr = localStorage.getItem("user");
       if (userStr) {
         try {
           const user = JSON.parse(userStr);
-          return { 
-            verified: !!(user?.email_verified_at || user?.verified === true), 
+          return {
+            verified: !!(user?.email_verified_at || user?.verified === true),
             user,
-            method: 'fallback_local_storage' 
+            method: "fallback_local_storage",
           };
         } catch (parseError) {
-          console.error('Error parsing user from localStorage:', parseError);
+          console.error("Error parsing user from localStorage:", parseError);
         }
       }
-      return { verified: false, method: 'server_error', error };
+      return { verified: false, method: "server_error", error };
     }
   }
 
   // Kiểm tra trạng thái xác minh email thông qua URL query hoặc localStorage
-  checkEmailVerificationStatus() {``
+  checkEmailVerificationStatus() {
+    ``;
     // Kiểm tra URL query parameters
     const urlParams = new URLSearchParams(window.location.search);
-    const verified = urlParams.get('verified');
-    
-    if (verified === '1') {
-      return { verified: true, method: 'url_redirect' };
-    } else if (verified === '0') {
-      const reason = urlParams.get('reason');
-      return { verified: false, method: 'url_redirect', reason };
+    const verified = urlParams.get("verified");
+
+    if (verified === "1") {
+      return { verified: true, method: "url_redirect" };
+    } else if (verified === "0") {
+      const reason = urlParams.get("reason");
+      return { verified: false, method: "url_redirect", reason };
     }
-    
+
     // Kiểm tra localStorage để xem có thông tin user đã verified không
-    const userStr = localStorage.getItem('user');
+    const userStr = localStorage.getItem("user");
     if (userStr) {
       try {
         const user = JSON.parse(userStr);
         if (user.email_verified_at || user.verified === true) {
-          return { verified: true, method: 'local_storage' };
+          return { verified: true, method: "local_storage" };
         }
       } catch (e) {
-        console.error('Error parsing user from localStorage:', e);
+        console.error("Error parsing user from localStorage:", e);
       }
     }
-    
-    return { verified: false, method: 'unknown' };
+
+    return { verified: false, method: "unknown" };
   }
 
   // Đánh dấu email đã được xác minh trong localStorage
   markEmailAsVerified(email) {
     try {
       // Cập nhật localStorage để các tab khác biết
-      localStorage.setItem('email_verification_status', JSON.stringify({
-        email: email,
-        verified: true,
-        timestamp: new Date().toISOString()
-      }));
-      
-      // Trigger storage event cho các tab khác
-      window.dispatchEvent(new StorageEvent('storage', {
-        key: 'email_verification_status',
-        newValue: JSON.stringify({
+      localStorage.setItem(
+        "email_verification_status",
+        JSON.stringify({
           email: email,
           verified: true,
-          timestamp: new Date().toISOString()
+          timestamp: new Date().toISOString(),
         })
-      }));
+      );
+
+      // Trigger storage event cho các tab khác
+      window.dispatchEvent(
+        new StorageEvent("storage", {
+          key: "email_verification_status",
+          newValue: JSON.stringify({
+            email: email,
+            verified: true,
+            timestamp: new Date().toISOString(),
+          }),
+        })
+      );
     } catch (error) {
-      console.error('Error marking email as verified:', error);
+      console.error("Error marking email as verified:", error);
     }
   }
 
@@ -343,12 +376,12 @@ class AuthService extends ApiService {
       const parsed = existing ? JSON.parse(existing) : {};
       const merged = { ...parsed, ...user };
       localStorage.setItem("user", JSON.stringify(merged));
-      
+
       // Nếu email đã được verify, đánh dấu trong localStorage
       if (user.email_verified_at || user.verified === true) {
         this.markEmailAsVerified(user.email);
       }
-      
+
       return merged;
     }
     return user;
