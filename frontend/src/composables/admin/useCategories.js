@@ -1,7 +1,8 @@
-// src/composables/useCategories.js
+// src/composables/admin/useCategories.js
 import { ref, computed, reactive } from 'vue';
-import { categoryService } from '../services/categoryService';
-import { ApiError } from '../services/apiError';
+import { categoryService } from '@/services/categoryService';
+import { ApiError } from '@/services/apiError';
+import { toastService } from '@/services/toast';
 
 // Global state cho categories
 const categories = ref([]);

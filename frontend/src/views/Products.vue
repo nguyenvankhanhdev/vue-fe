@@ -98,12 +98,12 @@
                   </h4>
                   <div class="space-y-2">
                     <button
-                      v-for="category in categories" 
+                      v-for="category in categoriesWithCount" 
                       :key="category.id"
-                      @click="selectCategory(category.slug)"
+                      @click="selectCategory(category.id)"
                       :class="[
                         'w-full text-left px-4 py-3 rounded-xl transition-all duration-300 flex items-center justify-between group',
-                        selectedCategory === category.slug 
+                        selectedCategory === category.id 
                           ? 'bg-blue-50 text-blue-700 border-2 border-blue-200' 
                           : 'bg-gray-50 text-gray-700 hover:bg-gray-100 border-2 border-transparent'
                       ]"
@@ -128,14 +128,14 @@
                         type="number" 
                         v-model="priceRange.min"
                         placeholder="Từ"
-                        @input="filterByPrice"
+                        @input="updatePriceRange"
                         class="px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:outline-none transition-colors text-sm"
                       />
                       <input 
                         type="number" 
                         v-model="priceRange.max"
                         placeholder="Đến"
-                        @input="filterByPrice"
+                        @input="updatePriceRange"
                         class="px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:outline-none transition-colors text-sm"
                       />
                     </div>
@@ -150,7 +150,7 @@
                         max="50000000"
                         step="100000"
                         v-model="priceRange.max"
-                        @input="filterByPrice"
+                        @input="updatePriceRange"
                         class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
                       />
                     </div>
@@ -200,12 +200,12 @@
                   </h4>
                   <div class="space-y-2">
                     <button
-                      v-for="brand in brands" 
+                      v-for="brand in brandsWithCount" 
                       :key="brand.id"
-                      @click="selectBrand(brand.slug)"
+                      @click="selectBrand(brand.name)"
                       :class="[
                         'w-full text-left px-4 py-3 rounded-xl transition-all duration-300 flex items-center justify-between group',
-                        selectedBrand === brand.slug 
+                        selectedBrand === brand.name 
                           ? 'bg-purple-50 text-purple-700 border-2 border-purple-200' 
                           : 'bg-gray-50 text-gray-700 hover:bg-gray-100 border-2 border-transparent'
                       ]"
@@ -220,7 +220,7 @@
 
                 <!-- Clear All Filters -->
                 <div class="pt-4 border-t border-gray-200">
-                  <button @click="clearAllFilters" class="w-full py-3 bg-gradient-to-r from-red-500 to-red-600 text-white font-semibold rounded-xl hover:from-red-600 hover:to-red-700 transition-all duration-300 shadow-lg hover:shadow-xl flex items-center justify-center">
+                  <button @click="clearFilters" class="w-full py-3 bg-gradient-to-r from-red-500 to-red-600 text-white font-semibold rounded-xl hover:from-red-600 hover:to-red-700 transition-all duration-300 shadow-lg hover:shadow-xl flex items-center justify-center">
                     <i class="fas fa-trash-alt mr-2"></i>
                     Xóa tất cả bộ lọc
                   </button>
@@ -320,7 +320,7 @@
                     Thử điều chỉnh bộ lọc hoặc từ khóa tìm kiếm để tìm sản phẩm phù hợp hơn
                   </p>
                   <button 
-                    @click="clearAllFilters" 
+                    @click="clearFilters" 
                     class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-xl hover:from-blue-700 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-xl"
                   >
                     <i class="fas fa-refresh mr-2"></i>
@@ -415,20 +415,39 @@
 import { ref, computed, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import ProductCard from '../components/Product/ProductCard.vue'
+import { useClientProducts } from '@/composables'
 
 const route = useRoute()
 const router = useRouter()
 
-// Reactive data
-const loading = ref(true)
-const products = ref([])
-const categories = ref([])
-const brands = ref([])
-const selectedCategory = ref('')
-const selectedBrand = ref('')
-const selectedRating = ref(0)
-const priceRange = ref({ min: 0, max: 50000000 })
-const sortBy = ref('')
+// Use client products composable
+const {
+  products,
+  categories,
+  brands,
+  loading,
+  error,
+  selectedCategory,
+  selectedBrand,
+  selectedRating,
+  priceRange,
+  searchQuery,
+  sortBy,
+  filteredProducts,
+  sortedProducts,
+  loadProducts,
+  loadCategories,
+  filterByCategory,
+  filterByBrand,
+  filterByRating,
+  filterByPrice,
+  setSortBy,
+  clearAllFilters,
+  formatCurrency,
+  getCurrentPrice
+} = useClientProducts()
+
+// Local state
 const viewMode = ref('grid')
 const currentPage = ref(1)
 const productsPerPage = 12
@@ -436,70 +455,13 @@ const productsPerPage = 12
 const ratings = [4, 3, 2, 1]
 
 // Computed properties
-const filteredProducts = computed(() => {
-  let filtered = [...products.value]
-
-  // Filter by category
-  if (selectedCategory.value) {
-    filtered = filtered.filter(p => p.categorySlug === selectedCategory.value)
-  }
-
-  // Filter by brand
-  if (selectedBrand.value) {
-    filtered = filtered.filter(p => p.brandSlug === selectedBrand.value)
-  }
-
-  // Filter by price range
-  filtered = filtered.filter(p => {
-    const price = p.discount ? p.price * (1 - p.discount / 100) : p.price
-    return price >= priceRange.value.min && price <= priceRange.value.max
-  })
-
-  // Filter by rating
-  if (selectedRating.value > 0) {
-    filtered = filtered.filter(p => p.rating >= selectedRating.value)
-  }
-
-  // Filter by search query
-  if (route.query.search) {
-    const query = route.query.search.toLowerCase()
-    filtered = filtered.filter(p => 
-      p.name.toLowerCase().includes(query) ||
-      p.category.toLowerCase().includes(query)
-    )
-  }
-
-  return filtered
-})
-
-const sortedProducts = computed(() => {
-  const sorted = [...filteredProducts.value]
-  
-  switch (sortBy.value) {
-    case 'name-asc':
-      return sorted.sort((a, b) => a.name.localeCompare(b.name))
-    case 'name-desc':
-      return sorted.sort((a, b) => b.name.localeCompare(a.name))
-    case 'price-asc':
-      return sorted.sort((a, b) => getCurrentPrice(a) - getCurrentPrice(b))
-    case 'price-desc':
-      return sorted.sort((a, b) => getCurrentPrice(b) - getCurrentPrice(a))
-    case 'rating-desc':
-      return sorted.sort((a, b) => b.rating - a.rating)
-    case 'newest':
-      return sorted.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-    default:
-      return sorted
-  }
-})
-
-const totalPages = computed(() => Math.ceil(sortedProducts.value.length / productsPerPage))
-
 const paginatedProducts = computed(() => {
   const start = (currentPage.value - 1) * productsPerPage
   const end = start + productsPerPage
   return sortedProducts.value.slice(start, end)
 })
+
+const totalPages = computed(() => Math.ceil(sortedProducts.value.length / productsPerPage))
 
 const visiblePages = computed(() => {
   const pages = []
@@ -513,18 +475,30 @@ const visiblePages = computed(() => {
   return pages
 })
 
-// Methods
-const getCurrentPrice = (product) => {
-  return product.discount ? product.price * (1 - product.discount / 100) : product.price
-}
+// Categories with product count
+const categoriesWithCount = computed(() => {
+  return categories.value.map(cat => ({
+    ...cat,
+    count: products.value.filter(p => p.category_id === cat.id).length
+  }))
+})
 
-const selectCategory = (slug) => {
-  selectedCategory.value = selectedCategory.value === slug ? '' : slug
+// Brands with product count
+const brandsWithCount = computed(() => {
+  return brands.value.map(brand => ({
+    ...brand,
+    count: products.value.filter(p => p.brand === brand.name).length
+  }))
+})
+
+// Methods
+const selectCategory = (categoryId) => {
+  selectedCategory.value = selectedCategory.value === categoryId ? null : categoryId
   currentPage.value = 1
 }
 
-const selectBrand = (slug) => {
-  selectedBrand.value = selectedBrand.value === slug ? '' : slug
+const selectBrand = (brandName) => {
+  selectedBrand.value = selectedBrand.value === brandName ? null : brandName
   currentPage.value = 1
 }
 
@@ -533,7 +507,8 @@ const selectRating = (rating) => {
   currentPage.value = 1
 }
 
-const filterByPrice = () => {
+const updatePriceRange = () => {
+  filterByPrice(priceRange.value.min, priceRange.value.max)
   currentPage.value = 1
 }
 
@@ -541,111 +516,49 @@ const sortProducts = () => {
   currentPage.value = 1
 }
 
-const clearAllFilters = () => {
-  selectedCategory.value = ''
-  selectedBrand.value = ''
-  selectedRating.value = 0
-  priceRange.value = { min: 0, max: 50000000 }
-  sortBy.value = ''
+const clearFilters = () => {
+  clearAllFilters()
   currentPage.value = 1
 }
 
 const handleAddToCart = (product) => {
   console.log('Add to cart:', product)
+  // TODO: Implement add to cart logic
 }
 
 const handleAddToWishlist = (product) => {
   console.log('Add to wishlist:', product)
+  // TODO: Implement add to wishlist logic
 }
 
 const handleQuickView = (product) => {
   console.log('Quick view:', product)
+  // TODO: Implement quick view modal
 }
 
 // Watch for route changes
-watch(() => route.query, () => {
+watch(() => route.query.search, (newSearch) => {
+  if (newSearch) {
+    searchQuery.value = newSearch
+  }
   currentPage.value = 1
 })
 
-// Load data
+// Load data on mount
 onMounted(async () => {
   try {
-    // Mock API calls
-    await new Promise(resolve => setTimeout(resolve, 1000))
+    // Check if there's a search query in route
+    if (route.query.search) {
+      searchQuery.value = route.query.search
+    }
     
-    // Load categories
-    categories.value = [
-      { id: 1, name: 'Thời trang Nam', slug: 'thoi-trang-nam', count: 45 },
-      { id: 2, name: 'Thời trang Nữ', slug: 'thoi-trang-nu', count: 67 },
-      { id: 3, name: 'Điện tử', slug: 'dien-tu', count: 23 },
-      { id: 4, name: 'Gia dụng', slug: 'gia-dung', count: 34 },
-      { id: 5, name: 'Thể thao', slug: 'the-thao', count: 28 }
-    ]
-
-    // Load brands
-    brands.value = [
-      { id: 1, name: 'Nike', slug: 'nike', count: 15 },
-      { id: 2, name: 'Adidas', slug: 'adidas', count: 12 },
-      { id: 3, name: 'Samsung', slug: 'samsung', count: 8 },
-      { id: 4, name: 'Apple', slug: 'apple', count: 6 },
-      { id: 5, name: 'Zara', slug: 'zara', count: 20 }
-    ]
-
-    // Load products (extended mock data)
-    products.value = [
-      {
-        id: 1,
-        name: 'Áo thun basic Premium',
-        category: 'Thời trang Nam',
-        categorySlug: 'thoi-trang-nam',
-        brandSlug: 'nike',
-        price: 299000,
-        originalPrice: 399000,
-        discount: 25,
-        image: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400',
-        rating: 4.5,
-        reviewCount: 128,
-        isNew: true,
-        inStock: true,
-        createdAt: '2024-01-15'
-      },
-      {
-        id: 2,
-        name: 'Smartphone XYZ Pro',
-        category: 'Điện tử',
-        categorySlug: 'dien-tu',
-        brandSlug: 'samsung',
-        price: 12990000,
-        image: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400',
-        rating: 4.8,
-        reviewCount: 89,
-        isNew: false,
-        inStock: true,
-        createdAt: '2024-01-10'
-      },
-      // Add more products...
-      ...Array.from({ length: 50 }, (_, index) => ({
-        id: index + 3,
-        name: `Sản phẩm ${index + 3}`,
-        category: ['Thời trang Nam', 'Thời trang Nữ', 'Điện tử', 'Gia dụng'][index % 4],
-        categorySlug: ['thoi-trang-nam', 'thoi-trang-nu', 'dien-tu', 'gia-dung'][index % 4],
-        brandSlug: ['nike', 'adidas', 'samsung', 'apple', 'zara'][index % 5],
-        price: Math.floor(Math.random() * 5000000) + 100000,
-        originalPrice: index % 3 === 0 ? Math.floor(Math.random() * 6000000) + 200000 : null,
-        discount: index % 3 === 0 ? Math.floor(Math.random() * 50) + 10 : null,
-        image: `https://picsum.photos/400/400?random=${index + 3}`,
-        rating: +(Math.random() * 2 + 3).toFixed(1),
-        reviewCount: Math.floor(Math.random() * 200) + 10,
-        isNew: index % 5 === 0,
-        inStock: index % 7 !== 0,
-        createdAt: new Date(2024, 0, Math.floor(Math.random() * 30) + 1).toISOString()
-      }))
-    ]
-    
-    loading.value = false
-  } catch (error) {
-    console.error('Failed to load products:', error)
-    loading.value = false
+    // Load products and categories
+    await Promise.all([
+      loadProducts(),
+      loadCategories()
+    ])
+  } catch (err) {
+    console.error('Failed to load data:', err)
   }
 })
 </script>

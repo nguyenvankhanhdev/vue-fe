@@ -1,7 +1,7 @@
-// src/composables/useProducts.js
+// src/composables/admin/useProducts.js
 import { ref, computed, reactive } from 'vue';
-import { productService } from '../services/productService';
-import { ApiError } from '../services/apiError';
+import { productService } from '@/services/productService';
+import { ApiError } from '@/services/apiError';
 
 // Global state cho products
 const products = ref([]);

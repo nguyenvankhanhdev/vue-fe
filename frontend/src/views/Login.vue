@@ -189,7 +189,7 @@ import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { authService, ApiError } from '../services/api.js'
 import { useToast } from '../services/toast.js'
-import { useAuth } from '../composables/useAuth.js'
+import { useAuth } from '@/composables'
 
 const router = useRouter()
 const { success, error, warning } = useToast()
