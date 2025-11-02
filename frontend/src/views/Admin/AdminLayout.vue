@@ -206,7 +206,7 @@
 import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import Swal from 'sweetalert2'
-import { useLoading } from '@/composables/useLoading'
+import { useLoading } from '@/composables'
 
 const route = useRoute()
 const router = useRouter()

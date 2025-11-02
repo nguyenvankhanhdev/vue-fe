@@ -602,7 +602,8 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import { useCategories } from '@/composables/useCategories'
+import { useCategories } from '@/composables'
+import { toastService } from '@/services/toast'
 import Swal from 'sweetalert2'
 
 // Use Categories Composable
@@ -754,21 +755,11 @@ async function toggleStatus(category) {
       
       await updateCategory(category.id, categoryData)
       
-      Swal.fire({
-        icon: 'success',
-        title: `Đã ${!category.status ? 'hiện' : 'ẩn'} danh mục`,
-        timer: 1000,
-        showConfirmButton: false
-      })
+      toastService.success(`Đã ${!category.status ? 'hiện' : 'ẩn'} danh mục thành công!`)
 
     } catch (error) {
       console.error('Error toggling category status:', error)
-      Swal.fire({
-        icon: 'error',
-        title: 'Lỗi cập nhật',
-        text: error.message || 'Không thể thay đổi trạng thái danh mục. Vui lòng thử lại.',
-        confirmButtonColor: '#3B82F6'
-      })
+      toastService.error(error.message || 'Không thể thay đổi trạng thái danh mục')
     }
   }
 }
@@ -776,7 +767,7 @@ async function toggleStatus(category) {
 async function save() {
   try {
     if (!form.value.name.trim()) {
-      Swal.fire({ icon: 'warning', title: 'Vui lòng nhập tên danh mục', timer: 1500 })
+      toastService.warning('Vui lòng nhập tên danh mục')
       return
     }
 
@@ -792,27 +783,17 @@ async function save() {
 
     if (isUpdate) {
       await updateCategory(form.value.id, categoryData)
+      toastService.success('Cập nhật danh mục thành công!')
     } else {
       await createCategory(categoryData)
+      toastService.success('Thêm danh mục mới thành công!')
     }
-
-    Swal.fire({
-      icon: 'success',
-      title: isUpdate ? 'Đã cập nhật danh mục' : 'Đã thêm danh mục',
-      timer: 1200,
-      showConfirmButton: false
-    })
 
     closeModal()
 
   } catch (error) {
     console.error('Error saving category:', error)
-    Swal.fire({
-      icon: 'error',
-      title: 'Lỗi lưu dữ liệu',
-      text: error.message || 'Không thể lưu danh mục. Vui lòng thử lại.',
-      confirmButtonColor: '#3B82F6'
-    })
+    toastService.error(error.message || 'Không thể lưu danh mục. Vui lòng thử lại.')
   } finally {
     saving.value = false
   }
@@ -833,22 +814,10 @@ async function remove(category) {
   if (result.isConfirmed) {
     try {
       await deleteCategory(category.id)
-      
-      Swal.fire({
-        icon: 'success',
-        title: 'Đã xóa!',
-        text: 'Danh mục đã được xóa.',
-        timer: 1500,
-        showConfirmButton: false
-      })
+      toastService.success('Xóa danh mục thành công!')
     } catch (error) {
       console.error('Error deleting category:', error)
-      Swal.fire({
-        icon: 'error',
-        title: 'Lỗi xóa dữ liệu',
-        text: error.message || 'Không thể xóa danh mục. Vui lòng thử lại.',
-        confirmButtonColor: '#3B82F6'
-      })
+      toastService.error(error.message || 'Không thể xóa danh mục. Vui lòng thử lại.')
     }
   }
 }

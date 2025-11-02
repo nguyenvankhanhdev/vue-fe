@@ -242,7 +242,7 @@
 
 <script setup>
 import { ref, computed, watch, onUnmounted } from 'vue'
-import { useImageManager } from '@/composables/useImageManager'
+import { useImageManager } from '@/composables'
 import Swal from 'sweetalert2'
 
 const props = defineProps({

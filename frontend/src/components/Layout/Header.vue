@@ -199,7 +199,7 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { useAuth } from '@/composables/useAuth'
+import { useAuth } from '@/composables'
 import Swal from 'sweetalert2'
 
 const router = useRouter()

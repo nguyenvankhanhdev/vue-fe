@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { toastService } from './services/toast'
-import { useLoading } from './composables/useLoading'
+import { useLoading } from './composables'
 
 // Khai báo danh sách route
 const routes = [
