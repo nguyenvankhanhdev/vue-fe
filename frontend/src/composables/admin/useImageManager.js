@@ -1,7 +1,7 @@
-// src/composables/useImageManager.js
+// src/composables/admin/useImageManager.js
 import { ref, computed } from 'vue';
-import { imageManagerService } from '../services/ImageManagerService';
-import { ApiError } from '../services/apiError';
+import { imageManagerService } from '@/services/ImageManagerService';
+import { ApiError } from '@/services/apiError';
 import Swal from 'sweetalert2';
 
 export function useImageManager() {

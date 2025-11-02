@@ -1,7 +1,7 @@
-// src/composables/useVariantManager.js
+// src/composables/admin/useVariantManager.js
 import { ref, computed } from 'vue';
-import { variantManagerService } from '../services/VariantManagerService';
-import { ApiError } from '../services/apiError';
+import { variantManagerService } from '@/services/VariantManagerService';
+import { ApiError } from '@/services/apiError';
 import Swal from 'sweetalert2';
 
 export function useVariantManager() {

@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="admin-products p-6 bg-gray-50 min-h-screen">
     <!-- Header -->
     <div class="flex flex-col md:flex-row md:items-center justify-between mb-8">
@@ -641,9 +641,9 @@
 
 <script>
 import { ref, computed, onMounted, nextTick } from 'vue'
-import { useProducts } from '@/composables/useProducts'
-import { useImageManager } from '@/composables/useImageManager'
-import { useVariantManager } from '@/composables/useVariantManager'
+import { useProducts } from '@/composables'
+import { useImageManager } from '@/composables'
+import { useVariantManager } from '@/composables'
 import { productService } from '@/services/productService'
 import toast from '@/services/toast'
 import Swal from 'sweetalert2'

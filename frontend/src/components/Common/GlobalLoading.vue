@@ -42,7 +42,7 @@
 </template>
 
 <script setup>
-import { useLoading } from '@/composables/useLoading'
+import { useLoading } from '@/composables'
 
 const { isLoading, loadingMessage } = useLoading()
 </script>

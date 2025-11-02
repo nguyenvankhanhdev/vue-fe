@@ -1,20 +1,25 @@
 <template>
   <div class="admin-users p-6 bg-gray-50 min-h-screen">
-    <!-- Page Header -->
+    <!-- Header -->
     <div class="flex flex-col md:flex-row md:items-center justify-between mb-8">
       <div class="mb-4 md:mb-0">
         <h1 class="text-3xl font-bold text-gray-900 mb-2">Quản lý người dùng</h1>
         <p class="text-gray-600">Quản lý tài khoản và phân quyền người dùng hệ thống</p>
       </div>
       <div class="flex flex-wrap gap-3">
-        <button class="bg-white border border-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-all duration-200 shadow-sm" @click="exportUsers">
-          <i class="fas fa-file-export mr-2"></i>Xuất Excel
-        </button>
-        <button class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-all duration-200 shadow-sm">
+        <button
+          class="bg-white border border-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-all duration-200 shadow-sm">
           <i class="fas fa-file-import mr-2"></i>Import CSV
         </button>
-        <button class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5" @click="openAddUser">
-          <i class="fas fa-user-plus mr-2"></i>Thêm người dùng
+        <button
+          @click="exportUsers"
+          class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-all duration-200 shadow-sm">
+          <i class="fas fa-download mr-2"></i>Xuất Excel
+        </button>
+        <button
+          class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+          @click="openAddUser">
+          <i class="fas fa-plus mr-2"></i>Thêm người dùng
         </button>
       </div>
     </div>
@@ -59,7 +64,6 @@
             <select v-model="filter.role" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
               <option value="">Tất cả vai trò</option>
               <option value="admin">Quản trị viên</option>
-              <option value="manager">Quản lý</option>
               <option value="user">Khách hàng</option>
             </select>
           </div>
@@ -74,8 +78,15 @@
           </div>
           
           <div class="flex items-end">
-            <button @click="resetFilter" class="w-full px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors">
-              <i class="fas fa-times mr-2"></i>Reset
+            <button
+              @click="resetFilter"
+              class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg transition-colors duration-200 mr-2">
+              <i class="fas fa-filter mr-2"></i>Lọc
+            </button>
+            <button 
+              @click="resetFilter"
+              class="text-gray-500 hover:text-gray-700 px-4 py-2 rounded-lg transition-colors duration-200">
+              <i class="fas fa-times mr-2"></i>Xóa bộ lọc
             </button>
           </div>
         </div>
@@ -88,7 +99,7 @@
         <div class="flex justify-between items-center">
           <div>
             <h3 class="text-lg font-semibold text-gray-900">Danh sách người dùng</h3>
-            <p class="text-sm text-gray-500 mt-1">Quản lý tất cả tài khoản trong hệ thống</p>
+            <p class="text-sm text-gray-500 mt-1">Quản lý và theo dõi tất cả tài khoản trong hệ thống</p>
           </div>
           <div class="flex items-center space-x-3">
             <span class="bg-blue-100 text-blue-800 text-sm font-semibold px-3 py-1 rounded-full">
@@ -97,110 +108,151 @@
           </div>
         </div>
       </div>
-      
-      <div class="overflow-x-auto">
-        <table class="w-full">
-          <thead class="bg-gray-50">
-            <tr>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                <input type="checkbox" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
-              </th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Người dùng</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Liên hệ</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Vai trò</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Trạng thái</th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Hoạt động</th>
-              <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Thao tác</th>
-            </tr>
-          </thead>
-          <tbody class="bg-white divide-y divide-gray-200">
-            <tr v-for="user in filteredUsers" :key="user.id" 
-                class="hover:bg-gray-50 transition-colors duration-200">
-              <!-- Checkbox -->
-              <td class="px-6 py-4 whitespace-nowrap">
-                <input type="checkbox" class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
-              </td>
-              
-              <!-- User Info -->
-              <td class="px-6 py-4 whitespace-nowrap">
-                <div class="flex items-center">
-                  <div class="flex-shrink-0 h-10 w-10">
-                    <div class="h-10 w-10 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center">
-                      <span class="text-white font-semibold text-sm">{{ user.name.charAt(0).toUpperCase() }}</span>
+
+      <!-- Table View -->
+      <div class="overflow-hidden rounded-xl border border-gray-200">
+        <div class="overflow-x-auto">
+          <table class="w-full">
+            <thead class="bg-gradient-to-r from-blue-600 to-purple-600">
+              <tr>
+                <th class="px-6 py-4 text-left">
+                  <div class="flex items-center">
+                    <input type="checkbox"
+                      class="rounded border-white/50 bg-white/20 text-blue-500 focus:ring-0 focus:ring-offset-0 hover:bg-white/30 transition-colors">
+                    <span class="ml-3 text-xs font-semibold uppercase tracking-wider text-white">Chọn tất cả</span>
+                  </div>
+                </th>
+                <th class="px-6 py-4 text-left text-sm font-semibold uppercase tracking-wider text-white">
+                  <div class="flex items-center gap-2">
+                    <i class="fas fa-user text-white/90"></i>
+                    Người dùng
+                  </div>
+                </th>
+                <th class="px-6 py-4 text-left text-sm font-semibold uppercase tracking-wider text-white">
+                  <div class="flex items-center gap-2">
+                    <i class="fas fa-envelope text-white/90"></i>
+                    Email & SĐT
+                  </div>
+                </th>
+                <th class="px-6 py-4 text-left text-sm font-semibold uppercase tracking-wider text-white">
+                  <div class="flex items-center gap-2">
+                    <i class="fas fa-shield-alt text-white/90"></i>
+                    Vai trò
+                  </div>
+                </th>
+                <th class="px-6 py-4 text-left text-sm font-semibold uppercase tracking-wider text-white">
+                  <div class="flex items-center gap-2">
+                    <i class="fas fa-toggle-on text-white/90"></i>
+                    Trạng thái
+                  </div>
+                </th>
+                <th class="px-6 py-4 text-right text-sm font-semibold uppercase tracking-wider text-white">
+                  <div class="flex items-center justify-end gap-2">
+                    <i class="fas fa-cog text-white/90"></i>
+                    Thao tác
+                  </div>
+                </th>
+              </tr>
+            </thead>
+            <tbody class="bg-white">
+              <tr v-for="user in filteredUsers" :key="user.id"
+                class="border-b border-gray-100 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 transition-all duration-200 group">
+                
+                <!-- Checkbox -->
+                <td class="px-6 py-5">
+                  <input type="checkbox"
+                    class="rounded border-gray-300 text-blue-600 focus:ring-blue-500 hover:border-blue-400 transition-colors">
+                </td>
+
+                <!-- User Info -->
+                <td class="px-6 py-5">
+                  <div class="flex items-center gap-4">
+                    <div class="relative">
+                      <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow duration-200">
+                        <span class="text-white font-bold text-lg">{{ user.name.charAt(0).toUpperCase() }}</span>
+                      </div>
+                      <div v-if="user.verified" class="absolute -top-1 -right-1 w-5 h-5 bg-green-500 rounded-full border-2 border-white flex items-center justify-center">
+                        <i class="fas fa-check text-white text-xs"></i>
+                      </div>
+                    </div>
+                    <div>
+                      <div class="font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">
+                        {{ user.name }}
+                      </div>
+                      <div class="text-sm text-gray-500">
+                        <i class="fas fa-calendar-alt mr-1"></i>{{ formatDate(user.created_at) }}
+                      </div>
                     </div>
                   </div>
-                  <div class="ml-4">
-                    <div class="text-sm font-medium text-gray-900">{{ user.name }}</div>
-                    <div class="text-sm text-gray-500">#{{ user.id }}</div>
+                </td>
+
+                <!-- Contact Info -->
+                <td class="px-6 py-5">
+                  <div class="space-y-1">
+                    <div class="text-sm font-medium text-gray-900 flex items-center gap-2">
+                      <i class="fas fa-envelope text-blue-500"></i>
+                      {{ user.email }}
+                    </div>
+                    <div class="text-sm text-gray-500 flex items-center gap-2">
+                      <i class="fas fa-phone text-green-500"></i>
+                      {{ user.phone || 'Chưa cập nhật' }}
+                    </div>
                   </div>
-                </div>
-              </td>
-              
-              <!-- Contact Info -->
-              <td class="px-6 py-4 whitespace-nowrap">
-                <div class="text-sm text-gray-900">{{ user.email }}</div>
-                <div class="text-sm text-gray-500">{{ user.phone || 'Chưa cập nhật' }}</div>
-              </td>
-              
-              <!-- Role -->
-              <td class="px-6 py-4 whitespace-nowrap">
-                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
-                      :class="{
-                        'bg-purple-100 text-purple-800': user.role === 'admin',
-                        'bg-blue-100 text-blue-800': user.role === 'manager',
-                        'bg-green-100 text-green-800': user.role === 'user'
-                      }">
-                  <i class="fas mr-1" 
-                     :class="{
-                       'fa-crown': user.role === 'admin',
-                       'fa-user-tie': user.role === 'manager', 
-                       'fa-user': user.role === 'user'
-                     }"></i>
-                  {{ user.role === 'admin' ? 'Quản trị' : user.role === 'manager' ? 'Quản lý' : 'Khách hàng' }}
-                </span>
-              </td>
-              
-              <!-- Status -->
-              <td class="px-6 py-4 whitespace-nowrap">
-                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
-                      :class="user.status === 1 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'">
-                  <div class="w-1.5 h-1.5 rounded-full mr-1.5"
-                       :class="user.status === 1 ? 'bg-green-400' : 'bg-red-400'"></div>
-                  {{ user.status === 1 ? 'Hoạt động' : 'Đã khóa' }}
-                </span>
-              </td>
-              
-              <!-- Activity -->
-              <td class="px-6 py-4 whitespace-nowrap">
-                <div class="text-sm text-gray-900">{{ user.orders }} đơn hàng</div>
-                <div class="text-sm text-gray-500">{{ user.joinDate }}</div>
-              </td>
-              
-              <!-- Actions -->
-              <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                <div class="flex items-center justify-end space-x-2">
-                  <button @click="viewUser(user)" 
-                          class="text-blue-600 hover:text-blue-900 p-1 rounded hover:bg-blue-50 transition-colors">
-                    <i class="fas fa-eye"></i>
-                  </button>
-                  <button @click="editUser(user)" 
-                          class="text-green-600 hover:text-green-900 p-1 rounded hover:bg-green-50 transition-colors">
-                    <i class="fas fa-edit"></i>
-                  </button>
-                  <button @click="toggleUserStatus(user)" 
-                          class="text-yellow-600 hover:text-yellow-900 p-1 rounded hover:bg-yellow-50 transition-colors"
-                          :title="user.status === 1 ? 'Khóa tài khoản' : 'Kích hoạt tài khoản'">
-                    <i class="fas" :class="user.status === 1 ? 'fa-lock' : 'fa-unlock'"></i>
-                  </button>
-                  <button @click="deleteUser(user.id)" 
-                          class="text-red-600 hover:text-red-900 p-1 rounded hover:bg-red-50 transition-colors">
-                    <i class="fas fa-trash"></i>
-                  </button>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+                </td>
+
+                <!-- Role Badge -->
+                <td class="px-6 py-5">
+                  <span class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold shadow-xl transition-all duration-300 transform hover:scale-105"
+                    :class="{
+                      'bg-gradient-to-r from-purple-600 via-purple-500 to-pink-500 text-white hover:shadow-purple-500/60 ring-2 ring-purple-300': user.role === 'admin',
+                      'bg-gradient-to-r from-purple-600 via-pink-500 to-pink-600 text-white hover:shadow-pink-500/60 ring-2 ring-pink-300 animate-pulse': user.role === 'customer'
+                    }">
+                    <i class="fas text-base" :class="{
+                      'fa-crown': user.role === 'admin',
+                      'fa-user-shield': user.role === 'customer'
+                    }"></i>
+                    <span class="uppercase tracking-wide">{{ user.role === 'admin' ? 'Quản trị' : 'Khách hàng' }}</span>
+                  </span>
+                </td>
+
+                <!-- Status Badge -->
+                <td class="px-6 py-5">
+                  <span class="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold shadow-sm"
+                    :class="user.status === 1 ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white' : 'bg-gradient-to-r from-red-500 to-pink-500 text-white'">
+                    <div class="w-2 h-2 rounded-full bg-white animate-pulse"></div>
+                    <span>{{ user.status === 1 ? 'Hoạt động' : 'Đã khóa' }}</span>
+                  </span>
+                </td>
+
+                <!-- Actions -->
+                <td class="px-6 py-5">
+                  <div class="flex items-center justify-end gap-2">
+                    <button @click="viewUser(user)"
+                      class="p-2 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 transition-all duration-200 hover:shadow-md"
+                      title="Xem chi tiết">
+                      <i class="fas fa-eye"></i>
+                    </button>
+                    <button @click="editUser(user)"
+                      class="p-2 rounded-lg bg-green-50 text-green-600 hover:bg-green-100 transition-all duration-200 hover:shadow-md"
+                      title="Chỉnh sửa">
+                      <i class="fas fa-edit"></i>
+                    </button>
+                    <button @click="toggleUserStatus(user)"
+                      class="p-2 rounded-lg bg-yellow-50 text-yellow-600 hover:bg-yellow-100 transition-all duration-200 hover:shadow-md"
+                      :title="user.status === 1 ? 'Khóa tài khoản' : 'Kích hoạt tài khoản'">
+                      <i class="fas" :class="user.status === 1 ? 'fa-lock' : 'fa-unlock'"></i>
+                    </button>
+                    <button @click="deleteUser(user.id)"
+                      class="p-2 rounded-lg bg-red-50 text-red-600 hover:bg-red-100 transition-all duration-200 hover:shadow-md"
+                      title="Xóa">
+                      <i class="fas fa-trash"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
       
       <!-- Pagination -->
@@ -295,7 +347,6 @@
                               class="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" 
                               required>
                         <option value="user">Khách hàng</option>
-                        <option value="manager">Quản lý</option>
                         <option value="admin">Quản trị viên</option>
                       </select>
                     </div>
@@ -352,6 +403,24 @@
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div class="bg-white rounded-lg p-3 border">
                   <div class="flex items-center">
+                    <i class="fas fa-id-card text-gray-400 mr-3"></i>
+                    <div>
+                      <p class="text-xs text-gray-500 uppercase tracking-wide">ID</p>
+                      <p class="font-medium text-gray-900">#{{ selectedUser.id }}</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="bg-white rounded-lg p-3 border">
+                  <div class="flex items-center">
+                    <i class="fas fa-user text-gray-400 mr-3"></i>
+                    <div>
+                      <p class="text-xs text-gray-500 uppercase tracking-wide">Họ tên</p>
+                      <p class="font-medium text-gray-900">{{ selectedUser.name }}</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="bg-white rounded-lg p-3 border">
+                  <div class="flex items-center">
                     <i class="fas fa-envelope text-gray-400 mr-3"></i>
                     <div>
                       <p class="text-xs text-gray-500 uppercase tracking-wide">Email</p>
@@ -368,6 +437,83 @@
                     </div>
                   </div>
                 </div>
+                <div class="bg-white rounded-lg p-3 border">
+                  <div class="flex items-center">
+                    <i class="fas fa-shield-alt text-gray-400 mr-3"></i>
+                    <div>
+                      <p class="text-xs text-gray-500 uppercase tracking-wide">Vai trò</p>
+                      <p class="font-medium text-gray-900">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+                              :class="{
+                                'bg-purple-100 text-purple-800': selectedUser.role === 'admin',
+                                'bg-pink-100 text-pink-800': selectedUser.role === 'user'
+                              }">
+                          {{ selectedUser.role === 'admin' ? 'Quản trị' : 'Khách hàng' }}
+                        </span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="bg-white rounded-lg p-3 border">
+                  <div class="flex items-center">
+                    <i class="fas fa-calendar text-gray-400 mr-3"></i>
+                    <div>
+                      <p class="text-xs text-gray-500 uppercase tracking-wide">Ngày tham gia</p>
+                      <p class="font-medium text-gray-900">{{ formatDate(selectedUser.created_at) }}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Account Status -->
+            <div class="bg-gray-50 rounded-lg p-4">
+              <h4 class="text-md font-medium text-gray-900 mb-4 flex items-center">
+                <i class="fas fa-info-circle mr-2 text-blue-600"></i>
+                Trạng thái tài khoản
+              </h4>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-white rounded-lg p-3 border">
+                  <div class="flex items-center">
+                    <i class="fas fa-check-circle text-gray-400 mr-3"></i>
+                    <div>
+                      <p class="text-xs text-gray-500 uppercase tracking-wide">Xác thực Email</p>
+                      <p class="font-medium">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+                              :class="selectedUser.verified ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'">
+                          {{ selectedUser.verified ? '✓ Đã xác thực' : '⚠ Chưa xác thực' }}
+                        </span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="bg-white rounded-lg p-3 border">
+                  <div class="flex items-center">
+                    <i class="fas fa-power-off text-gray-400 mr-3"></i>
+                    <div>
+                      <p class="text-xs text-gray-500 uppercase tracking-wide">Trạng thái</p>
+                      <p class="font-medium">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+                              :class="selectedUser.status === 1 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'">
+                          <div class="w-1.5 h-1.5 rounded-full mr-1.5"
+                               :class="selectedUser.status === 1 ? 'bg-green-400' : 'bg-red-400'"></div>
+                          {{ selectedUser.status === 1 ? 'Hoạt động' : 'Đã khóa' }}
+                        </span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Address -->
+            <div class="bg-gray-50 rounded-lg p-4" v-if="selectedUser.address">
+              <h4 class="text-md font-medium text-gray-900 mb-4 flex items-center">
+                <i class="fas fa-map-marker-alt mr-2 text-blue-600"></i>
+                Địa chỉ
+              </h4>
+              <div class="bg-white rounded-lg p-3 border">
+                <p class="text-gray-700">{{ selectedUser.address }}</p>
               </div>
             </div>
           </div>
@@ -391,61 +537,40 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
+import { useUsers } from '@/composables'
 import Swal from 'sweetalert2'
 
-const stats = [
-  { icon: 'fas fa-users', iconClass: 'bg-blue-100 text-blue-600', value: 2341, label: 'Tổng người dùng' },
-  { icon: 'fas fa-user-check', iconClass: 'bg-green-100 text-green-600', value: 2156, label: 'Đang hoạt động' },
-  { icon: 'fas fa-crown', iconClass: 'bg-yellow-100 text-yellow-600', value: 12, label: 'Quản trị viên' },
-  { icon: 'fas fa-user-plus', iconClass: 'bg-purple-100 text-purple-600', value: 45, label: 'Mới tháng này' },
-]
+const {
+  users,
+  loading,
+  currentPage,
+  lastPage,
+  total,
+  stats: apiStats,
+  loadUsers,
+  loadStats,
+  createUser,
+  updateUser,
+  deleteUser: apiDeleteUser,
+  toggleUserStatus: apiToggleStatus,
+  exportUsers: apiExportUsers
+} = useUsers()
 
-const users = ref([
-  {
-    id: 1,
-    name: 'Nguyễn Văn A',
-    email: 'nguyenvana@email.com',
-    phone: '0987654321',
-    role: 'admin',
-    status: 1, // 1 = active, 0 = inactive
-    address: '123 Đường ABC, Phường XYZ, Quận 1, TP.HCM',
-    avatar: 'https://via.placeholder.com/40',
-    created_at: '2024-01-15T09:30:00Z',
-    joinDate: '15/01/2024',
-    orders: 25,
-    orders_count: 25
-  },
-  {
-    id: 2,
-    name: 'Trần Thị B',
-    email: 'tranthib@email.com',
-    phone: '0912345678',
-    role: 'manager',
-    status: 1, // 1 = active, 0 = inactive
-    address: '456 Đường DEF, Phường MNO, Quận 3, TP.HCM',
-    avatar: 'https://via.placeholder.com/40',
-    created_at: '2024-02-20T14:15:00Z',
-    joinDate: '20/02/2024',
-    orders: 12,
-    orders_count: 12
-  },
-  {
-    id: 3,
-    name: 'Lê Văn C',
-    email: 'levanc@email.com',
-    phone: '0934567890',
-    role: 'user',
-    status: false,
-    status: 'inactive',
-    address: '789 Đường GHI, Phường PQR, Quận 7, TP.HCM',
-    avatar: 'https://via.placeholder.com/40',
-    created_at: '2024-03-10T16:45:00Z',
-    joinDate: '10/03/2024',
-    orders: 3,
-    orders_count: 3
-  }
+const stats = computed(() => [
+  { icon: 'fas fa-users', iconClass: 'bg-blue-100 text-blue-600', value: apiStats.value.total || 0, label: 'Tổng người dùng' },
+  { icon: 'fas fa-user-check', iconClass: 'bg-green-100 text-green-600', value: apiStats.value.active || 0, label: 'Đang hoạt động' },
+  { icon: 'fas fa-crown', iconClass: 'bg-yellow-100 text-yellow-600', value: apiStats.value.admin || 0, label: 'Quản trị viên' },
+  { icon: 'fas fa-user-plus', iconClass: 'bg-purple-100 text-purple-600', value: apiStats.value.newThisMonth || 0, label: 'Mới tháng này' },
 ])
+
+// Load data khi component mount
+onMounted(async () => {
+  await Promise.all([
+    loadUsers(),
+    loadStats()
+  ])
+})
 
 const filter = ref({
   search: '',
@@ -471,14 +596,39 @@ const showUserModal = ref(false)
 const showDetailsModal = ref(false)
 
 const filteredUsers = computed(() => {
+  if (!users.value) return []
+  
   return users.value.filter(user => {
-    if (filter.value.search && !user.name.toLowerCase().includes(filter.value.search.toLowerCase()) && !user.email.toLowerCase().includes(filter.value.search.toLowerCase())) {
+    // Search filter
+    if (filter.value.search) {
+      const searchLower = filter.value.search.toLowerCase()
+      const matchName = user.name?.toLowerCase().includes(searchLower)
+      const matchEmail = user.email?.toLowerCase().includes(searchLower)
+      const matchPhone = user.phone?.toLowerCase().includes(searchLower)
+      
+      if (!matchName && !matchEmail && !matchPhone) {
+        return false
+      }
+    }
+    
+    // Role filter
+    if (filter.value.role && user.role !== filter.value.role) {
       return false
     }
-    if (filter.value.role && user.role !== filter.value.role) return false
-    if (filter.value.status === 'active' && user.status !== 1) return false
-    if (filter.value.status === 'inactive' && user.status !== 0) return false
-    if (filter.value.dateFrom && new Date(user.created_at) < new Date(filter.value.dateFrom)) return false
+    
+    // Status filter
+    if (filter.value.status === 'active' && user.status !== 1) {
+      return false
+    }
+    if (filter.value.status === 'inactive' && user.status !== 0) {
+      return false
+    }
+    
+    // Date filter
+    if (filter.value.dateFrom && new Date(user.created_at) < new Date(filter.value.dateFrom)) {
+      return false
+    }
+    
     return true
   })
 })
@@ -516,44 +666,30 @@ function closeDetailsModal() {
   selectedUser.value = null
 }
 
-function saveUser() {
-  if (form.value.id) {
-    // Update existing user
-    const idx = users.value.findIndex(x => x.id === form.value.id)
-    if (idx > -1) {
-      users.value[idx] = { ...form.value }
-      Swal.fire({ 
-        icon: 'success', 
-        title: 'Đã cập nhật người dùng', 
-        timer: 1500, 
-        showConfirmButton: false 
-      })
+async function saveUser() {
+  try {
+    if (form.value.id) {
+      // Update existing user
+      await updateUser(form.value.id, form.value)
+    } else {
+      // Add new user
+      await createUser(form.value)
     }
-  } else {
-    // Add new user
-    const newUser = {
-      ...form.value,
-      id: Math.max(...users.value.map(u => u.id)) + 1,
-      created_at: new Date().toISOString(),
-      joinDate: new Date().toLocaleDateString('vi-VN'),
-      orders: 0,
-      orders_count: 0,
-      status: form.value.status ? 'active' : 'inactive'
-    }
-    users.value.push(newUser)
-    Swal.fire({ 
-      icon: 'success', 
-      title: 'Đã tạo người dùng mới', 
-      timer: 1500, 
-      showConfirmButton: false 
-    })
+    
+    // Reload stats
+    await loadStats()
+    
+    closeUserModal()
+  } catch (error) {
+    console.error('Error saving user:', error)
+    // Error đã được xử lý trong composable
   }
-  closeUserModal()
 }
 
-function toggleUserStatus(user) {
+async function toggleUserStatus(user) {
   const action = user.status === 1 ? 'khóa' : 'kích hoạt'
-  Swal.fire({
+  
+  const result = await Swal.fire({
     title: `Xác nhận ${action} tài khoản?`,
     text: `Bạn có chắc chắn muốn ${action} tài khoản của ${user.name}?`,
     icon: 'warning',
@@ -561,57 +697,67 @@ function toggleUserStatus(user) {
     confirmButtonText: `Có, ${action}!`,
     cancelButtonText: 'Hủy',
     confirmButtonColor: user.status === 1 ? '#dc3545' : '#198754'
-  }).then((result) => {
-    if (result.isConfirmed) {
-      const userIndex = users.value.findIndex(u => u.id === user.id)
-      if (userIndex !== -1) {
-        users.value[userIndex].status = user.status === 1 ? 0 : 1 // Toggle 1 <-> 0
-        Swal.fire({
-          icon: 'success',
-          title: `Đã ${action} tài khoản thành công!`,
-          timer: 2000,
-          showConfirmButton: false
-        })
-      }
-    }
   })
-}
-
-function deleteUser(userId) {
-  const user = users.value.find(u => u.id === userId)
-  if (user) {
-    Swal.fire({
-      title: 'Xóa người dùng?',
-      text: `Bạn có chắc chắn muốn xóa tài khoản của ${user.name}?`,
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Xóa',
-      cancelButtonText: 'Hủy',
-      confirmButtonColor: '#dc3545'
-    }).then(result => {
-      if (result.isConfirmed) {
-        const idx = users.value.findIndex(u => u.id === userId)
-        if (idx > -1) {
-          users.value.splice(idx, 1)
-          Swal.fire({ 
-            icon: 'success', 
-            title: 'Đã xóa người dùng', 
-            timer: 1500, 
-            showConfirmButton: false 
-          })
-        }
-      }
-    })
+  
+  if (result.isConfirmed) {
+    try {
+      await apiToggleStatus(user.id)
+      await loadStats()
+    } catch (error) {
+      console.error('Error toggling status:', error)
+    }
   }
 }
 
-function exportUsers() {
-  Swal.fire({ 
-    icon: 'success', 
-    title: 'Đang xuất danh sách người dùng...', 
-    timer: 1500, 
-    showConfirmButton: false 
+async function deleteUser(userId) {
+  const user = users.value.find(u => u.id === userId)
+  
+  if (!user) return
+  
+  const result = await Swal.fire({
+    title: 'Xóa người dùng?',
+    text: `Bạn có chắc chắn muốn xóa tài khoản của ${user.name}? Hành động này không thể hoàn tác!`,
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Xóa',
+    cancelButtonText: 'Hủy',
+    confirmButtonColor: '#dc3545'
   })
+  
+  if (result.isConfirmed) {
+    try {
+      await apiDeleteUser(userId)
+      await loadStats()
+    } catch (error) {
+      console.error('Error deleting user:', error)
+    }
+  }
+}
+
+async function exportUsers() {
+  try {
+    await apiExportUsers(filter.value)
+  } catch (error) {
+    console.error('Error exporting users:', error)
+  }
+}
+
+// Helper function
+function formatDate(dateString) {
+  if (!dateString) return 'N/A'
+  
+  const date = new Date(dateString)
+  const now = new Date()
+  const diff = now - date
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24))
+  
+  if (days === 0) return 'Hôm nay'
+  if (days === 1) return 'Hôm qua'
+  if (days < 7) return `${days} ngày trước`
+  if (days < 30) return `${Math.floor(days / 7)} tuần trước`
+  if (days < 365) return `${Math.floor(days / 30)} tháng trước`
+  
+  return date.toLocaleDateString('vi-VN')
 }
 </script>
 
