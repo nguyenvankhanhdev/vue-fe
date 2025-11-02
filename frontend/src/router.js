@@ -77,7 +77,7 @@ const routes = [
   {
     path: '/admin',
     component: () => import('./views/Admin/AdminLayout.vue'),
-    // meta: { requiresAuth: true }, // Temporary disabled for development
+    meta: { requiresAuth: true, requiresAdmin: true },
     children: [
       {
         path: '',
@@ -87,36 +87,43 @@ const routes = [
         path: 'dashboard',
         name: 'AdminDashboard',
         component: () => import('./views/Admin/AdminDashboard.vue'),
+        meta: { requiresAuth: true, requiresAdmin: true }
       },
       {
         path: 'products',
         name: 'AdminProducts',
         component: () => import('./views/Admin/AdminProducts.vue'),
+        meta: { requiresAuth: true, requiresAdmin: true }
       },
       {
         path: 'categories',
         name: 'AdminCategories',
         component: () => import('./views/Admin/AdminCategories.vue'),
+        meta: { requiresAuth: true, requiresAdmin: true }
       },
       {
         path: 'orders',
         name: 'AdminOrders',
         component: () => import('./views/Admin/AdminOrders.vue'),
+        meta: { requiresAuth: true, requiresAdmin: true }
       },
       {
         path: 'users',
         name: 'AdminUsers',
         component: () => import('./views/Admin/AdminUsers.vue'),
+        meta: { requiresAuth: true, requiresAdmin: true }
       },
       {
         path: 'reports',
         name: 'AdminReports',
         component: () => import('./views/Admin/AdminReports.vue'),
+        meta: { requiresAuth: true, requiresAdmin: true }
       },
       {
         path: 'settings',
         name: 'AdminSettings',
         component: () => import('./views/Admin/AdminSettings.vue'),
+        meta: { requiresAuth: true, requiresAdmin: true }
       }
     ]
   },
@@ -191,20 +198,20 @@ router.beforeEach((to, from, next) => {
     }
   }
   
-  // Admin role guard (temporary bypass for development)
-  if (to.path.startsWith('/admin')) {
+  // Admin role guard
+  if (to.meta?.requiresAdmin) {
+    if (!isLoggedIn) {
+      toastService.error('Vui lòng đăng nhập để truy cập trang quản trị')
+      next({ name: 'Login', query: { redirect: to.fullPath } })
+      return
+    }
+    
     const role = parsedUser?.role
-    // Temporarily allow admin access for development
-    // Uncomment the lines below for production:
-    // if (!isLoggedIn) {
-    //   next({ name: 'Login', query: { redirect: to.fullPath } })
-    //   return
-    // }
-    // if (role && role !== 'admin') {
-    //   toastService.error('Bạn không có quyền truy cập trang quản trị')
-    //   next('/')
-    //   return
-    // }
+    if (!role || role !== 'admin') {
+      toastService.error('Bạn không có quyền truy cập trang quản trị')
+      next('/')
+      return
+    }
   }
 
   // Allow navigation

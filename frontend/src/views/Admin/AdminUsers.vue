@@ -163,10 +163,10 @@
               <!-- Status -->
               <td class="px-6 py-4 whitespace-nowrap">
                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
-                      :class="user.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'">
+                      :class="user.status === 1 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'">
                   <div class="w-1.5 h-1.5 rounded-full mr-1.5"
-                       :class="user.status === 'active' ? 'bg-green-400' : 'bg-red-400'"></div>
-                  {{ user.status === 'active' ? 'Hoạt động' : 'Đã khóa' }}
+                       :class="user.status === 1 ? 'bg-green-400' : 'bg-red-400'"></div>
+                  {{ user.status === 1 ? 'Hoạt động' : 'Đã khóa' }}
                 </span>
               </td>
               
@@ -189,8 +189,8 @@
                   </button>
                   <button @click="toggleUserStatus(user)" 
                           class="text-yellow-600 hover:text-yellow-900 p-1 rounded hover:bg-yellow-50 transition-colors"
-                          :title="user.status === 'active' ? 'Khóa tài khoản' : 'Kích hoạt tài khoản'">
-                    <i class="fas" :class="user.status === 'active' ? 'fa-lock' : 'fa-unlock'"></i>
+                          :title="user.status === 1 ? 'Khóa tài khoản' : 'Kích hoạt tài khoản'">
+                    <i class="fas" :class="user.status === 1 ? 'fa-lock' : 'fa-unlock'"></i>
                   </button>
                   <button @click="deleteUser(user.id)" 
                           class="text-red-600 hover:text-red-900 p-1 rounded hover:bg-red-50 transition-colors">
@@ -408,8 +408,7 @@ const users = ref([
     email: 'nguyenvana@email.com',
     phone: '0987654321',
     role: 'admin',
-    is_active: true,
-    status: 'active',
+    status: 1, // 1 = active, 0 = inactive
     address: '123 Đường ABC, Phường XYZ, Quận 1, TP.HCM',
     avatar: 'https://via.placeholder.com/40',
     created_at: '2024-01-15T09:30:00Z',
@@ -423,8 +422,7 @@ const users = ref([
     email: 'tranthib@email.com',
     phone: '0912345678',
     role: 'manager',
-    is_active: true,
-    status: 'active',
+    status: 1, // 1 = active, 0 = inactive
     address: '456 Đường DEF, Phường MNO, Quận 3, TP.HCM',
     avatar: 'https://via.placeholder.com/40',
     created_at: '2024-02-20T14:15:00Z',
@@ -438,7 +436,7 @@ const users = ref([
     email: 'levanc@email.com',
     phone: '0934567890',
     role: 'user',
-    is_active: false,
+    status: false,
     status: 'inactive',
     address: '789 Đường GHI, Phường PQR, Quận 7, TP.HCM',
     avatar: 'https://via.placeholder.com/40',
@@ -462,7 +460,7 @@ const emptyForm = {
   email: '',
   phone: '',
   role: 'user',
-  is_active: true
+  status: 1 // 1 = active, 0 = inactive
 }
 
 const form = ref({ ...emptyForm })
@@ -478,8 +476,8 @@ const filteredUsers = computed(() => {
       return false
     }
     if (filter.value.role && user.role !== filter.value.role) return false
-    if (filter.value.status === 'active' && !user.is_active) return false
-    if (filter.value.status === 'inactive' && user.is_active) return false
+    if (filter.value.status === 'active' && user.status !== 1) return false
+    if (filter.value.status === 'inactive' && user.status !== 0) return false
     if (filter.value.dateFrom && new Date(user.created_at) < new Date(filter.value.dateFrom)) return false
     return true
   })
@@ -540,7 +538,7 @@ function saveUser() {
       joinDate: new Date().toLocaleDateString('vi-VN'),
       orders: 0,
       orders_count: 0,
-      status: form.value.is_active ? 'active' : 'inactive'
+      status: form.value.status ? 'active' : 'inactive'
     }
     users.value.push(newUser)
     Swal.fire({ 
@@ -554,7 +552,7 @@ function saveUser() {
 }
 
 function toggleUserStatus(user) {
-  const action = user.status === 'active' ? 'khóa' : 'kích hoạt'
+  const action = user.status === 1 ? 'khóa' : 'kích hoạt'
   Swal.fire({
     title: `Xác nhận ${action} tài khoản?`,
     text: `Bạn có chắc chắn muốn ${action} tài khoản của ${user.name}?`,
@@ -562,13 +560,12 @@ function toggleUserStatus(user) {
     showCancelButton: true,
     confirmButtonText: `Có, ${action}!`,
     cancelButtonText: 'Hủy',
-    confirmButtonColor: user.status === 'active' ? '#dc3545' : '#198754'
+    confirmButtonColor: user.status === 1 ? '#dc3545' : '#198754'
   }).then((result) => {
     if (result.isConfirmed) {
       const userIndex = users.value.findIndex(u => u.id === user.id)
       if (userIndex !== -1) {
-        users.value[userIndex].status = user.status === 'active' ? 'inactive' : 'active'
-        users.value[userIndex].is_active = !users.value[userIndex].is_active
+        users.value[userIndex].status = user.status === 1 ? 0 : 1 // Toggle 1 <-> 0
         Swal.fire({
           icon: 'success',
           title: `Đã ${action} tài khoản thành công!`,
