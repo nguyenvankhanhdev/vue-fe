@@ -1,70 +1,76 @@
 <template>
   <div class="products-page bg-gray-50 min-h-screen">
-    <!-- Enhanced Page Header -->
-    <section class="page-header bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-700 relative overflow-hidden">
-      <div class="absolute inset-0 bg-black bg-opacity-10"></div>
-      <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <!-- Compact & Beautiful Page Header -->
+    <section class="page-header bg-gradient-to-br from-blue-500 via-purple-600 to-blue-600 relative overflow-hidden">
+      <!-- Decorative Background -->
+      <div class="absolute inset-0 opacity-10">
+        <div class="absolute top-0 right-0 w-96 h-96 bg-white rounded-full -translate-y-1/2 translate-x-1/2"></div>
+        <div class="absolute bottom-0 left-0 w-64 h-64 bg-white rounded-full translate-y-1/2 -translate-x-1/2"></div>
+      </div>
+      
+      <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <!-- Breadcrumb -->
-        <nav class="flex items-center text-sm mb-6 text-white text-opacity-90">
-          <router-link to="/" class="hover:text-white transition-colors">
-            <i class="fas fa-home mr-2"></i>Trang chủ
+        <nav class="flex items-center text-sm mb-4 text-white/80">
+          <router-link to="/" class="hover:text-white transition-colors flex items-center">
+            <i class="fas fa-home mr-1.5"></i>
+            Trang chủ
           </router-link>
-          <i class="fas fa-chevron-right mx-3 text-xs"></i>
+          <i class="fas fa-chevron-right mx-2 text-xs"></i>
           <span class="text-white font-medium">Sản phẩm</span>
         </nav>
         
-        <!-- Header Content -->
-        <div class="flex items-center justify-between">
+        <!-- Header Content - Compact -->
+        <div class="flex items-center justify-between mb-6">
           <div>
-            <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">
+            <h1 class="text-3xl md:text-4xl font-bold text-white mb-2 flex items-center">
+              <i class="fas fa-store mr-3 text-white/80"></i>
               Tất cả sản phẩm
             </h1>
-            <p class="text-lg text-white text-opacity-90 max-w-2xl">
+            <p class="text-white/90 text-sm md:text-base">
               Khám phá bộ sưu tập đa dạng với hàng ngàn sản phẩm chất lượng cao
             </p>
           </div>
-          <div class="hidden md:block">
-            <div class="w-24 h-24 bg-white bg-opacity-20 rounded-full flex items-center justify-center backdrop-blur-sm">
-              <i class="fas fa-store text-3xl text-white"></i>
-            </div>
-          </div>
         </div>
         
-        <!-- Stats -->
-        <div class="mt-8 flex flex-wrap gap-6">
-          <div class="bg-black bg-opacity-20 backdrop-blur-sm rounded-lg px-6 py-4 border border-white border-opacity-20">
-            <div class="flex items-center">
-              <i class="fas fa-box text-white text-xl mr-3"></i>
+        <!-- Compact Stats -->
+        <div class="flex flex-wrap gap-3">
+          <div class="bg-white/10 backdrop-blur-md rounded-xl px-4 py-2.5 border border-white/20 hover:bg-white/20 transition-all">
+            <div class="flex items-center gap-2">
+              <div class="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center">
+                <i class="fas fa-box text-white text-sm"></i>
+              </div>
               <div>
-                <div class="text-2xl font-bold text-white">{{ products.length }}</div>
-                <div class="text-white text-opacity-80 text-sm">Sản phẩm</div>
+                <div class="text-lg font-bold text-white">{{ products.length }}</div>
+                <div class="text-white/80 text-xs">Sản phẩm</div>
               </div>
             </div>
           </div>
-          <div class="bg-black bg-opacity-20 backdrop-blur-sm rounded-lg px-6 py-4 border border-white border-opacity-20">
-            <div class="flex items-center">
-              <i class="fas fa-tags text-white text-xl mr-3"></i>
+          
+          <div class="bg-white/10 backdrop-blur-md rounded-xl px-4 py-2.5 border border-white/20 hover:bg-white/20 transition-all">
+            <div class="flex items-center gap-2">
+              <div class="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center">
+                <i class="fas fa-tags text-white text-sm"></i>
+              </div>
               <div>
-                <div class="text-2xl font-bold text-white">{{ categories.length }}</div>
-                <div class="text-white text-opacity-80 text-sm">Danh mục</div>
+                <div class="text-lg font-bold text-white">{{ categories.length }}</div>
+                <div class="text-white/80 text-xs">Danh mục</div>
               </div>
             </div>
           </div>
-          <div class="bg-black bg-opacity-20 backdrop-blur-sm rounded-lg px-6 py-4 border border-white border-opacity-20">
-            <div class="flex items-center">
-              <i class="fas fa-filter text-white text-xl mr-3"></i>
+          
+          <div class="bg-white/10 backdrop-blur-md rounded-xl px-4 py-2.5 border border-white/20 hover:bg-white/20 transition-all">
+            <div class="flex items-center gap-2">
+              <div class="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center">
+                <i class="fas fa-filter text-white text-sm"></i>
+              </div>
               <div>
-                <div class="text-2xl font-bold text-white">{{ filteredProducts.length }}</div>
-                <div class="text-white text-opacity-80 text-sm">Đã lọc</div>
+                <div class="text-lg font-bold text-white">{{ filteredProducts.length }}</div>
+                <div class="text-white/80 text-xs">Đã lọc</div>
               </div>
             </div>
           </div>
         </div>
       </div>
-      
-      <!-- Decorative Elements -->
-      <div class="absolute top-0 right-0 w-64 h-64 bg-white bg-opacity-10 rounded-full -translate-y-32 translate-x-32"></div>
-      <div class="absolute bottom-0 left-0 w-48 h-48 bg-white bg-opacity-5 rounded-full translate-y-24 -translate-x-24"></div>
     </section>
 
     <!-- Products Content -->
