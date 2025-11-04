@@ -14,6 +14,49 @@ class ProductService {
     return response;
   }
 
+  // Lấy chi tiết sản phẩm theo slug
+  async getProductBySlug(slug) {
+    const response = await apiClient.get(`/products/${slug}`, {
+      params: {
+        include: 'colors,capacities,variants,product_images,category'
+      }
+    });
+    return response;
+  }
+
+  // Lấy colors của sản phẩm
+  async getProductColors(productId) {
+    try {
+      const response = await apiClient.get(`/products/${productId}/colors`);
+      return response;
+    } catch (error) {
+      console.warn('Failed to load product colors:', error);
+      return { data: [] };
+    }
+  }
+
+  // Lấy capacities của sản phẩm
+  async getProductCapacities(productId) {
+    try {
+      const response = await apiClient.get(`/products/${productId}/capacities`);
+      return response;
+    } catch (error) {
+      console.warn('Failed to load product capacities:', error);
+      return { data: [] };
+    }
+  }
+
+  // Lấy variants của sản phẩm
+  async getProductVariants(productId) {
+    try {
+      const response = await apiClient.get(`/products/${productId}/variants`);
+      return response;
+    } catch (error) {
+      console.warn('Failed to load product variants:', error);
+      return { data: [] };
+    }
+  }
+
   // Tạo sản phẩm mới (Admin)
   async createProduct(productData) {
     const response = await apiClient.post('/products', productData);
