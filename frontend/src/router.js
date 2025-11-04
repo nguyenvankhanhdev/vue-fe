@@ -15,7 +15,7 @@ const routes = [
     component: () => import('./views/Products.vue'),
   },
   {
-    path: '/products/:id',
+    path: '/product/:slug',
     name: 'ProductDetail',
     component: () => import('./views/ProductDetail.vue'),
   },
@@ -139,6 +139,27 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(),
   routes,
+  // Cấu hình scroll behavior
+  scrollBehavior(to, from, savedPosition) {
+    // Nếu có savedPosition (khi dùng nút back/forward), trả về vị trí đó
+    if (savedPosition) {
+      return savedPosition
+    }
+    
+    // Nếu có hash (anchor link), scroll đến element đó
+    if (to.hash) {
+      return {
+        el: to.hash,
+        behavior: 'smooth',
+      }
+    }
+    
+    // Mặc định: scroll về đầu trang
+    return { 
+      top: 0, 
+      behavior: 'smooth' 
+    }
+  }
 })
 
 // Navigation guard để kiểm tra authentication

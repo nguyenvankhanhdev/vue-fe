@@ -30,13 +30,13 @@
       <!-- Enhanced Action Overlay -->
       <div class="product-actions absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
         <div class="action-buttons flex items-center space-x-3">
-          <button @click="addToWishlist" class="w-12 h-12 bg-white/95 hover:bg-red-500 hover:text-white rounded-xl border-2 border-gray-200 transition-all duration-300 flex items-center justify-center text-gray-700 shadow-lg backdrop-blur-sm hover:scale-110 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2" aria-label="Yêu thích">
+          <button @click.stop="addToWishlist" class="w-12 h-12 bg-white/95 hover:bg-red-500 hover:text-white rounded-xl border-2 border-gray-200 transition-all duration-300 flex items-center justify-center text-gray-700 shadow-lg backdrop-blur-sm hover:scale-110 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2" aria-label="Yêu thích">
             <i class="fas fa-heart" :class="{ 'text-red-500': isWishlisted }"></i>
           </button>
-          <button @click="quickView" class="w-12 h-12 bg-white/95 hover:bg-blue-500 hover:text-white rounded-xl border-2 border-gray-200 transition-all duration-300 flex items-center justify-center text-gray-700 shadow-lg backdrop-blur-sm hover:scale-110 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2" aria-label="Xem nhanh">
+          <button @click.stop="quickView" class="w-12 h-12 bg-white/95 hover:bg-blue-500 hover:text-white rounded-xl border-2 border-gray-200 transition-all duration-300 flex items-center justify-center text-gray-700 shadow-lg backdrop-blur-sm hover:scale-110 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2" aria-label="Xem nhanh">
             <i class="fas fa-eye"></i>
           </button>
-          <button @click="addToCart" class="w-12 h-12 bg-white/95 hover:bg-green-500 hover:text-white rounded-xl border-2 border-gray-200 transition-all duration-300 flex items-center justify-center text-gray-700 shadow-lg backdrop-blur-sm hover:scale-110 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed" :disabled="!isInStock" aria-label="Thêm vào giỏ">
+          <button @click.stop="addToCart" class="w-12 h-12 bg-white/95 hover:bg-green-500 hover:text-white rounded-xl border-2 border-gray-200 transition-all duration-300 flex items-center justify-center text-gray-700 shadow-lg backdrop-blur-sm hover:scale-110 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed" :disabled="!isInStock" aria-label="Thêm vào giỏ">
             <i class="fas fa-shopping-cart"></i>
           </button>
         </div>
@@ -59,6 +59,43 @@
           {{ product.name }}
         </router-link>
       </h3>
+
+      <!-- Colors & Capacities -->
+      <div class="mb-3 space-y-2">
+        <!-- Colors -->
+        <div v-if="product.colors && product.colors.length > 0" class="flex items-center gap-2">
+          <span class="text-xs text-gray-500 font-medium">Màu:</span>
+          <div class="flex gap-1.5">
+            <div
+              v-for="(color, index) in product.colors.slice(0, 5)"
+              :key="color.id"
+              :title="color.name"
+              class="w-5 h-5 rounded-full border-2 border-gray-200 shadow-sm hover:scale-110 transition-transform cursor-pointer"
+              :style="{ backgroundColor: color.color_code || '#ccc' }"
+            ></div>
+            <span v-if="product.colors.length > 5" class="text-xs text-gray-400 font-medium self-center">
+              +{{ product.colors.length - 5 }}
+            </span>
+          </div>
+        </div>
+        
+        <!-- Capacities / Variants (dynamic label based on category) -->
+        <div v-if="product.capacities && product.capacities.length > 0" class="flex items-center gap-2">
+          <span class="text-xs text-gray-500 font-medium">{{ getCapacityLabel(product) }}:</span>
+          <div class="flex flex-wrap gap-1.5">
+            <span
+              v-for="(capacity, index) in product.capacities.slice(0, 4)"
+              :key="capacity.id"
+              class="px-2 py-0.5 text-xs font-semibold bg-gray-100 text-gray-700 rounded border border-gray-200 hover:bg-blue-50 hover:border-blue-300 transition-colors"
+            >
+              {{ capacity.display_name || capacity.name }}
+            </span>
+            <span v-if="product.capacities.length > 4" class="text-xs text-gray-400 font-medium self-center">
+              +{{ product.capacities.length - 4 }}
+            </span>
+          </div>
+        </div>
+      </div>
 
       <!-- Rating -->
       <div v-if="product.rating" class="flex items-center mb-4">
@@ -114,12 +151,14 @@
 
 <script setup>
 import { ref, computed } from 'vue'
+import { useRouter } from 'vue-router'
 
 const props = defineProps({
   product: { type: Object, required: true }
 })
 
 const emit = defineEmits(['add-to-cart', 'add-to-wishlist', 'quick-view'])
+const router = useRouter()
 const isWishlisted = ref(false)
 
 // Check if product is in stock - handle both camelCase and snake_case
@@ -196,6 +235,31 @@ const discountPercent = computed(() => {
   return 0
 })
 
+// Get appropriate label for capacity/variant based on category
+const getCapacityLabel = (product) => {
+  const categoryName = product?.category?.name?.toLowerCase() || '';
+  
+  // Mapping category to appropriate label
+  if (categoryName.includes('điện thoại') || categoryName.includes('phone')) {
+    return 'Dung lượng';
+  } else if (categoryName.includes('đồng hồ') || categoryName.includes('watch')) {
+    return 'Kích thước';
+  } else if (categoryName.includes('tai nghe') || categoryName.includes('headphone') || categoryName.includes('earphone')) {
+    return 'Loại';
+  } else if (categoryName.includes('sạc') || categoryName.includes('charger')) {
+    return 'Công suất';
+  } else if (categoryName.includes('cáp') || categoryName.includes('cable')) {
+    return 'Độ dài';
+  } else if (categoryName.includes('pin') || categoryName.includes('battery')) {
+    return 'Dung lượng';
+  } else if (categoryName.includes('ốp') || categoryName.includes('case')) {
+    return 'Kích thước';
+  } else {
+    // Default label for accessories and other categories
+    return 'Phiên bản';
+  }
+}
+
 const formatPrice = (price) => {
   return new Intl.NumberFormat('vi-VN').format(Number(price || 0))
 }
@@ -259,7 +323,15 @@ const addToWishlist = () => {
   isWishlisted.value = !isWishlisted.value
   emit('add-to-wishlist', props.product)
 }
-const quickView = () => emit('quick-view', props.product)
+
+const quickView = () => {
+  // Navigate to product detail page
+  if (props.product.slug) {
+    router.push(`/product/${props.product.slug}`)
+  } else {
+    console.error('Product slug is missing!')
+  }
+}
 </script>
 
 <style scoped>
