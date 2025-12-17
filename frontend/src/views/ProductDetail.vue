@@ -683,12 +683,11 @@ import 'swiper/css'
 import 'swiper/css/navigation'
 import ProductCard from '../components/Product/ProductCard.vue'
 import { useProductDetail } from '@/composables'
-import { useToast } from '@/services/toast'
+import toast from '@/services/toast'
 
 const modules = [Navigation]
 const route = useRoute()
 const router = useRouter()
-const { success, error: showError, warning, info } = useToast()
 
 // Use composable
 const {
@@ -830,33 +829,58 @@ onMounted(() => {
   window.addEventListener('keydown', handleKeydown)
 })
 
-const addToCart = () => {
+const addToCart = async () => {
+  // Check if user is logged in
+  const token = localStorage.getItem('token')
+  if (!token) {
+    await toast.warning('Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng')
+    setTimeout(() => {
+      router.push('/login')
+    }, 1500)
+    return
+  }
+
   if (!selectedColor.value || !selectedCapacity.value) {
-    warning('Vui lòng chọn màu sắc và dung lượng')
+    await toast.warning('Vui lòng chọn màu sắc và dung lượng')
+    return
+  }
+
+  if (!selectedVariant.value) {
+    await toast.error('Không tìm thấy variant sản phẩm')
     return
   }
 
   if (isInStock.value) {
-    const cartItem = {
-      product: product.value,
-      variant: selectedVariant.value,
-      color: selectedColor.value,
-      capacity: selectedCapacity.value,
-      quantity: quantity.value,
-      price: currentPrice.value
+    try {
+      // Import useCart dynamically
+      const { useCart } = await import('@/composables')
+      const { addToCart: apiAddToCart } = useCart()
+      
+      // Call API to add to cart (toast notification handled in useCart)
+      const result = await apiAddToCart({
+        product_id: product.value.id,
+        product_variant_id: selectedVariant.value.id,
+        quantity: quantity.value
+      })
+      
+      // Don't show additional success message, useCart already handles it
+      if (!result) {
+        await toast.error('Không thể thêm sản phẩm vào giỏ hàng')
+      }
+    } catch (error) {
+      await toast.error('Không thể thêm sản phẩm vào giỏ hàng')
+      console.error('Add to cart error:', error)
     }
-    console.log('Add to cart:', cartItem)
-    // TODO: Implement cart logic
-    success(`Đã thêm ${quantity.value} sản phẩm vào giỏ hàng!`)
   }
 }
 
-const buyNow = () => {
+const buyNow = async () => {
   if (!selectedColor.value || !selectedCapacity.value) {
-    warning('Vui lòng chọn màu sắc và dung lượng')
+    await toast.warning('Vui lòng chọn màu sắc và dung lượng')
     return
   }
-  addToCart()
+  
+  await addToCart()
   router.push('/cart')
 }
 
@@ -864,9 +888,9 @@ const addToWishlist = () => {
   isWishlisted.value = !isWishlisted.value
   console.log('Add to wishlist:', product.value)
   if (isWishlisted.value) {
-    success('Đã thêm vào danh sách yêu thích!')
+    toast.success('Đã thêm vào danh sách yêu thích!')
   } else {
-    info('Đã xóa khỏi danh sách yêu thích!')
+    toast.info('Đã xóa khỏi danh sách yêu thích!')
   }
 }
 
@@ -880,7 +904,7 @@ const shareProduct = () => {
   } else {
     // Fallback: copy to clipboard
     navigator.clipboard.writeText(window.location.href)
-    success('Đã copy link sản phẩm!')
+    toast.success('Đã copy link sản phẩm!')
   }
 }
 
@@ -896,7 +920,7 @@ const submitReview = () => {
   }
   console.log('Submit review:', newReview)
   // TODO: Implement review submission
-  success('Cảm ơn bạn đã đánh giá!')
+  toast.success('Cảm ơn bạn đã đánh giá!')
   showReviewForm.value = false
   reviewTitle.value = ''
   reviewContent.value = ''

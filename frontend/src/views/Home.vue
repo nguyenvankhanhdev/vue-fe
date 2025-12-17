@@ -538,17 +538,14 @@ const navigateToCategory = (slug) => {
 }
 
 const handleAddToCart = (product) => {
-  console.log('Add to cart:', product)
   // Handle add to cart logic
 }
 
 const handleAddToWishlist = (product) => {
-  console.log('Add to wishlist:', product)
   // Handle add to wishlist logic
 }
 
 const handleQuickView = (product) => {
-  console.log('Quick view:', product)
   // Handle quick view logic
 }
 

@@ -1,114 +1,90 @@
-// Toast notification service
-import { ref, reactive } from 'vue'
+// toast.js
+import Swal from 'sweetalert2'
 
-// Toast state
-const toasts = ref([])
-let toastId = 0
+const Toast = Swal.mixin({
+  toast: true,
+  position: 'top-end',
+  showConfirmButton: false,
+  timer: 3000,
+  timerProgressBar: true,
+  zIndex: 9999,
+  showClass: { popup: 'swal2-toast-in' },
+  hideClass: { popup: 'swal2-toast-out' },
+  customClass: {
+    popup: 'ct-toast',
+    title: 'ct-toast__title',
+    icon: 'ct-toast__icon',
+    timerProgressBar: 'ct-toast__progress',
+    closeButton: 'ct-toast__close'
+  },
+  didOpen: (t) => {
+    t.setAttribute('role', 'status')
+    t.setAttribute('aria-live', 'polite')
+    t.addEventListener('mouseenter', Swal.stopTimer)
+    t.addEventListener('mouseleave', Swal.resumeTimer)
+  }
+})
 
-// Toast types
-export const TOAST_TYPES = {
-  SUCCESS: 'success',
-  ERROR: 'error', 
-  WARNING: 'warning',
-  INFO: 'info'
+const kinds = {
+  success: { 
+    iconHtml: '<i class="fas fa-check-circle" style="font-size: 24px; background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;"></i>', 
+    iconColor: 'transparent', 
+    background: '#ffffff', 
+    color: 'transparent' 
+  },
+  error: { 
+    iconHtml: '<i class="fas fa-times-circle" style="font-size: 24px;"></i>', 
+    iconColor: '#ef4444', 
+    background: '#ffffff', 
+    color: '#7f1d1d' 
+  },
+  warning: { 
+    iconHtml: '<i class="fas fa-exclamation-circle" style="font-size: 24px;"></i>', 
+    iconColor: '#f59e0b', 
+    background: '#ffffff', 
+    color: '#78350f' 
+  },
+  info: { 
+    iconHtml: '<i class="fas fa-info-circle" style="font-size: 24px; background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;"></i>', 
+    iconColor: 'transparent', 
+    background: '#ffffff', 
+    color: 'transparent' 
+  }
 }
 
-// Toast configuration
-const DEFAULT_DURATION = 2000 // 5 seconds (để dễ thấy progress bar)
-const MAX_TOASTS = 2
-
-// Toast service
 export const toastService = {
-  // Show toast
-  show(message, type = TOAST_TYPES.INFO, duration = DEFAULT_DURATION, options = {}) {
-    const toast = {
-      id: ++toastId,
-      message,
-      type,
-      duration,
-      timestamp: Date.now(),
-      persistent: options.persistent || false,
-      action: options.action || null,
-      icon: options.icon || this.getDefaultIcon(type)
-    }
+  /**
+   * type: success|error|warning|info
+   * opts: { variant?: 'brand', position?, showCloseButton?, background?, color?, iconColor? ... }
+   */
+  show(type='info', message='', duration=3000, opts={}) {
+    const base = kinds[type] || kinds.info
 
-    toasts.value.push(toast)
+    // nếu muốn “brand”, ta override nền + class
+    const brandOpts = opts.variant === 'brand'
+      ? {
+          background: 'var(--ct-toast-bg-brand)',
+          color: 'var(--ct-on-brand)',
+          iconColor: '#34d399', // xanh check mark đẹp trên nền brand
+          customClass: { popup: 'ct-toast ct-toast--brand' }
+        }
+      : {}
 
-    // Limit number of toasts
-    if (toasts.value.length > MAX_TOASTS) {
-      toasts.value.shift()
-    }
-
-    // Auto remove toast
-    if (!toast.persistent && duration > 0) {
-      setTimeout(() => {
-        this.remove(toast.id)
-      }, duration)
-    }
-
-    return toast.id
+    return Toast.fire({
+      title: message,
+      timer: duration,
+      ...base,
+      ...brandOpts,
+      ...opts // cuối cùng cho phép override thủ công nếu cần
+    })
   },
-
-  // Remove toast
-  remove(id) {
-    const index = toasts.value.findIndex(toast => toast.id === id)
-    if (index > -1) {
-      toasts.value.splice(index, 1)
-    }
-  },
-
-  // Clear all toasts
-  clear() {
-    toasts.value.splice(0)
-  },
-
-  // Convenience methods
-  success(message, duration, options) {
-    return this.show(message, TOAST_TYPES.SUCCESS, duration, options)
-  },
-
-  error(message, duration, options) {
-    return this.show(message, TOAST_TYPES.ERROR, duration, options)
-  },
-
-  warning(message, duration, options) {
-    return this.show(message, TOAST_TYPES.WARNING, duration, options)
-  },
-
-  info(message, duration, options) {
-    return this.show(message, TOAST_TYPES.INFO, duration, options)
-  },
-
-  // Get default icon for toast type
-  getDefaultIcon(type) {
-    const icons = {
-      [TOAST_TYPES.SUCCESS]: 'fas fa-check-circle',
-      [TOAST_TYPES.ERROR]: 'fas fa-exclamation-circle',
-      [TOAST_TYPES.WARNING]: 'fas fa-exclamation-triangle',
-      [TOAST_TYPES.INFO]: 'fas fa-info-circle'
-    }
-    return icons[type] || icons[TOAST_TYPES.INFO]
-  },
-
-  // Get toasts (reactive)
-  getToasts() {
-    return toasts
-  }
+  success(m,d,o){ return this.show('success',m,d,o) },
+  error(m,d,o){ return this.show('error',m,d,o) },
+  warning(m,d,o){ return this.show('warning',m,d,o) },
+  info(m,d,o){ return this.show('info',m,d,o) }
 }
 
-// Toast composable
-export function useToast() {
-  return {
-    toasts: toasts,
-    showToast: toastService.show.bind(toastService),
-    removeToast: toastService.remove.bind(toastService),
-    clearToasts: toastService.clear.bind(toastService),
-    success: toastService.success.bind(toastService),
-    error: toastService.error.bind(toastService),
-    warning: toastService.warning.bind(toastService),
-    info: toastService.info.bind(toastService)
-  }
-}
+// Composable function for use in Vue components
+export const useToast = () => toastService
 
-// Export default
 export default toastService

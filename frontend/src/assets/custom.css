@@ -1,79 +1,497 @@
-/* Custom styles to complement Tailwind CSS */
+/* =========================================================
+   GLOBAL THEME TOKENS (LIGHT / DARK)
+   ========================================================= */
+:root {
+  /* Bo tròn + bóng đổ mặc định cho toast */
+  --ct-radius: 12px;
+  --ct-shadow:
+    0 10px 25px -10px rgba(0,0,0,.25),
+    0 6px 12px -6px rgba(0,0,0,.12);
 
-/* Smooth transitions for all interactive elements */
-* {
-  transition: all 0.2s ease-in-out;
+  /* Brand gradient (match nút xanh → tím) */
+  --ct-brand-start: #2563eb; /* blue-600 */
+  --ct-brand-end:   #a855f7; /* purple-500 */
+
+  /* Text/icon đặt trên nền tối */
+  --ct-on-brand: #e5e7eb;          /* gray-200 */
+  --ct-on-brand-weak: #c7d2fe;     /* indigo-200 */
+  --ct-brand-shadow:
+    0 14px 32px -12px rgba(37,99,235,.35),
+    0 8px 18px -10px rgba(168,85,247,.28);
+
+  /* SUCCESS */
+  --ct-success-bg: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+  --ct-success-600: #10b981;
+  --ct-success-900: #065f46;
+
+  /* ERROR */
+  --ct-error-bg: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+  --ct-error-600: #ef4444;
+  --ct-error-900: #7f1d1d;
+
+  /* WARNING */
+  --ct-warning-bg: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+  --ct-warning-600: #f59e0b;
+  --ct-warning-900: #78350f;
+
+  /* INFO */
+  --ct-info-bg: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+  --ct-info-600: #3b82f6;
+  --ct-info-900: #1e3a8a;
+
+  /* Viền & progress bar */
+  --ct-border: rgba(0,0,0,.06);
+  --ct-progress-bg: rgba(0,0,0,.06);
+
+  /* Toast nền brand */
+  --ct-toast-bg-brand: linear-gradient(
+    135deg,
+    var(--ct-brand-start) 0%,
+    var(--ct-brand-end) 100%
+  );
 }
 
-/* Custom button focus styles */
-button:focus,
-.btn:focus {
-  outline: 2px solid #3b82f6;
-  outline-offset: 2px;
-}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ct-shadow:
+      0 18px 38px -14px rgba(0,0,0,.65),
+      0 10px 22px -12px rgba(0,0,0,.45);
 
-/* Loading spinner for buttons */
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
+    --ct-success-bg: linear-gradient(135deg,#052e22 0%,#08382a 100%);
+    --ct-error-bg:   linear-gradient(135deg,#3a0d0d 0%,#451010 100%);
+    --ct-warning-bg: linear-gradient(135deg,#3c2e07 0%,#4a3808 100%);
+    --ct-info-bg:    linear-gradient(135deg,#0a1d3a 0%,#0f264a 100%);
+
+    --ct-success-600:#34d399;
+    --ct-success-900:#a7f3d0;
+    --ct-error-600:  #f87171;
+    --ct-error-900:  #fecaca;
+    --ct-warning-600:#fbbf24;
+    --ct-warning-900:#fde68a;
+    --ct-info-600:   #60a5fa;
+    --ct-info-900:   #bfdbfe;
+
+    --ct-on-brand:#eef2ff;
+    --ct-on-brand-weak:#c7d2fe;
+
+    --ct-border: rgba(255,255,255,.06);
+    --ct-progress-bg: rgba(255,255,255,.08);
   }
 }
 
+/* =========================================================
+   GLOBAL QUALITY OF LIFE (PHÙ HỢP TAILWIND)
+   ========================================================= */
+
+/* Chỉ transition cho phần tử tương tác, tránh * { transition: all } */
+.interactive,
+button,
+.btn,
+a,
+[role="button"],
+input,
+textarea,
+select {
+  transition:
+    background-color .2s ease,
+    color .2s ease,
+    box-shadow .2s ease,
+    transform .2s ease,
+    border-color .2s ease,
+    opacity .2s ease;
+}
+
+/* Focus ring rõ ràng, hợp style Tailwind */
+button:focus-visible,
+.btn:focus-visible,
+a:focus-visible,
+[role="button"]:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+  border-radius: 10px;
+}
+
+/* Loading spinner cho nút, icon… */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
 .animate-spin {
   animation: spin 1s linear infinite;
 }
 
-/* Custom scrollbar */
+/* Scrollbar gọn & hiện đại */
 ::-webkit-scrollbar {
   width: 8px;
+  height: 8px;
 }
-
 ::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: #f3f4f6;
 }
-
 ::-webkit-scrollbar-thumb {
-  background: #c1c1c1;
-  border-radius: 4px;
+  background: #c7cbd1;
+  border-radius: 6px;
 }
-
 ::-webkit-scrollbar-thumb:hover {
-  background: #a1a1a1;
+  background: #a7adb6;
 }
 
-/* Modal backdrop */
+/* Modal backdrop (nếu dùng Bootstrap hoặc custom) */
 .modal-backdrop {
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0,0,0,.45);
   backdrop-filter: blur(4px);
 }
 
-/* Toast animations */
-@keyframes slideInRight {
-  from {
-    transform: translateX(100%);
+/* =========================================================
+   SWEETALERT2 TOAST – POSITIONING & MOTION
+   ========================================================= */
+
+/* Container đặt ở top, không che click toàn màn hình */
+.swal2-container.swal2-top {
+  top: 24px !important;
+  pointer-events: none !important;
+  padding-top: 0 !important;
+}
+
+.swal2-container.swal2-top-end {
+  top: 24px !important;
+  right: 20px !important;
+  pointer-events: none !important;
+  padding-top: 0 !important;
+}
+
+/* Toast không chặn click ngoài nó */
+.swal2-container.swal2-top .ct-toast,
+.swal2-container.swal2-top-end .ct-toast {
+  pointer-events: auto !important;
+}
+
+/* Modal/Dialog bình thường CẦN pointer-events auto */
+.swal2-container:not(.swal2-top-end):not(.swal2-top) {
+  pointer-events: auto !important;
+}
+
+.swal2-container.swal2-center {
+  pointer-events: auto !important;
+}
+
+/* Animation vào/ra cực kỳ mượt - Trượt từ trên xuống */
+@keyframes ct-in {
+  0%   { 
+    transform: translateY(-100%); 
     opacity: 0;
   }
-  to {
-    transform: translateX(0);
+  50%  { 
+    transform: translateY(6px); 
+    opacity: 1;
+  }
+  70%  { 
+    transform: translateY(-2px); 
+    opacity: 1;
+  }
+  85%  { 
+    transform: translateY(1px); 
+    opacity: 1;
+  }
+  100% { 
+    transform: translateY(0); 
     opacity: 1;
   }
 }
 
-@keyframes slideOutRight {
-  from {
-    transform: translateX(0);
-    opacity: 1;
+@keyframes ct-out {
+  0%   { 
+    transform: translateY(0); 
+    opacity: 1; 
   }
-  to {
-    transform: translateX(100%);
+  50%  { 
+    transform: translateY(-20px); 
+    opacity: 0.5; 
+  }
+  100% { 
+    transform: translateY(-100%); 
+    opacity: 0; 
+  }
+}
+
+.swal2-toast-in  { 
+  animation: ct-in 600ms cubic-bezier(0.16, 1, 0.3, 1) both; 
+}
+
+.swal2-toast-out { 
+  animation: ct-out 350ms cubic-bezier(0.5, 0, 0.75, 0) both; 
+}
+
+/* =========================================================
+   TOAST BLOCK (DÙNG CHO TẤT CẢ LOẠI)
+   ========================================================= */
+
+.ct-toast {
+  width: 340px !important;
+  min-width: 340px !important;
+  max-width: 340px !important;
+  padding: 14px 16px !important;
+  border-radius: var(--ct-radius) !important;
+  border: 2px solid transparent !important;
+  background: linear-gradient(#ffffff, #ffffff) padding-box,
+              linear-gradient(135deg, #2563eb 0%, #7c3aed 100%) border-box !important;
+  box-shadow: var(--ct-shadow) !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  backdrop-filter: blur(10px);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform, opacity;
+  box-sizing: border-box !important;
+}
+
+/* Shimmer nhẹ trên nền toast */
+.ct-toast::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255,255,255,.35) 50%,
+    transparent 100%
+  );
+  transform: translateX(-120%);
+  animation: ct-shimmer 2.8s infinite;
+  pointer-events: none;
+}
+@keyframes ct-shimmer {
+  0%   { transform: translateX(-120%); }
+  100% { transform: translateX(120%); }
+}
+
+/* Icon khối vuông tròn góc */
+.ct-toast__icon {
+  width: 36px !important;
+  height: 36px !important;
+  margin: 0 !important;
+  border-radius: 10px !important;
+  display: grid;
+  place-items: center;
+  box-shadow: 
+    0 3px 10px rgba(0, 0, 0, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  flex-shrink: 0;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
+
+/* Tiêu đề / nội dung toast */
+.ct-toast__title {
+  font-size: 14px !important;
+  line-height: 1.5 !important;
+  font-weight: 600 !important;
+  margin: 0 !important;
+  letter-spacing: 0;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  flex: 1 !important;
+  min-width: 0 !important;
+  background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+}
+
+/* Nút đóng toast (khi bật showCloseButton) */
+.ct-toast__close {
+  width: 26px !important;
+  height: 26px !important;
+  border-radius: 8px !important;
+  font-size: 16px !important;
+  background: rgba(107,114,128,.08) !important;
+  color: #9ca3af !important;
+  transition: transform .2s ease, background-color .2s ease;
+  top: 6px !important;
+  right: 6px !important;
+}
+.ct-toast__close:hover {
+  background: rgba(239,68,68,.14) !important;
+  color: #ef4444 !important;
+  transform: rotate(90deg) scale(1.05);
+}
+
+/* Thanh progress dưới toast */
+.ct-toast__progress {
+  height: 4px !important;
+  background: rgba(37, 99, 235, 0.1) !important;
+  border-radius: 0 0 var(--ct-radius) var(--ct-radius) !important;
+  overflow: hidden !important;
+}
+
+.swal2-timer-progress-bar {
+  background: linear-gradient(90deg, 
+    #2563eb 0%, 
+    #7c3aed 50%, 
+    #a855f7 100%) !important;
+  box-shadow: 0 0 20px rgba(37, 99, 235, 0.5) !important;
+}
+
+.swal2-timer-progress-bar::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.6) 50%,
+    transparent 100%
+  );
+  animation: ct-progress 1.2s linear infinite;
+}
+@keyframes ct-progress {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* Hover nâng khối nhẹ */
+.ct-toast:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 20px 50px -12px rgba(0,0,0,.28),
+    0 10px 24px -8px rgba(0,0,0,.2);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* RTL support */
+[dir="rtl"] .swal2-container.swal2-top-end {
+  left: 20px !important;
+  right: auto !important;
+}
+
+/* =========================================================
+   VARIANT: BRAND GRADIENT (NHƯ ẢNH BẠN GỬI)
+   ========================================================= */
+
+.ct-toast--brand {
+  background: var(--ct-toast-bg-brand) !important;
+  color: var(--ct-on-brand) !important;
+  box-shadow: var(--ct-brand-shadow) !important;
+  border: 1px solid rgba(255,255,255,.12) !important;
+}
+.ct-toast--brand .ct-toast__icon {
+  background: rgba(255,255,255,.08);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.18);
+}
+.ct-toast--brand .ct-toast__title {
+  color: var(--ct-on-brand) !important;
+}
+.ct-toast--brand strong,
+.ct-toast--brand .accent {
+  color: var(--ct-on-brand-weak) !important;
+}
+
+/* =========================================================
+   SWEETALERT2 ICON OVERRIDES (SUCCESS / ERROR / WARNING / INFO)
+   ========================================================= */
+
+/* Success icon - Brand gradient theme */
+.swal2-success {
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.1) 0%, rgba(124, 58, 237, 0.1) 100%) !important;
+  border-color: transparent !important;
+  box-shadow: 
+    0 4px 12px rgba(37, 99, 235, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
+  animation: iconBounceIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) !important;
+}
+.swal2-success .swal2-success-ring {
+  border-color: #2563eb !important;
+}
+.swal2-success [class^='swal2-success-line'] {
+  background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%) !important;
+}
+
+/* Error icon */
+.swal2-error {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(220, 38, 38, 0.1) 100%) !important;
+  border-color: transparent !important;
+  box-shadow: 
+    0 4px 12px rgba(239, 68, 68, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
+  animation: iconShake 0.5s ease !important;
+}
+.swal2-error [class^='swal2-x-mark-line'] {
+  background-color: #ef4444 !important;
+}
+
+/* Warning icon */
+.swal2-warning {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(217, 119, 6, 0.1) 100%) !important;
+  border-color: transparent !important;
+  box-shadow: 
+    0 4px 12px rgba(245, 158, 11, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
+  animation: iconBounce 0.6s ease !important;
+}
+.swal2-warning .swal2-icon-content {
+  color: #f59e0b !important;
+}
+
+/* Info icon */
+.swal2-info {
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.1) 0%, rgba(124, 58, 237, 0.1) 100%) !important;
+  border-color: transparent !important;
+  box-shadow: 
+    0 4px 12px rgba(37, 99, 235, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
+  animation: iconBounceIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) !important;
+}
+.swal2-info .swal2-icon-content {
+  background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Icon animations */
+@keyframes iconBounceIn {
+  0% {
+    transform: scale(0) rotate(-180deg);
     opacity: 0;
   }
+  50% {
+    transform: scale(1.15) rotate(10deg);
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
 }
 
-.toast-enter-active {
-  animation: slideInRight 0.3s ease-out;
+@keyframes iconShake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-3px); }
+  20%, 40%, 60%, 80% { transform: translateX(3px); }
 }
 
-.toast-leave-active {
-  animation: slideOutRight 0.3s ease-in;
+@keyframes iconBounce {
+  0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+  40% { transform: translateY(-6px); }
+  60% { transform: translateY(-3px); }
+}
+
+/* =========================================================
+   REDUCE MOTION (ACCESSIBILITY)
+   ========================================================= */
+@media (prefers-reduced-motion: reduce) {
+  .swal2-toast-in,
+  .swal2-toast-out,
+  .ct-toast::before,
+  .swal2-timer-progress-bar::before,
+  .ct-toast:hover {
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+  }
 }

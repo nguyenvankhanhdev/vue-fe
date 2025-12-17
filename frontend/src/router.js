@@ -23,6 +23,7 @@ const routes = [
     path: '/cart',
     name: 'Cart',
     component: () => import('./views/Cart.vue'),
+    meta: { requiresAuth: true }
   },
   {
     path: '/login',
@@ -56,6 +57,12 @@ const routes = [
     path: '/orders',
     name: 'Orders',
     component: () => import('./views/Orders.vue'),
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/orders/:id',
+    name: 'OrderDetail',
+    component: () => import('./views/OrderDetail.vue'),
     meta: { requiresAuth: true }
   },
   {
@@ -123,6 +130,12 @@ const routes = [
         path: 'settings',
         name: 'AdminSettings',
         component: () => import('./views/Admin/AdminSettings.vue'),
+        meta: { requiresAuth: true, requiresAdmin: true }
+      },
+      {
+        path: 'coupons',
+        name: 'AdminCoupons',
+        component: () => import('./views/Admin/AdminCoupons.vue'),
         meta: { requiresAuth: true, requiresAdmin: true }
       }
     ]
@@ -202,6 +215,13 @@ router.beforeEach((to, from, next) => {
   
   // If route requires authentication and user is not logged in
   if (to.meta.requiresAuth && !isLoggedIn) {
+    // Show specific message for cart
+    if (to.name === 'Cart') {
+      toastService.warning('Vui lòng đăng nhập để xem giỏ hàng của bạn')
+    } else {
+      toastService.info('Vui lòng đăng nhập để tiếp tục')
+    }
+    
     // Redirect to login page with return url
     next({
       name: 'Login',

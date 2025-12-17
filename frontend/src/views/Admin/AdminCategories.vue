@@ -711,7 +711,6 @@ function updateSlug() {
 function openAddModal() {
   form.value = { ...empty }
   showModal.value = true
-  console.log('Modal opened - Add mode')
 }
 
 function openEdit(category) {
@@ -724,7 +723,6 @@ function openEdit(category) {
     parent_id: category.parent_id
   }
   showModal.value = true
-  console.log('Modal opened - Edit mode', form.value)
 }
 
 function closeModal() {
