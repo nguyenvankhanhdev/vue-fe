@@ -59,13 +59,23 @@ class ProductService {
 
   // Tạo sản phẩm mới (Admin)
   async createProduct(productData) {
-    const response = await apiClient.post('/products', productData);
+    const response = await apiClient.post('/products', productData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
     return response;
   }
 
   // Cập nhật sản phẩm (Admin)
   async updateProduct(id, productData) {
-    const response = await apiClient.put(`/products/${id}`, productData);
+    // Laravel không parse FormData từ PUT request
+    // Phải dùng POST với _method=PUT
+    const response = await apiClient.post(`/products/${id}`, productData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
     return response;
   }
 

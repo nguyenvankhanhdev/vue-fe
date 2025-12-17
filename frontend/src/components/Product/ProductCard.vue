@@ -317,8 +317,15 @@ const getCategoryName = (product) => {
 }
 
 const addToCart = () => {
-  if (isInStock.value) emit('add-to-cart', props.product)
+  // Redirect to product detail to select variant (color + capacity)
+  // because we need product_variant_id for API
+  if (props.product.slug) {
+    router.push(`/product/${props.product.slug}`)
+  } else {
+    console.error('Product slug is missing!')
+  }
 }
+
 const addToWishlist = () => {
   isWishlisted.value = !isWishlisted.value
   emit('add-to-wishlist', props.product)

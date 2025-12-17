@@ -1,42 +1,82 @@
 <template>
   <div class="min-h-screen bg-gray-50">
-    <!-- Page Header -->
-    <section class="bg-gradient-to-br from-blue-600 via-purple-600 to-blue-800 text-white relative overflow-hidden">
-      <div class="absolute inset-0 bg-black/10"></div>
-      <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-20">
+    <!-- Compact Page Header -->
+    <section class="bg-gradient-to-br from-blue-500 via-purple-600 to-blue-600 relative overflow-hidden">
+      <!-- Decorative Background -->
+      <div class="absolute inset-0 opacity-10">
+        <div class="absolute top-0 right-0 w-96 h-96 bg-white rounded-full -translate-y-1/2 translate-x-1/2"></div>
+        <div class="absolute bottom-0 left-0 w-64 h-64 bg-white rounded-full translate-y-1/2 -translate-x-1/2"></div>
+      </div>
+      
+      <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <!-- Breadcrumb -->
-        <div class="flex items-center text-blue-100 text-sm mb-6 space-x-2">
-          <router-link to="/" class="hover:text-white transition-colors duration-200">Trang chủ</router-link>
-          <i class="fas fa-chevron-right text-xs"></i>
-          <router-link to="/cart" class="hover:text-white transition-colors duration-200">Giỏ hàng</router-link>
-          <i class="fas fa-chevron-right text-xs"></i>
+        <nav class="flex items-center text-sm mb-4 text-white/80">
+          <router-link to="/" class="hover:text-white transition-colors flex items-center">
+            <i class="fas fa-home mr-1.5"></i>
+            Trang chủ
+          </router-link>
+          <i class="fas fa-chevron-right mx-2 text-xs"></i>
+          <router-link to="/cart" class="hover:text-white transition-colors">Giỏ hàng</router-link>
+          <i class="fas fa-chevron-right mx-2 text-xs"></i>
           <span class="text-white font-medium">Thanh toán</span>
-        </div>
+        </nav>
 
-        <div class="text-center">
-          <div class="inline-flex items-center justify-center w-16 h-16 bg-white/10 backdrop-blur-sm rounded-2xl mb-6">
-            <i class="fas fa-credit-card text-2xl"></i>
+        <!-- Header Content - Compact -->
+        <div class="flex items-center justify-between mb-6">
+          <div>
+            <h1 class="text-3xl md:text-4xl font-bold text-white mb-2 flex items-center">
+              <i class="fas fa-credit-card mr-3 text-white/80"></i>
+              Thanh toán
+            </h1>
+            <p class="text-white/90 text-sm md:text-base">
+              Hoàn tất đơn hàng của bạn một cách nhanh chóng và an toàn
+            </p>
           </div>
-          <h1
-            class="text-4xl lg:text-5xl font-bold mb-4 bg-gradient-to-r from-white to-blue-100 bg-clip-text text-transparent">
-            Thanh toán
-          </h1>
-          <p class="text-xl text-blue-100 max-w-2xl mx-auto">
-            Hoàn tất đơn hàng của bạn một cách nhanh chóng và an toàn
-          </p>
+        </div>
+        
+        <!-- Compact Stats -->
+        <div class="flex flex-wrap gap-3">
+          <div class="bg-white/10 backdrop-blur-md rounded-xl px-4 py-2.5 border border-white/20 hover:bg-white/20 transition-all">
+            <div class="flex items-center gap-2">
+              <div class="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center">
+                <i class="fas fa-box text-white text-sm"></i>
+              </div>
+              <div>
+                <div class="text-lg font-bold text-white">{{ cartItems.length }}</div>
+                <div class="text-white/80 text-xs">Sản phẩm</div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="bg-white/10 backdrop-blur-md rounded-xl px-4 py-2.5 border border-white/20 hover:bg-white/20 transition-all">
+            <div class="flex items-center gap-2">
+              <div class="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center">
+                <i class="fas fa-dollar-sign text-white text-sm"></i>
+              </div>
+              <div>
+                <div class="text-lg font-bold text-white">{{ formatPrice(finalTotal) }}₫</div>
+                <div class="text-white/80 text-xs">Tổng tiền</div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-
-      <!-- Decorative elements -->
-      <div class="absolute top-10 left-10 w-20 h-20 bg-white/5 rounded-full animate-float"></div>
-      <div class="absolute top-40 right-20 w-16 h-16 bg-white/5 rounded-full animate-float-delay"></div>
-      <div class="absolute bottom-20 left-1/4 w-12 h-12 bg-white/5 rounded-full animate-float"></div>
     </section>
 
     <!-- Checkout Content -->
-    <section class="py-12">
+    <section class="py-8">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="grid lg:grid-cols-3 gap-8">
+        
+        <!-- Loading State -->
+        <div v-if="loadingCheckout" class="flex items-center justify-center min-h-96">
+          <div class="text-center">
+            <div class="inline-block animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-600 mb-4"></div>
+            <p class="text-gray-600 text-lg font-medium">Đang tải thông tin checkout...</p>
+          </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div v-else class="grid lg:grid-cols-3 gap-8">
           <!-- Left Side - Forms -->
           <div class="lg:col-span-2 space-y-8">
             <!-- Shipping Information -->
@@ -80,49 +120,103 @@
                     required />
                 </div>
 
+                <div class="grid md:grid-cols-3 gap-4">
+                  <!-- Tỉnh/Thành phố -->
+                  <div>
+                    <label for="city" class="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
+                      <i class="fas fa-map-marked-alt text-blue-500"></i>
+                      Tỉnh/Thành phố *
+                    </label>
+                    <div class="relative">
+                      <select id="city" v-model="shippingInfo.city"
+                        :disabled="loadingProvinces"
+                        class="w-full pl-10 pr-10 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white text-gray-700 disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed hover:border-blue-300 appearance-none"
+                        required>
+                        <option value="">
+                          {{ loadingProvinces ? 'Đang tải...' : 'Chọn tỉnh/thành phố' }}
+                        </option>
+                        <option v-for="province in provinces" :key="province.id" :value="province.id">
+                          {{ province.name }}
+                        </option>
+                      </select>
+                      <!-- Icon bên trái -->
+                      <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
+                        <i class="fas fa-city"></i>
+                      </div>
+                      <!-- Loading spinner hoặc chevron -->
+                      <div class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
+                        <i v-if="loadingProvinces" class="fas fa-spinner fa-spin text-blue-500"></i>
+                        <i v-else class="fas fa-chevron-down text-gray-400"></i>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <!-- Quận/Huyện -->
+                  <div>
+                    <label for="district" class="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
+                      <i class="fas fa-map-marker-alt text-purple-500"></i>
+                      Quận/Huyện *
+                    </label>
+                    <div class="relative">
+                      <select id="district" v-model="shippingInfo.district"
+                        :disabled="!shippingInfo.city || loadingDistricts"
+                        class="w-full pl-10 pr-10 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-200 bg-white text-gray-700 disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed hover:border-purple-300 appearance-none"
+                        required>
+                        <option value="">
+                          {{ loadingDistricts ? 'Đang tải...' : (!shippingInfo.city ? 'Chọn tỉnh trước' : 'Chọn quận/huyện') }}
+                        </option>
+                        <option v-for="district in districts" :key="district.id" :value="district.id">
+                          {{ district.name }}
+                        </option>
+                      </select>
+                      <!-- Icon bên trái -->
+                      <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
+                        <i class="fas fa-building"></i>
+                      </div>
+                      <!-- Loading spinner hoặc chevron -->
+                      <div class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
+                        <i v-if="loadingDistricts" class="fas fa-spinner fa-spin text-purple-500"></i>
+                        <i v-else class="fas fa-chevron-down text-gray-400"></i>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <!-- Phường/Xã -->
+                  <div>
+                    <label for="ward" class="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
+                      <i class="fas fa-location-dot text-green-500"></i>
+                      Phường/Xã *
+                    </label>
+                    <div class="relative">
+                      <select id="ward" v-model="shippingInfo.ward" 
+                        :disabled="!shippingInfo.district || loadingWards"
+                        class="w-full pl-10 pr-10 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200 bg-white text-gray-700 disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed hover:border-green-300 appearance-none"
+                        required>
+                        <option value="">
+                          {{ loadingWards ? 'Đang tải...' : (!shippingInfo.district ? 'Chọn quận trước' : 'Chọn phường/xã') }}
+                        </option>
+                        <option v-for="ward in wards" :key="ward.id" :value="ward.id">
+                          {{ ward.name }}
+                        </option>
+                      </select>
+                      <!-- Icon bên trái -->
+                      <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
+                        <i class="fas fa-home"></i>
+                      </div>
+                      <!-- Loading spinner hoặc chevron -->
+                      <div class="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
+                        <i v-if="loadingWards" class="fas fa-spinner fa-spin text-green-500"></i>
+                        <i v-else class="fas fa-chevron-down text-gray-400"></i>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
                 <div>
                   <label for="address" class="block text-sm font-semibold text-gray-700 mb-2">Địa chỉ *</label>
                   <input type="text" id="address" v-model="shippingInfo.address" placeholder="Số nhà, tên đường"
                     class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white"
                     required />
-                </div>
-
-                <div class="grid md:grid-cols-2 gap-4">
-                  <div>
-                    <label for="city" class="block text-sm font-semibold text-gray-700 mb-2">Tỉnh/Thành phố *</label>
-                    <select id="city" v-model="shippingInfo.city" @change="loadDistricts"
-                      class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white text-gray-700"
-                      required>
-                      <option value="">Chọn tỉnh/thành phố</option>
-                      <option v-for="city in cities" :key="city.code" :value="city.code">
-                        {{ city.name }}
-                      </option>
-                    </select>
-                  </div>
-                  <div>
-                    <label for="district" class="block text-sm font-semibold text-gray-700 mb-2">Quận/Huyện *</label>
-                    <select id="district" v-model="shippingInfo.district" @change="loadWards"
-                      :disabled="!shippingInfo.city"
-                      class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white text-gray-700 disabled:bg-gray-100 disabled:text-gray-400"
-                      required>
-                      <option value="">Chọn quận/huyện</option>
-                      <option v-for="district in districts" :key="district.code" :value="district.code">
-                        {{ district.name }}
-                      </option>
-                    </select>
-                  </div>
-                </div>
-
-                <div>
-                  <label for="ward" class="block text-sm font-semibold text-gray-700 mb-2">Phường/Xã *</label>
-                  <select id="ward" v-model="shippingInfo.ward" :disabled="!shippingInfo.district"
-                    class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white text-gray-700 disabled:bg-gray-100 disabled:text-gray-400"
-                    required>
-                    <option value="">Chọn phường/xã</option>
-                    <option v-for="ward in wards" :key="ward.code" :value="ward.code">
-                      {{ ward.name }}
-                    </option>
-                  </select>
                 </div>
 
                 <div>
@@ -134,92 +228,296 @@
               </form>
             </div>
 
-            <!-- Shipping Method -->
+            <!-- Shipping & Payment Methods -->
             <div class="bg-white rounded-2xl shadow-xl overflow-hidden border border-blue-100/50">
               <div class="bg-gradient-to-r from-blue-50 to-purple-50 px-6 py-4 border-b border-blue-100">
                 <h2 class="flex items-center gap-4 text-lg font-bold text-gray-800">
-                  <div
-                    class="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-full flex items-center justify-center text-sm font-bold">
+                  <div class="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-full flex items-center justify-center text-sm font-bold">
                     2
                   </div>
-                  Phương thức vận chuyển
+                  Phương thức vận chuyển & thanh toán
                 </h2>
               </div>
-              <div class="p-4 space-y-2">
-                <label v-for="method in shippingMethods" :key="method.id"
-                  class="flex items-center justify-between p-2 border rounded-lg cursor-pointer transition-colors duration-200 hover:bg-blue-50"
-                  :class="selectedShippingMethod === method.id ? 'border-blue-500 bg-blue-50' : 'border-gray-200'">
-                  <div class="flex items-center gap-2">
-                    <input type="radio" :value="method.id" v-model="selectedShippingMethod" @change="calculateTotal"
-                      class="text-blue-600 focus:ring-blue-500" />
-                    <div>
-                      <span class="font-medium text-gray-800 text-sm">{{ method.name }}</span>
-                      <span class="text-xs text-gray-500 ml-2">{{ method.estimatedTime }}</span>
+              
+              <div class="p-6">
+                
+                <!-- Responsive Grid: 1 column on mobile, 2 columns on desktop -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  
+                  <!-- Shipping Method Column -->
+                  <div class="space-y-4">
+                    <div class="flex items-center gap-2 mb-4">
+                      <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-truck text-blue-600"></i>
+                      </div>
+                      <h3 class="text-base font-bold text-gray-800">Vận chuyển</h3>
+                    </div>
+                    
+                    <div class="space-y-3">
+                      <label 
+                        v-for="method in shippingMethods" 
+                        :key="method.id"
+                        class="relative flex items-start p-4 border-2 rounded-xl cursor-pointer transition-all duration-200 hover:border-blue-400 hover:shadow-md group"
+                        :class="selectedShippingMethod === method.id 
+                          ? 'border-blue-500 bg-gradient-to-r from-blue-50 to-blue-100/50 shadow-lg ring-2 ring-blue-300' 
+                          : 'border-gray-200 bg-white hover:bg-blue-50/30'">
+                        
+                        <!-- Radio Button -->
+                        <div class="flex items-center h-5 mt-0.5">
+                          <input 
+                            type="radio" 
+                            :value="method.id" 
+                            v-model="selectedShippingMethod" 
+                            @change="calculateTotal"
+                            class="w-5 h-5 text-blue-600 border-2 border-gray-300 focus:ring-2 focus:ring-blue-500 cursor-pointer transition-all" />
+                        </div>
+                        
+                        <!-- Content -->
+                        <div class="ml-3 flex-1 min-w-0">
+                          <div class="flex items-start justify-between gap-3 mb-2">
+                            <div class="flex-1">
+                              <div class="flex items-center gap-2 flex-wrap">
+                                <span class="font-semibold text-gray-900">{{ method.name }}</span>
+                                <span v-if="method.price === 0" 
+                                      class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold bg-green-500 text-white shadow-sm">
+                                  <i class="fas fa-gift mr-1"></i>
+                                  FREE
+                                </span>
+                              </div>
+                              <div class="flex items-center gap-1.5 text-xs text-gray-600 mt-1">
+                                <i class="fas fa-clock text-gray-400 text-xs"></i>
+                                <span>{{ method.estimatedTime }}</span>
+                              </div>
+                            </div>
+                            
+                            <span class="font-bold text-base flex-shrink-0" 
+                                  :class="method.price === 0 ? 'text-green-600' : 'text-blue-600'">
+                              {{ method.price === 0 ? 'Miễn phí' : formatPrice(method.price) + 'đ' }}
+                            </span>
+                          </div>
+                        </div>
+                        
+                        <!-- Selected Indicator -->
+                        <div v-if="selectedShippingMethod === method.id" 
+                             class="absolute -top-2 -right-2 w-7 h-7 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center shadow-lg border-2 border-white">
+                          <i class="fas fa-check text-white text-xs"></i>
+                        </div>
+                      </label>
                     </div>
                   </div>
-                  <span class="font-bold text-blue-600 text-sm">
-                    {{ method.price === 0 ? 'Miễn phí' : formatPrice(method.price) + 'đ' }}
-                  </span>
-                </label>
-              </div>
-            </div>
 
-            <!-- Payment Method -->
-            <div class="bg-white rounded-2xl shadow-xl overflow-hidden border border-blue-100/50">
-              <div class="bg-gradient-to-r from-blue-50 to-purple-50 px-6 py-4 border-b border-blue-100">
-                <h2 class="flex items-center gap-4 text-lg font-bold text-gray-800">
-                  <div
-                    class="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-full flex items-center justify-center text-sm font-bold">
-                    3
-                  </div>
-                  Phương thức thanh toán
-                </h2>
-              </div>
-              <div class="p-4 space-y-2">
-                <label v-for="method in paymentMethods" :key="method.id"
-                  class="flex items-center gap-2 p-2 border rounded-lg cursor-pointer transition-colors duration-200 hover:bg-blue-50"
-                  :class="selectedPaymentMethod === method.id ? 'border-blue-500 bg-blue-50' : 'border-gray-200'">
-                  <input type="radio" :value="method.id" v-model="selectedPaymentMethod"
-                    class="text-blue-600 focus:ring-blue-500" />
-                  <div class="w-6 h-6 bg-blue-100 rounded flex items-center justify-center flex-shrink-0">
-                    <i :class="method.icon" class="text-blue-600 text-xs"></i>
-                  </div>
-                  <div class="flex-1 min-w-0">
-                    <span class="font-medium text-gray-800 text-sm">{{ method.name }}</span>
-                  </div>
-                </label>
-              </div>
-
-              <!-- Credit Card Form -->
-              <div v-if="selectedPaymentMethod === 'credit_card'" class="border-t border-blue-100 pt-6 mt-6 space-y-4">
-                <div>
-                  <label for="cardNumber" class="block text-sm font-semibold text-gray-700 mb-2">Số thẻ *</label>
-                  <input type="text" id="cardNumber" v-model="creditCard.number" placeholder="1234 5678 9012 3456"
-                    maxlength="19" @input="formatCardNumber"
-                    class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white"
-                    required />
-                </div>
-                <div class="grid grid-cols-2 gap-4">
-                  <div>
-                    <label for="expiryDate" class="block text-sm font-semibold text-gray-700 mb-2">Ngày hết hạn
-                      *</label>
-                    <input type="text" id="expiryDate" v-model="creditCard.expiry" placeholder="MM/YY" maxlength="5"
-                      @input="formatExpiryDate"
-                      class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white"
-                      required />
-                  </div>
-                  <div>
-                    <label for="cvv" class="block text-sm font-semibold text-gray-700 mb-2">CVV *</label>
-                    <input type="text" id="cvv" v-model="creditCard.cvv" placeholder="123" maxlength="4"
-                      class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white"
-                      required />
+                  <!-- Payment Method Column -->
+                  <div class="space-y-4">
+                    <div class="flex items-center gap-2 mb-4">
+                      <div class="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-credit-card text-purple-600"></i>
+                      </div>
+                      <h3 class="text-base font-bold text-gray-800">Thanh toán</h3>
+                    </div>
+                    
+                    <div class="space-y-3">
+                      <label 
+                        v-for="method in paymentMethods" 
+                        :key="method.id"
+                        class="relative flex items-center p-4 border-2 rounded-xl cursor-pointer transition-all duration-200 hover:border-purple-400 hover:shadow-md group"
+                        :class="selectedPaymentMethod === method.id 
+                          ? 'border-purple-500 bg-gradient-to-r from-purple-50 to-purple-100/50 shadow-lg ring-2 ring-purple-300' 
+                          : 'border-gray-200 bg-white hover:bg-purple-50/30'">
+                        
+                        <!-- Radio Button -->
+                        <div class="flex items-center h-5">
+                          <input 
+                            type="radio" 
+                            :value="method.id" 
+                            v-model="selectedPaymentMethod"
+                            class="w-5 h-5 text-purple-600 border-2 border-gray-300 focus:ring-2 focus:ring-purple-500 cursor-pointer transition-all" />
+                        </div>
+                        
+                        <!-- Icon -->
+                        <div class="ml-3 w-10 h-10 bg-gradient-to-br from-purple-100 to-blue-100 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-200">
+                          <i :class="method.icon" class="text-purple-600 text-lg"></i>
+                        </div>
+                        
+                        <!-- Label -->
+                        <span class="ml-3 font-semibold text-gray-900 flex-1">{{ method.name }}</span>
+                        
+                        <!-- Selected Indicator -->
+                        <div v-if="selectedPaymentMethod === method.id" 
+                             class="absolute -top-2 -right-2 w-7 h-7 bg-gradient-to-br from-purple-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg border-2 border-white">
+                          <i class="fas fa-check text-white text-xs"></i>
+                        </div>
+                      </label>
+                    </div>
                   </div>
                 </div>
-                <div>
-                  <label for="cardName" class="block text-sm font-semibold text-gray-700 mb-2">Tên trên thẻ *</label>
-                  <input type="text" id="cardName" v-model="creditCard.name"
-                    class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white"
-                    required />
+
+                <!-- Credit Card Form (Full Width Below) -->
+                <div v-if="selectedPaymentMethod === 'credit_card'" 
+                     class="mt-4 pt-4 border-t-2 border-gray-200 animate-fade-in">
+                  
+                  <div class="bg-gradient-to-r from-purple-50 to-blue-50 rounded-lg p-3 mb-4 border border-purple-200">
+                    <div class="flex items-center gap-2">
+                      <div class="w-7 h-7 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-shield-alt text-green-600 text-sm"></i>
+                      </div>
+                      <div>
+                        <h4 class="text-xs font-bold text-gray-800 flex items-center gap-2">
+                          <span>Bảo mật SSL 256-bit</span>
+                        </h4>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <!-- Card Number - Full Width -->
+                    <div class="md:col-span-2">
+                      <label for="cardNumber" class="block text-xs font-semibold text-gray-700 mb-1.5">
+                        Số thẻ *
+                      </label>
+                      <div class="relative">
+                        <input 
+                          type="text" 
+                          id="cardNumber" 
+                          v-model="creditCard.number" 
+                          placeholder="1234 5678 9012 3456"
+                          maxlength="19" 
+                          @input="formatCardNumber"
+                          class="w-full pl-10 pr-3 py-2.5 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all bg-white text-gray-900 font-mono hover:border-purple-300"
+                          required />
+                        <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                          <i class="fas fa-credit-card"></i>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <!-- Card Name - Full Width -->
+                    <div class="md:col-span-2">
+                      <label for="cardName" class="block text-xs font-semibold text-gray-700 mb-1.5">
+                        Tên trên thẻ *
+                      </label>
+                      <div class="relative">
+                        <input 
+                          type="text" 
+                          id="cardName" 
+                          v-model="creditCard.name" 
+                          placeholder="NGUYEN VAN A"
+                          class="w-full pl-10 pr-3 py-2.5 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all bg-white text-gray-900 uppercase hover:border-purple-300"
+                          required />
+                        <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                          <i class="fas fa-user"></i>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <!-- Expiry Date -->
+                    <div>
+                      <label for="expiryDate" class="block text-xs font-semibold text-gray-700 mb-1.5">
+                        Ngày hết hạn *
+                      </label>
+                      <div class="relative">
+                        <input 
+                          type="text" 
+                          id="expiryDate" 
+                          v-model="creditCard.expiry" 
+                          placeholder="MM/YY" 
+                          maxlength="5"
+                          @input="formatExpiryDate"
+                          class="w-full pl-10 pr-3 py-2.5 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all bg-white text-gray-900 font-mono hover:border-purple-300"
+                          required />
+                        <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                          <i class="fas fa-calendar-alt text-sm"></i>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <!-- CVV -->
+                    <div>
+                      <label for="cvv" class="block text-xs font-semibold text-gray-700 mb-1.5">
+                        CVV / CVC *
+                      </label>
+                      <div class="relative">
+                        <input 
+                          type="text" 
+                          id="cvv" 
+                          v-model="creditCard.cvv" 
+                          placeholder="123" 
+                          maxlength="4"
+                          class="w-full pl-10 pr-3 py-2.5 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all bg-white text-gray-900 font-mono hover:border-purple-300"
+                          required />
+                        <div class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                          <i class="fas fa-lock text-sm"></i>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Bank Transfer Options (Momo & VNPay) -->
+                <div v-if="selectedPaymentMethod === 'bank_transfer'" 
+                     class="mt-4 pt-4 border-t-2 border-gray-200 animate-fade-in">
+                  
+                  <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-3 mb-4 border border-blue-200">
+                    <div class="flex items-center gap-2">
+                      <div class="w-7 h-7 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-info-circle text-blue-600 text-sm"></i>
+                      </div>
+                      <div>
+                        <h4 class="text-xs font-bold text-gray-800">
+                          Chọn phương thức thanh toán
+                        </h4>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div class="grid grid-cols-2 gap-3">
+                    <label 
+                      v-for="option in bankTransferOptions" 
+                      :key="option.id"
+                      class="relative flex flex-col items-center p-4 border-2 rounded-xl cursor-pointer transition-all duration-200 hover:shadow-lg group"
+                      :class="selectedBankTransferMethod === option.id 
+                        ? 'border-blue-500 bg-blue-50 shadow-lg ring-2 ring-blue-300' 
+                        : 'border-gray-200 bg-white hover:border-blue-300'">
+                      
+                      <!-- Radio Button (Hidden but functional) -->
+                      <input 
+                        type="radio" 
+                        :value="option.id" 
+                        v-model="selectedBankTransferMethod"
+                        class="sr-only" />
+                      
+                      <!-- Logo -->
+                      <div class="w-full h-16 mb-2 flex items-center justify-center p-2 bg-white rounded-lg shadow-sm">
+                        <img 
+                          :src="option.logo" 
+                          :alt="option.name"
+                          class="max-w-full max-h-full object-contain"
+                          @error="handleImageError" />
+                      </div>
+                      
+                      <!-- Name -->
+                      <h5 class="font-bold text-gray-900 text-sm text-center">{{ option.name }}</h5>
+                      
+                      <!-- Selected Indicator -->
+                      <div v-if="selectedBankTransferMethod === option.id" 
+                           class="absolute -top-2 -right-2 w-6 h-6 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center shadow-md border-2 border-white">
+                        <i class="fas fa-check text-white text-xs"></i>
+                      </div>
+                    </label>
+                  </div>
+                  
+                  <!-- Selected Payment Info -->
+                  <div v-if="selectedBankTransferMethod" class="mt-3 p-3 bg-green-50 border border-green-200 rounded-lg">
+                    <div class="flex items-center gap-2">
+                      <div class="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-check-circle text-green-600 text-xs"></i>
+                      </div>
+                      <div>
+                        <p class="text-xs font-semibold text-green-800">
+                          Đã chọn: {{ bankTransferOptions.find(o => o.id === selectedBankTransferMethod)?.name }}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -238,21 +536,51 @@
 
               <!-- Cart Items -->
               <div class="space-y-4 mb-6">
-                <div v-for="item in cartItems" :key="item.id" class="flex gap-3 p-3 bg-gray-50 rounded-xl">
-                  <div class="w-16 h-16 rounded-lg overflow-hidden shadow-sm flex-shrink-0">
-                    <img :src="item.image" :alt="item.name" class="w-full h-full object-cover" />
+                <div v-for="item in cartItems" :key="item.id" 
+                     class="flex gap-3 p-3 rounded-xl"
+                     :class="!item.variant?.id ? 'bg-red-50 border border-red-200' : 'bg-gray-50'">
+                  <div class="w-16 h-16 rounded-lg overflow-hidden shadow-sm flex-shrink-0 bg-gradient-to-br from-gray-100 to-gray-200">
+                    <img :src="item.product_image  || '/placeholder.svg'" 
+                         :alt="item.name || item.product?.name || 'Product'" 
+                         class="w-full h-full object-cover"
+                         @error="handleImageError" />
                   </div>
                   <div class="flex-1 min-w-0">
-                    <h4 class="font-semibold text-gray-800 mb-1 text-sm">{{ item.name }}</h4>
+                    <h4 class="font-semibold text-gray-800 mb-1 text-sm line-clamp-2">
+                      {{ item.name || item.product?.name || 'Sản phẩm' }}
+                    </h4>
+                    
+                    <!-- Warning if no variant -->
+                    <div v-if="!item.variant?.id" class="text-xs text-red-600 font-medium mb-1 flex items-center gap-1">
+                      <i class="fas fa-exclamation-triangle"></i>
+                      Vui lòng chọn màu sắc và dung lượng
+                    </div>
+                    
                     <div class="text-xs text-gray-600 space-y-1">
-                      <p v-if="item.selectedSize || item.selectedColor" class="flex gap-2">
-                        <span v-if="item.selectedSize">Size: {{ item.selectedSize }}</span>
-                        <span v-if="item.selectedColor">Màu: {{ item.selectedColor.name }}</span>
+                      <!-- Variant info with better styling -->
+                      <div v-if="item.selectedSize || item.selectedColor || item.variant" class="flex flex-wrap gap-1.5">
+                        <span v-if="item.selectedSize || item.variant?.size" 
+                              class="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium bg-blue-100 text-blue-700">
+                          <i class="fas fa-microchip mr-1"></i>
+                          {{ item.selectedSize || item.variant?.size }}
+                        </span>
+                        <span v-if="item.selectedColor || item.variant?.color" 
+                              class="inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium bg-purple-100 text-purple-700">
+                          <span v-if="item.selectedColor?.value || item.variant?.color_code"
+                                class="w-3 h-3 rounded-full mr-1 border border-white shadow-sm" 
+                                :style="{ backgroundColor: item.selectedColor?.value || item.variant?.color_code }">
+                          </span>
+                          <i v-else class="fas fa-palette mr-1"></i>
+                          {{ item.selectedColor?.name || item.variant?.color }}
+                        </span>
+                      </div>
+                      <p class="flex items-center gap-1">
+                        <i class="fas fa-box text-gray-400"></i>
+                        Số lượng: <span class="font-semibold text-gray-800">{{ item.quantity }}</span>
                       </p>
-                      <p>Số lượng: {{ item.quantity }}</p>
                     </div>
                   </div>
-                  <div class="text-sm font-bold text-blue-600">
+                  <div class="text-sm font-bold text-blue-600 self-start">
                     {{ formatPrice(getItemTotal(item)) }}đ
                   </div>
                 </div>
@@ -264,9 +592,12 @@
                   <span>Tạm tính:</span>
                   <span class="font-semibold">{{ formatPrice(subtotal) }}đ</span>
                 </div>
-                <div v-if="appliedCoupon" class="flex justify-between items-center text-green-600">
-                  <span>Giảm giá ({{ appliedCoupon.code }}):</span>
-                  <span class="font-semibold">-{{ formatPrice(couponDiscount) }}đ</span>
+                <div v-if="appliedCouponData" class="flex justify-between items-center text-green-600">
+                  <span class="flex items-center gap-2">
+                    <i class="fas fa-ticket-alt"></i>
+                    Giảm giá ({{ appliedCouponData.coupon.code }}):
+                  </span>
+                  <span class="font-semibold">-{{ formatPrice(appliedCouponData.discount_amount) }}đ</span>
                 </div>
                 <div class="flex justify-between items-center text-gray-700">
                   <span>Phí vận chuyển:</span>
@@ -281,17 +612,14 @@
                 </div>
               </div>
 
-              <!-- Coupon Code -->
-              <div v-if="!appliedCoupon" class="mb-6">
-                <div class="flex gap-2">
-                  <input type="text" v-model="couponCode" placeholder="Mã giảm giá"
-                    class="flex-1 px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm" />
-                  <button @click="applyCoupon" :disabled="!couponCode"
-                    class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 text-sm">
-                    Áp dụng
-                  </button>
-                </div>
-              </div>
+              <!-- Coupon Selector -->
+              <CouponSelector
+                :order-total="subtotal"
+                :user-id="user?.id"
+                @coupon-applied="handleCouponApplied"
+                @coupon-removed="handleCouponRemoved"
+                class="mb-6"
+              />
 
               <!-- Place Order Button -->
               <button @click="placeOrder" :disabled="!canPlaceOrder || orderLoading"
@@ -314,170 +642,70 @@
             </div>
           </div>
         </div>
+        <!-- End: Main Content -->
+        
       </div>
     </section>
   </div>
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { onMounted } from 'vue'
+import { useCheckout } from '@/composables/client/useCheckout'
+import CouponSelector from '@/components/Coupon/CouponSelector.vue'
 
-const router = useRouter()
+// Use composable
+const {
+  // State
+  orderLoading,
+  cartItems,
+  checkoutSummary,
+  appliedCouponData,
+  couponCode,
+  selectedShippingMethod,
+  selectedPaymentMethod,
+  selectedBankTransferMethod,
+  loadingCheckout,
+  user,
+  shippingInfo,
+  creditCard,
+  provinces,
+  districts,
+  wards,
+  loadingProvinces,
+  loadingDistricts,
+  loadingWards,
+  shippingMethods,
+  paymentMethods,
+  bankTransferOptions,
+  
+  // Computed
+  selectedShipping,
+  subtotal,
+  shippingFee,
+  discount,
+  finalTotal,
+  canPlaceOrder,
+  
+  // Methods
+  formatPrice,
+  loadProvinces,
+  placeOrder,
+  loadCheckoutData
+} = useCheckout()
 
-// Reactive data
-const orderLoading = ref(false)
-const cartItems = ref([])
-const appliedCoupon = ref(null)
-const couponCode = ref('')
-const selectedShippingMethod = ref('standard')
-const selectedPaymentMethod = ref('cod')
-
-const shippingInfo = ref({
-  firstName: '',
-  lastName: '',
-  email: '',
-  phone: '',
-  address: '',
-  city: '',
-  district: '',
-  ward: '',
-  notes: ''
-})
-
-const creditCard = ref({
-  number: '',
-  expiry: '',
-  cvv: '',
-  name: ''
-})
-
-const cities = ref([
-  { code: 'hcm', name: 'TP. Hồ Chí Minh' },
-  { code: 'hn', name: 'Hà Nội' },
-  { code: 'dn', name: 'Đà Nẵng' },
-  { code: 'hp', name: 'Hải Phòng' }
-])
-
-const districts = ref([])
-const wards = ref([])
-
-const shippingMethods = ref([
-  {
-    id: 'standard',
-    name: 'Giao hàng tiêu chuẩn',
-    description: 'Miễn phí cho đơn hàng trên 500.000đ',
-    price: 30000,
-    estimatedTime: '2-3 ngày làm việc'
-  },
-  {
-    id: 'express',
-    name: 'Giao hàng nhanh',
-    description: 'Giao hàng trong ngày tại nội thành',
-    price: 50000,
-    estimatedTime: '1-2 ngày làm việc'
-  },
-  {
-    id: 'same_day',
-    name: 'Giao hàng trong ngày',
-    description: 'Chỉ áp dụng tại TP.HCM và Hà Nội',
-    price: 100000,
-    estimatedTime: 'Trong ngày (đặt trước 14:00)'
-  }
-])
-
-const paymentMethods = ref([
-  {
-    id: 'cod',
-    name: 'Thanh toán khi nhận hàng',
-    description: 'Thanh toán bằng tiền mặt khi nhận hàng',
-    icon: 'fas fa-money-bill-wave'
-  },
-  {
-    id: 'credit_card',
-    name: 'Thẻ tín dụng/Ghi nợ',
-    description: 'Visa, Mastercard, JCB',
-    icon: 'fas fa-credit-card'
-  },
-  {
-    id: 'bank_transfer',
-    name: 'Chuyển khoản ngân hàng',
-    description: 'Chuyển khoản qua Internet Banking',
-    icon: 'fas fa-university'
-  },
-  {
-    id: 'e_wallet',
-    name: 'Ví điện tử',
-    description: 'MoMo, ZaloPay, ViettelPay',
-    icon: 'fas fa-wallet'
-  }
-])
-
-// Computed properties
-const subtotal = computed(() => {
-  return cartItems.value.reduce((total, item) => {
-    return total + (getItemPrice(item) * item.quantity)
-  }, 0)
-})
-
-const couponDiscount = computed(() => {
-  if (appliedCoupon.value) {
-    return subtotal.value * (appliedCoupon.value.discount / 100)
-  }
-  return 0
-})
-
-const afterCouponTotal = computed(() => {
-  return subtotal.value - couponDiscount.value
-})
-
-const shippingFee = computed(() => {
-  const method = shippingMethods.value.find(m => m.id === selectedShippingMethod.value)
-  if (method && (method.id !== 'standard' || afterCouponTotal.value < 500000)) {
-    return method.price
-  }
-  return 0
-})
-
-const finalTotal = computed(() => {
-  return afterCouponTotal.value + shippingFee.value
-})
-
-const canPlaceOrder = computed(() => {
-  return shippingInfo.value.firstName &&
-    shippingInfo.value.lastName &&
-    shippingInfo.value.email &&
-    shippingInfo.value.phone &&
-    shippingInfo.value.address &&
-    shippingInfo.value.city &&
-    shippingInfo.value.district &&
-    shippingInfo.value.ward &&
-    selectedShippingMethod.value &&
-    selectedPaymentMethod.value &&
-    (selectedPaymentMethod.value !== 'credit_card' || isCardFormValid.value)
-})
-
-const isCardFormValid = computed(() => {
-  return creditCard.value.number &&
-    creditCard.value.expiry &&
-    creditCard.value.cvv &&
-    creditCard.value.name
-})
-
-// Methods
-const formatPrice = (price) => {
-  return new Intl.NumberFormat('vi-VN').format(price)
-}
-
-const getItemPrice = (item) => {
-  if (item.discount && item.originalPrice) {
-    return item.originalPrice * (1 - item.discount / 100)
-  }
-  return item.price
-}
-
+// Additional methods for UI
 const getItemTotal = (item) => {
-  return getItemPrice(item) * item.quantity
+  const price = parseFloat(item.price)
+  return price * item.quantity
+}
+
+const handleImageError = (event) => {
+  if (event.target.dataset.errorHandled) {
+    return
+  }
+  event.target.dataset.errorHandled = 'true'
+  event.target.src = '/placeholder.svg'
 }
 
 const formatCardNumber = (event) => {
@@ -497,104 +725,36 @@ const formatExpiryDate = (event) => {
   creditCard.value.expiry = value
 }
 
-const loadDistricts = () => {
-  // Mock districts data
-  districts.value = [
-    { code: 'q1', name: 'Quận 1' },
-    { code: 'q3', name: 'Quận 3' },
-    { code: 'q7', name: 'Quận 7' },
-    { code: 'pn', name: 'Phú Nhuận' }
-  ]
-  shippingInfo.value.district = ''
-  shippingInfo.value.ward = ''
+const handleCouponApplied = (data) => {
+  appliedCouponData.value = data
 }
 
-const loadWards = () => {
-  // Mock wards data
-  wards.value = [
-    { code: 'p1', name: 'Phường 1' },
-    { code: 'p2', name: 'Phường 2' },
-    { code: 'p3', name: 'Phường 3' }
-  ]
-  shippingInfo.value.ward = ''
+const handleCouponRemoved = () => {
+  appliedCouponData.value = null
 }
 
-const applyCoupon = () => {
-  // Mock coupon validation
-  const validCoupons = {
-    'SAVE10': { code: 'SAVE10', discount: 10 },
-    'SAVE20': { code: 'SAVE20', discount: 20 }
+const calculateTotal = () => {
+  // Computed properties will automatically update
+}
+
+// Initialize bank transfer options
+bankTransferOptions.value = [
+  {
+    id: 'momo',
+    name: 'Ví MoMo',
+    logo: '/MoMo_Logo.png'
+  },
+  {
+    id: 'vnpay',
+    name: 'VNPAY',
+    logo: '/vnpay_logo.png'
   }
-
-  const coupon = validCoupons[couponCode.value.toUpperCase()]
-
-  if (coupon) {
-    appliedCoupon.value = coupon
-    alert(`Đã áp dụng mã giảm giá ${coupon.code} - Giảm ${coupon.discount}%`)
-  } else {
-    alert('Mã giảm giá không hợp lệ!')
-  }
-}
-
-const placeOrder = async () => {
-  orderLoading.value = true
-
-  try {
-    // Mock API call
-    await new Promise(resolve => setTimeout(resolve, 2000))
-
-    const orderData = {
-      shippingInfo: shippingInfo.value,
-      items: cartItems.value,
-      shippingMethod: selectedShippingMethod.value,
-      paymentMethod: selectedPaymentMethod.value,
-      coupon: appliedCoupon.value,
-      totals: {
-        subtotal: subtotal.value,
-        discount: couponDiscount.value,
-        shipping: shippingFee.value,
-        total: finalTotal.value
-      }
-    }
-
-    console.log('Order placed:', orderData)
-
-    // Clear cart
-    localStorage.removeItem('cart')
-
-    alert('Đặt hàng thành công! Cảm ơn bạn đã mua hàng.')
-
-    // Redirect to order confirmation or orders page
-    router.push('/orders')
-
-  } catch (error) {
-    console.error('Order error:', error)
-    alert('Đặt hàng thất bại. Vui lòng thử lại!')
-  } finally {
-    orderLoading.value = false
-  }
-}
+]
 
 // Load data on mount
 onMounted(() => {
-  // Load cart from storage
-  const savedCart = localStorage.getItem('cart')
-  if (savedCart) {
-    cartItems.value = JSON.parse(savedCart)
-  }
-
-  // Load user info if logged in
-  const savedUser = localStorage.getItem('user')
-  if (savedUser) {
-    const user = JSON.parse(savedUser)
-    shippingInfo.value.email = user.email
-  }
-
-  // Redirect if cart is empty
-  if (cartItems.value.length === 0) {
-    alert('Giỏ hàng trống. Vui lòng thêm sản phẩm trước khi thanh toán.')
-    router.push('/cart')
-  }
+  loadCheckoutData()
+  loadProvinces()
 })
 </script>
 
@@ -624,11 +784,44 @@ onMounted(() => {
   }
 }
 
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes bounceSlow {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
 .animate-float {
   animation: float 3s ease-in-out infinite;
 }
 
 .animate-float-delay {
   animation: float-delay 3s ease-in-out infinite 0.5s;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+.animate-bounce-slow {
+  animation: bounceSlow 2s ease-in-out infinite;
+}
+
+/* Custom border width */
+.border-3 {
+  border-width: 3px;
 }
 </style>

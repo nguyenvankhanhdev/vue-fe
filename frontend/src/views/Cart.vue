@@ -1,61 +1,64 @@
 <template>
   <div class="cart-page bg-gray-50 min-h-screen">
-    <!-- Enhanced Page Header -->
-    <section class="page-header bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-700 relative overflow-hidden">
-      <div class="absolute inset-0 bg-black bg-opacity-10"></div>
-      <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <!-- Compact Page Header -->
+    <section class="page-header bg-gradient-to-br from-blue-500 via-purple-600 to-blue-600 relative overflow-hidden">
+      <!-- Decorative Background -->
+      <div class="absolute inset-0 opacity-10">
+        <div class="absolute top-0 right-0 w-96 h-96 bg-white rounded-full -translate-y-1/2 translate-x-1/2"></div>
+        <div class="absolute bottom-0 left-0 w-64 h-64 bg-white rounded-full translate-y-1/2 -translate-x-1/2"></div>
+      </div>
+      
+      <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <!-- Breadcrumb -->
-        <nav class="flex items-center text-sm mb-6 text-white text-opacity-90">
-          <router-link to="/" class="hover:text-white transition-colors">
-            <i class="fas fa-home mr-2"></i>Trang chủ
+        <nav class="flex items-center text-sm mb-4 text-white/80">
+          <router-link to="/" class="hover:text-white transition-colors flex items-center">
+            <i class="fas fa-home mr-1.5"></i>
+            Trang chủ
           </router-link>
-          <i class="fas fa-chevron-right mx-3 text-xs"></i>
+          <i class="fas fa-chevron-right mx-2 text-xs"></i>
           <span class="text-white font-medium">Giỏ hàng</span>
         </nav>
         
-        <!-- Header Content -->
-        <div class="flex items-center justify-between">
+        <!-- Header Content - Compact -->
+        <div class="flex items-center justify-between mb-6">
           <div>
-            <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">
+            <h1 class="text-3xl md:text-4xl font-bold text-white mb-2 flex items-center">
+              <i class="fas fa-shopping-cart mr-3 text-white/80"></i>
               Giỏ hàng của bạn
             </h1>
-            <p class="text-lg text-white text-opacity-90 max-w-2xl">
+            <p class="text-white/90 text-sm md:text-base">
               Xem lại các sản phẩm bạn đã chọn và tiến hành thanh toán một cách nhanh chóng
             </p>
           </div>
-          <div class="hidden md:block">
-            <div class="w-24 h-24 bg-white bg-opacity-20 rounded-full flex items-center justify-center backdrop-blur-sm">
-              <i class="fas fa-shopping-cart text-3xl text-white"></i>
-            </div>
-          </div>
         </div>
         
-        <!-- Cart Stats -->
-        <div class="mt-8 flex flex-wrap gap-6">
-          <div class="bg-black bg-opacity-20 backdrop-blur-sm rounded-lg px-6 py-4 border border-white border-opacity-20">
-            <div class="flex items-center">
-              <i class="fas fa-box text-white text-xl mr-3"></i>
+        <!-- Compact Stats -->
+        <div class="flex flex-wrap gap-3">
+          <div class="bg-white/10 backdrop-blur-md rounded-xl px-4 py-2.5 border border-white/20 hover:bg-white/20 transition-all">
+            <div class="flex items-center gap-2">
+              <div class="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center">
+                <i class="fas fa-box text-white text-sm"></i>
+              </div>
               <div>
-                <div class="text-2xl font-bold text-white">{{ totalItems }}</div>
-                <div class="text-white text-opacity-80 text-sm">Sản phẩm</div>
+                <div class="text-lg font-bold text-white">{{ totalItems }}</div>
+                <div class="text-white/80 text-xs">Sản phẩm</div>
               </div>
             </div>
           </div>
-          <div class="bg-black bg-opacity-20 backdrop-blur-sm rounded-lg px-6 py-4 border border-white border-opacity-20">
-            <div class="flex items-center">
-              <i class="fas fa-dollar-sign text-white text-xl mr-3"></i>
+          
+          <div class="bg-white/10 backdrop-blur-md rounded-xl px-4 py-2.5 border border-white/20 hover:bg-white/20 transition-all">
+            <div class="flex items-center gap-2">
+              <div class="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center">
+                <i class="fas fa-dollar-sign text-white text-sm"></i>
+              </div>
               <div>
-                <div class="text-2xl font-bold text-white">${{ formatPrice(selectedTotal) }}</div>
-                <div class="text-white text-opacity-80 text-sm">Đã chọn</div>
+                <div class="text-lg font-bold text-white">{{ formatPrice(selectedTotal) }}₫</div>
+                <div class="text-white/80 text-xs">Đã chọn</div>
               </div>
             </div>
           </div>
         </div>
       </div>
-      
-      <!-- Decorative Elements -->
-      <div class="absolute top-0 right-0 w-64 h-64 bg-white bg-opacity-10 rounded-full -translate-y-32 translate-x-32"></div>
-      <div class="absolute bottom-0 left-0 w-48 h-48 bg-white bg-opacity-5 rounded-full translate-y-24 -translate-x-24"></div>
     </section>
 
     <!-- Cart Content -->
@@ -84,390 +87,371 @@
         </div>
 
         <!-- Cart Items -->
-        <div v-else class="cart-content">
-          <div class="cart-layout">
-            <!-- Cart Items List -->
-            <div class="cart-items bg-white rounded-2xl shadow-lg border border-gray-100">
-              <div class="cart-header px-8 py-6 border-b border-gray-100">
-                <div class="flex items-center justify-between">
-                  <div class="flex items-center">
-                    <div class="flex items-center mr-4">
-                      <input 
-                        type="checkbox" 
-                        :checked="isAllSelected"
-                        @change="toggleSelectAll"
-                        class="w-5 h-5 text-blue-600 border-2 border-gray-300 rounded focus:ring-blue-500 focus:ring-2 mr-3"
-                      />
-                      <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
-                        <i class="fas fa-shopping-bag text-white text-lg"></i>
-                      </div>
-                    </div>
-                    <div>
-                      <h2 class="text-2xl font-bold text-gray-900">Sản phẩm trong giỏ hàng</h2>
-                      <p class="text-gray-500 text-sm">{{ selectedItems.length }} / {{ cartItems.length }} sản phẩm đã chọn</p>
+        <div v-else>
+          <!-- 2 Column Layout: Products (Left) + Summary (Right) -->
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            
+            <!-- LEFT COLUMN: Cart Items List (2/3 width) -->
+            <div class="lg:col-span-2 space-y-4">
+              
+              <!-- Global Warning for items without variants -->
+              <div v-if="hasItemsWithoutVariant" 
+                   class="bg-gradient-to-r from-red-50 to-orange-50 border-2 border-red-300 rounded-xl p-4 shadow-md">
+                <div class="flex items-start gap-3">
+                  <div class="flex-shrink-0 w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
+                    <i class="fas fa-exclamation-triangle text-red-600 text-lg"></i>
+                  </div>
+                  <div class="flex-1">
+                    <h3 class="font-bold text-red-800 mb-1 text-lg">⚠️ Có sản phẩm chưa chọn màu sắc/dung lượng</h3>
+                    <p class="text-red-700 text-sm mb-2">
+                      Một số sản phẩm trong giỏ hàng của bạn chưa có thông tin về màu sắc hoặc dung lượng. 
+                      Bạn cần <strong>xóa các sản phẩm này</strong> và <strong>thêm lại từ trang chi tiết sản phẩm</strong> để chọn đầy đủ thông tin trước khi thanh toán.
+                    </p>
+                    <div class="flex items-center gap-2 text-xs text-red-600">
+                      <i class="fas fa-info-circle"></i>
+                      <span>Các sản phẩm có cảnh báo màu đỏ bên dưới cần được xử lý</span>
                     </div>
                   </div>
-                  <div class="flex items-center space-x-3">
-                    <button @click="selectAllItems" class="select-all-btn flex items-center px-4 py-2 bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-lg transition-colors font-medium">
-                      <i class="fas fa-check-square mr-2"></i>
-                      Chọn tất cả
-                    </button>
-                    <button @click="clearCart" class="clear-cart-btn flex items-center px-4 py-2 bg-red-50 text-red-600 hover:bg-red-100 rounded-lg transition-colors font-medium">
-                      <i class="fas fa-trash mr-2"></i>
-                      Xóa tất cả
-                    </button>
+                </div>
+              </div>
+              
+              <!-- Select All Bar -->
+              <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4 hover:shadow-md transition-shadow">
+                <div class="flex items-center justify-between">
+                  <label class="flex items-center gap-3 cursor-pointer group">
+                    <input 
+                      type="checkbox" 
+                      :checked="isAllSelected"
+                      @change="toggleSelectAll"
+                      class="w-5 h-5 text-blue-600 border-2 border-gray-300 rounded focus:ring-blue-500 focus:ring-2 cursor-pointer transition-all"
+                    />
+                    <div class="flex items-center gap-2">
+                      <i class="fas fa-check-double text-blue-600 group-hover:scale-110 transition-transform"></i>
+                      <span class="font-semibold text-gray-900">Chọn tất cả</span>
+                      <span class="text-sm text-gray-500">
+                        (<span class="font-medium text-blue-600">{{ selectedItems.length }}</span>/{{ cartItems.length }} sản phẩm)
+                      </span>
+                    </div>
+                  </label>
+                  <button 
+                    v-if="selectedItems.length > 0"
+                    @click="clearCart" 
+                    class="text-red-600 hover:text-red-700 font-medium text-sm flex items-center gap-2 hover:bg-red-50 px-4 py-2 rounded-lg transition-all group">
+                    <i class="fas fa-trash-alt group-hover:scale-110 transition-transform"></i>
+                    <span>Xóa {{ selectedItems.length }} SP</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Product Cards -->
+              <div class="space-y-3">
+                <div
+                  v-for="item in cartItems"
+                  :key="`${item.id}-${item.selectedSize}-${item.selectedColor?.name}`"
+                  class="group bg-white rounded-xl shadow-sm border border-gray-100 p-4 hover:shadow-lg hover:border-blue-200 transition-all duration-300 transform hover:-translate-y-1"
+                  :class="{ 'ring-2 ring-blue-500 border-blue-500 shadow-blue-100': item.selected }"
+                >
+                  <div class="flex gap-4">
+                    <!-- Checkbox + Image -->
+                    <div class="flex items-start gap-3">
+                      <div class="relative pt-1">
+                        <input
+                          type="checkbox"
+                          v-model="item.selected"
+                          @change="updateSelectedItems"
+                          class="w-5 h-5 text-blue-600 border-2 border-gray-300 rounded focus:ring-blue-500 focus:ring-2 cursor-pointer transition-all hover:scale-110"
+                        />
+                      </div>
+                      <div class="relative w-24 h-24 overflow-hidden rounded-xl flex-shrink-0 bg-gradient-to-br from-gray-50 to-gray-100 group-hover:shadow-lg transition-shadow">
+                        <img :src="item.image" :alt="item.name"
+                             class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                        <div v-if="item.discount"
+                             class="absolute top-1 left-1 bg-gradient-to-r from-red-500 to-pink-500 text-white px-2 py-0.5 rounded-full text-xs font-bold shadow-lg animate-pulse">
+                          -{{ item.discount }}%
+                        </div>
+                        <div v-if="item.selected" class="absolute inset-0 bg-blue-500 bg-opacity-10 flex items-center justify-center">
+                          <i class="fas fa-check-circle text-blue-600 text-2xl drop-shadow-lg"></i>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Product Info -->
+                    <div class="flex-1 min-w-0">
+                      <h3 class="font-semibold text-gray-900 mb-1.5 line-clamp-2 hover:text-blue-600 cursor-pointer transition-colors group-hover:text-blue-600">
+                        {{ item.name }}
+                      </h3>
+
+                      <!-- Variant Info with improved styling -->
+                      <div class="flex flex-wrap gap-2 mb-2">
+                        <span v-if="item.selectedSize"
+                              class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-medium bg-gradient-to-r from-blue-50 to-indigo-50 text-blue-700 border border-blue-200">
+                          <i class="fas fa-microchip mr-1.5"></i>{{ item.selectedSize }}
+                        </span>
+                        <span v-if="item.selectedColor"
+                              class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-medium bg-gradient-to-r from-purple-50 to-pink-50 text-purple-700 border border-purple-200">
+                          <span class="w-3 h-3 rounded-full mr-1.5 border-2 border-white shadow-sm" :style="{ backgroundColor: item.selectedColor.value }"></span>
+                          {{ item.selectedColor.name }}
+                        </span>
+                        
+                        <!-- Warning when no variant selected -->
+                        <div v-if="!item.variantId" 
+                             class="w-full bg-red-50 border border-red-200 rounded-lg px-3 py-2 mt-1">
+                          <div class="flex items-start gap-2">
+                            <i class="fas fa-exclamation-triangle text-red-600 text-sm mt-0.5"></i>
+                            <div class="flex-1 text-xs text-red-700">
+                              <p class="font-semibold mb-0.5">⚠️ Chưa chọn màu sắc/dung lượng</p>
+                              <p class="text-red-600">Vui lòng <strong>xóa sản phẩm này</strong> và thêm lại từ trang chi tiết để chọn màu sắc và dung lượng. Không thể thanh toán với sản phẩm này.</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Price & Quantity -->
+                      <div class="flex items-center justify-between mt-3 flex-wrap gap-3">
+                        <!-- Price -->
+                        <div class="flex items-baseline gap-2">
+                          <span class="text-xl font-bold bg-gradient-to-r from-red-600 to-pink-600 bg-clip-text text-transparent">
+                            {{ formatPrice(getItemPrice(item)) }}₫
+                          </span>
+                          <span v-if="item.originalPrice && item.discount" class="text-sm text-gray-400 line-through">
+                            {{ formatPrice(item.originalPrice) }}₫
+                          </span>
+                        </div>
+
+                        <!-- Quantity Controls & Delete -->
+                        <div class="flex items-center gap-3">
+                          <div class="flex items-center border-2 border-gray-200 rounded-lg overflow-hidden hover:border-blue-400 transition-colors shadow-sm">
+                            <button 
+                              @click="decreaseQuantity(item)" 
+                              :disabled="item.quantity <= 1"
+                              class="w-8 h-8 flex items-center justify-center hover:bg-blue-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all active:scale-95">
+                              <i class="fas fa-minus text-xs text-gray-600"></i>
+                            </button>
+                            <span class="px-4 py-1 font-bold text-gray-900 min-w-[3rem] text-center bg-gray-50 select-none">
+                              {{ item.quantity }}
+                            </span>
+                            <button 
+                              @click="increaseQuantity(item)" 
+                              :disabled="item.quantity >= item.stockQuantity"
+                              class="w-8 h-8 flex items-center justify-center hover:bg-blue-50 disabled:opacity-50 disabled:cursor-not-allowed transition-all active:scale-95">
+                              <i class="fas fa-plus text-xs text-gray-600"></i>
+                            </button>
+                          </div>
+
+                          <!-- Delete Button -->
+                          <button 
+                            @click="removeItem(item)"
+                            class="w-9 h-9 flex items-center justify-center text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all group/delete">
+                            <i class="fas fa-trash-alt text-sm group-hover/delete:scale-110 transition-transform"></i>
+                          </button>
+                        </div>
+                      </div>
+
+                      <!-- Stock Warning with better styling -->
+                      <div v-if="item.stockQuantity <= 10" class="mt-2.5">
+                        <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium"
+                             :class="item.stockQuantity <= 5 ? 'bg-red-50 text-red-700 border border-red-200' : 'bg-orange-50 text-orange-700 border border-orange-200'">
+                          <i class="fas fa-exclamation-triangle animate-pulse"></i>
+                          <span>Chỉ còn <strong>{{ item.stockQuantity }}</strong> sản phẩm</span>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
 
-              
-              <div class="items-list px-8 py-6 space-y-6">
-  <div
-    v-for="item in cartItems"
-    :key="`${item.id}-${item.selectedSize}-${item.selectedColor?.name}`"
-    class="group bg-gray-50 hover:bg-gray-100 rounded-xl p-6 transition-all duration-300 hover:shadow-md
-           flex flex-col gap-6
-           lg:grid lg:grid-cols-[auto,1fr,auto,auto] lg:items-center lg:gap-6"
-    :class="{ 'ring-2 ring-blue-500 bg-blue-50': item.selected }"
-  >
-    <!-- Cột 1: Checkbox + Ảnh (cố định kích thước) -->
-    <div class="flex items-start gap-4 lg:col-[1]">
-      <input
-        type="checkbox"
-        v-model="item.selected"
-        @change="updateSelectedItems"
-        class="w-5 h-5 text-blue-600 border-2 border-gray-300 rounded focus:ring-blue-500 focus:ring-2 mt-1"
-      />
-      <div class="w-28 h-28 lg:w-32 lg:h-32 relative overflow-hidden rounded-xl flex-shrink-0">
-        <img :src="item.image" :alt="item.name"
-             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
-        <div v-if="item.discount"
-             class="absolute top-2 left-2 bg-red-500 text-white px-2 py-1 rounded-full text-xs font-bold">
-          -{{ item.discount }}%
-        </div>
-      </div>
-    </div>
-
-    <!-- Cột 2: Thông tin sản phẩm (chiếm hết phần co giãn) -->
-    <div class="min-w-0 lg:col-[2]">
-      <h3 class="text-lg lg:text-xl font-bold text-gray-900 mb-2 hover:text-blue-600 transition-colors">
-        <router-link :to="`/products/${item.id}`">{{ item.name }}</router-link>
-      </h3>
-
-      <div class="flex items-center mb-2">
-        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-          {{ item.category }}
-        </span>
-      </div>
-
-      <div v-if="item.selectedSize || item.selectedColor" class="flex flex-wrap gap-2 mb-3">
-        <span v-if="item.selectedSize"
-              class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-gray-200 text-gray-800">
-          <i class="fas fa-ruler mr-1"></i>{{ item.selectedSize }}
-        </span>
-        <span v-if="item.selectedColor"
-              class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-gray-200 text-gray-800">
-          <span class="w-3 h-3 rounded-full mr-1" :style="{ backgroundColor: item.selectedColor.value }"></span>
-          {{ item.selectedColor.name }}
-        </span>
-      </div>
-
-      <div class="flex items-baseline gap-2">
-        <span class="text-xl lg:text-2xl font-bold text-red-600">${{ formatPrice(getItemPrice(item)) }}</span>
-        <span v-if="item.originalPrice && item.discount" class="text-lg text-gray-500 line-through">
-          ${{ formatPrice(item.originalPrice) }}
-        </span>
-      </div>
-    </div>
-
-    <!-- Cột 3: Số lượng (giữ chiều rộng ổn định) -->
-    <div class="flex flex-col items-center gap-2 lg:gap-3 lg:col-[3] lg:justify-self-center">
-      <div class="flex items-center bg-white border-2 border-gray-200 rounded-xl overflow-hidden hover:border-blue-300 transition-colors
-                  w-[152px]">
-        <button @click="decreaseQuantity(item)" :disabled="item.quantity <= 1"
-                class="w-12 h-12 flex items-center justify-center hover:bg-blue-50 disabled:opacity-50 disabled:cursor-not-allowed">
-          <i class="fas fa-minus text-sm"></i>
-        </button>
-        <span class="px-4 py-3 font-bold text-gray-900 min-w-16 text-center select-none">{{ item.quantity }}</span>
-        <button @click="increaseQuantity(item)" :disabled="item.quantity >= item.stockQuantity"
-                class="w-12 h-12 flex items-center justify-center hover:bg-blue-50 disabled:opacity-50 disabled:cursor-not-allowed">
-          <i class="fas fa-plus text-sm"></i>
-        </button>
-      </div>
-      <div class="text-xs text-gray-500 text-center whitespace-nowrap">
-        Còn {{ item.stockQuantity }}
-      </div>
-    </div>
-
-    <!-- Cột 4: Thành tiền & actions (căn phải) -->
-    <div class="flex flex-col items-end gap-3 lg:gap-4 lg:col-[4] lg:justify-self-end">
-      <div class="text-right">
-        <div class="text-xl lg:text-2xl font-bold text-gray-900">
-          ${{ formatPrice(getItemTotal(item)) }}
-        </div>
-        <div class="text-sm text-gray-500">
-          {{ item.quantity }} × ${{ formatPrice(getItemPrice(item)) }}
-        </div>
-      </div>
-
-      <div class="flex gap-2">
-        <button @click="addToWishlist(item)"
-                class="w-10 h-10 flex items-center justify-center bg-white border-2 border-gray-200 hover:border-red-300 hover:bg-red-50 hover:text-red-600 rounded-xl transition-all">
-          <i class="fas fa-heart text-sm"></i>
-        </button>
-        <button @click="removeItem(item)"
-                class="w-10 h-10 flex items-center justify-center bg-white border-2 border-gray-200 hover:border-red-500 hover:bg-red-50 hover:text-red-600 rounded-xl transition-all">
-          <i class="fas fa-trash text-sm"></i>
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-              <!-- Continue Shopping -->
-              <div class="continue-shopping px-8 py-6 border-t border-gray-100">
-                <router-link to="/products" 
-                             class="inline-flex items-center px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-xl transition-all duration-300 hover:shadow-md">
-                  <i class="fas fa-arrow-left mr-3"></i>
-                  Tiếp tục mua sắm
+              <!-- Continue Shopping Button -->
+              <div class="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl shadow-sm border border-blue-100 p-4 hover:shadow-md transition-all">
+                <router-link 
+                  to="/products" 
+                  class="flex items-center justify-center gap-2 text-blue-600 hover:text-blue-700 font-medium group">
+                  <i class="fas fa-arrow-left group-hover:-translate-x-1 transition-transform"></i>
+                  <span>Tiếp tục mua sắm</span>
+                  <i class="fas fa-shopping-bag"></i>
                 </router-link>
               </div>
             </div>
 
-            <!-- Order Summary -->
-            <div class="order-summary space-y-6">
-              <div class="summary-card bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
-                <div class="px-8 py-6 bg-gradient-to-r from-blue-50 to-purple-50 border-b border-gray-100">
-                  <div class="flex items-center">
-                    <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center mr-3">
-                      <i class="fas fa-receipt text-white"></i>
-                    </div>
-                    <h3 class="text-xl font-bold text-gray-900">Tổng đơn hàng</h3>
-                  </div>
-                </div>
+            <!-- RIGHT COLUMN: Order Summary (1/3 width, Sticky) -->
+            <div class="lg:col-span-1">
+              <div class="sticky top-4 space-y-4">
                 
-                <div class="summary-details px-8 py-6 space-y-4">
-                  <div class="summary-row flex justify-between items-center py-2">
-                    <span class="text-gray-600">Tạm tính ({{ selectedItems.length }} sản phẩm đã chọn):</span>
-                    <span class="font-semibold text-gray-900">${{ formatPrice(selectedSubtotal) }}</span>
+                <!-- Order Summary Card -->
+                <div class="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden hover:shadow-xl transition-shadow">
+                  <div class="bg-gradient-to-r from-blue-600 to-purple-600 px-5 py-4">
+                    <h3 class="font-bold text-white flex items-center gap-2 text-lg">
+                      <i class="fas fa-receipt"></i>
+                      <span>Tổng đơn hàng</span>
+                    </h3>
                   </div>
                   
-                  <div v-if="selectedDiscount > 0" class="summary-row flex justify-between items-center py-2">
-                    <span class="text-gray-600">Giảm giá sản phẩm:</span>
-                    <span class="font-semibold text-green-600">-${{ formatPrice(selectedDiscount) }}</span>
-                  </div>
-                  
-                  <div v-if="appliedCoupon" class="summary-row flex justify-between items-center py-2">
-                    <span class="text-gray-600">Mã giảm giá:</span>
-                    <span class="font-semibold text-green-600">-${{ formatPrice(selectedCouponDiscount) }}</span>
-                  </div>
-                  
-                  <div class="summary-row flex justify-between items-center py-2">
-                    <span class="text-gray-600">Phí vận chuyển:</span>
-                    <span class="font-semibold">
-                      <span v-if="isSelectedEligibleForFreeShipping" class="text-green-600 flex items-center">
-                        <i class="fas fa-check-circle mr-1"></i>Miễn phí
-                      </span>
-                      <span v-else class="text-gray-900">${{ formatPrice(selectedShippingFee) }}</span>
-                    </span>
-                  </div>
-                  
-                  <!-- Free Shipping Progress -->
-                  <div v-if="!isSelectedEligibleForFreeShipping && selectedItems.length > 0" class="free-shipping-notice bg-gradient-to-r from-green-50 to-blue-50 border border-green-200 rounded-xl p-4">
-                    <div class="flex items-center justify-between mb-2">
-                      <span class="text-green-700 font-medium text-sm">
-                        <i class="fas fa-truck mr-1"></i>
-                        Mua thêm ${{ formatPrice(selectedAmountForFreeShipping) }} để được miễn phí vận chuyển
-                      </span>
-                    </div>
-                    <div class="w-full bg-green-200 rounded-full h-2">
-                      <div class="bg-gradient-to-r from-green-400 to-green-600 h-2 rounded-full transition-all duration-500" 
-                           :style="{ width: Math.min(100, (selectedAfterCouponTotal / FREE_SHIPPING_THRESHOLD) * 100) + '%' }"></div>
-                    </div>
-                  </div>
-                  
-                  <div class="border-t border-gray-200 pt-4">
-                    <div class="summary-row total-row flex justify-between items-center py-2">
-                      <span class="text-xl font-bold text-gray-900">Tổng cộng:</span>
-                      <span class="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                        ${{ formatPrice(selectedTotal) }}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Coupon Code -->
-                <div class="coupon-section px-8 py-6 border-t border-gray-100">
-                  <div class="mb-4">
-                    <label class="block text-sm font-semibold text-gray-700 mb-2">
-                      <i class="fas fa-tag mr-2"></i>Mã giảm giá
-                    </label>
-                    <div class="coupon-input flex gap-3">
-                      <input 
-                        type="text" 
-                        v-model="couponCode"
-                        placeholder="Nhập mã giảm giá..."
-                        :disabled="appliedCoupon"
-                        class="flex-1 px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:outline-none transition-colors disabled:bg-gray-100"
-                      />
-                      <button 
-                        @click="applyCoupon" 
-                        :disabled="!couponCode || appliedCoupon"
-                        class="apply-coupon-btn px-6 py-3 bg-gradient-to-r from-green-500 to-green-600 text-white font-semibold rounded-xl hover:from-green-600 hover:to-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 shadow-lg hover:shadow-xl">
-                        {{ appliedCoupon ? 'Đã áp dụng' : 'Áp dụng' }}
-                      </button>
-                    </div>
-                  </div>
-                  
-                  <div v-if="appliedCoupon" class="applied-coupon bg-green-50 border-2 border-green-200 rounded-xl p-4">
-                    <div class="flex items-center justify-between">
-                      <div class="coupon-info flex items-center text-green-700">
-                        <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center mr-3">
-                          <i class="fas fa-tag text-white text-sm"></i>
+                  <div class="p-5 space-y-3">
+                    
+                    <!-- Coupon Section - Integrated -->
+                    <div class="bg-gradient-to-br from-orange-50 via-amber-50 to-yellow-50 rounded-xl border-2 border-orange-200 p-4 mb-4">
+                      <div class="flex items-center gap-2 mb-3">
+                        <div class="w-9 h-9 bg-gradient-to-br from-orange-500 to-amber-600 rounded-lg flex items-center justify-center shadow-md">
+                          <i class="fas fa-ticket-alt text-white"></i>
                         </div>
                         <div>
-                          <div class="font-semibold">{{ appliedCoupon.code }}</div>
-                          <div class="text-sm">Giảm {{ appliedCoupon.discount }}%</div>
+                          <h4 class="font-bold text-gray-900 text-sm">Mã giảm giá</h4>
+                          <p class="text-xs text-gray-600">Tiết kiệm thêm</p>
                         </div>
                       </div>
-                      <button @click="removeCoupon" class="remove-coupon-btn w-8 h-8 flex items-center justify-center text-green-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all duration-300">
-                        <i class="fas fa-times"></i>
-                      </button>
-                    </div>
-                  </div>
-                  
-                  <!-- Popular Coupons -->
-                  <div v-if="!appliedCoupon" class="mt-4">
-                    <div class="text-xs text-gray-500 mb-2">Mã phổ biến:</div>
-                    <div class="flex flex-wrap gap-2">
-                      <button v-for="code in ['SAVE10', 'SAVE20', 'WELCOME15']" :key="code"
+                      
+                      <!-- Applied Coupon Display -->
+                      <div v-if="appliedCoupon" class="bg-white rounded-lg p-3 border-2 border-green-300 shadow-sm">
+                        <div class="flex items-center justify-between mb-2">
+                          <div class="flex items-center gap-2">
+                            <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                              <i class="fas fa-check-circle text-green-600"></i>
+                            </div>
+                            <div>
+                              <p class="font-bold text-green-700 text-sm">{{ appliedCoupon.code }}</p>
+                              <p class="text-xs text-green-600">Giảm {{ appliedCoupon.discount }}%</p>
+                            </div>
+                          </div>
+                          <button 
+                            @click="removeCoupon"
+                            class="text-red-500 hover:text-red-700 hover:bg-red-50 p-1.5 rounded-lg transition-all">
+                            <i class="fas fa-times"></i>
+                          </button>
+                        </div>
+                        <div class="pt-2 border-t border-green-200">
+                          <div class="flex items-center justify-between text-xs">
+                            <span class="text-gray-600">Tiết kiệm:</span>
+                            <span class="font-bold text-green-600">-{{ formatPrice(selectedCouponDiscount) }}₫</span>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <!-- Coupon Input -->
+                      <div v-else class="space-y-2">
+                        <div class="flex gap-2">
+                          <div class="relative flex-1">
+                            <input 
+                              v-model="couponCode"
+                              type="text" 
+                              placeholder="Nhập mã..."
+                              class="w-full pl-9 pr-3 py-2.5 border-2 border-orange-200 rounded-lg focus:border-orange-400 focus:ring-2 focus:ring-orange-100 outline-none transition-all text-sm font-medium bg-white"
+                            />
+                            <i class="fas fa-tag absolute left-3 top-1/2 -translate-y-1/2 text-orange-400"></i>
+                          </div>
+                          <button 
+                            @click="applyCoupon"
+                            class="px-4 py-2.5 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-bold rounded-lg transition-all text-sm shadow-md hover:shadow-lg active:scale-95">
+                            <i class="fas fa-check"></i>
+                          </button>
+                        </div>
+                        
+                        <!-- Popular Coupons -->
+                        <div>
+                          <p class="text-xs font-medium text-gray-600 mb-1.5 flex items-center gap-1">
+                            <i class="fas fa-fire text-orange-500 text-xs"></i>
+                            <span>Phổ biến:</span>
+                          </p>
+                          <div class="flex flex-wrap gap-1.5">
+                            <button 
+                              v-for="code in ['SAVE10', 'SAVE20', 'WELCOME15']"
+                              :key="code"
                               @click="couponCode = code"
-                              class="px-3 py-1 text-xs bg-gray-100 hover:bg-blue-100 text-gray-700 hover:text-blue-700 rounded-lg transition-colors">
-                        {{ code }}
-                      </button>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Checkout Button -->
-                <div class="px-8 py-6 border-t border-gray-100">
-                  <button @click="proceedToCheckout" 
-                          :disabled="selectedItems.length === 0"
-                          class="checkout-btn w-full py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 disabled:from-gray-400 disabled:to-gray-500 disabled:cursor-not-allowed text-white font-bold text-lg rounded-xl transition-all duration-300 transform hover:scale-105 disabled:hover:scale-100 shadow-lg hover:shadow-xl disabled:shadow-none flex items-center justify-center">
-                    <i class="fas fa-lock mr-3"></i>
-                    <span v-if="selectedItems.length > 0">Thanh toán {{ selectedItems.length }} sản phẩm</span>
-                    <span v-else>Chọn sản phẩm để thanh toán</span>
-                    <i class="fas fa-arrow-right ml-3"></i>
-                  </button>
-                  
-                  <!-- Security Badge -->
-                  <div class="flex items-center justify-center mt-4 text-sm text-gray-500">
-                    <i class="fas fa-shield-alt mr-2 text-green-500"></i>
-                    Thanh toán được bảo mật với SSL 256-bit
-                  </div>
-                </div>
-
-                <!-- Payment Methods -->
-                <div class="payment-methods px-8 py-6 border-t border-gray-100 bg-gray-50">
-                  <div class="text-center">
-                    <div class="text-sm text-gray-600 mb-3">Chúng tôi chấp nhận:</div>
-                    <div class="flex justify-center items-center gap-4">
-                      <div class="w-12 h-8 bg-white rounded-lg flex items-center justify-center shadow-sm">
-                        <i class="fab fa-cc-visa text-blue-600 text-lg"></i>
-                      </div>
-                      <div class="w-12 h-8 bg-white rounded-lg flex items-center justify-center shadow-sm">
-                        <i class="fab fa-cc-mastercard text-red-500 text-lg"></i>
-                      </div>
-                      <div class="w-12 h-8 bg-white rounded-lg flex items-center justify-center shadow-sm">
-                        <i class="fab fa-cc-paypal text-blue-500 text-lg"></i>
-                      </div>
-                      <div class="w-12 h-8 bg-white rounded-lg flex items-center justify-center shadow-sm">
-                        <i class="fab fa-apple-pay text-gray-900 text-lg"></i>
-                      </div>
-                      <div class="w-12 h-8 bg-white rounded-lg flex items-center justify-center shadow-sm">
-                        <i class="fab fa-google-pay text-gray-700 text-lg"></i>
+                              class="px-2.5 py-1.5 bg-white text-orange-700 hover:bg-orange-100 border border-orange-300 rounded-md text-xs font-bold transition-all hover:scale-105 active:scale-95">
+                              {{ code }}
+                            </button>
+                          </div>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Estimated Delivery -->
-              <div class="delivery-info bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
-                <div class="px-6 py-4 bg-gradient-to-r from-green-50 to-blue-50 border-b border-gray-100">
-                  <div class="flex items-center">
-                    <div class="w-10 h-10 bg-gradient-to-br from-green-500 to-blue-600 rounded-lg flex items-center justify-center mr-3">
-                      <i class="fas fa-shipping-fast text-white"></i>
+                    <!-- Subtotal -->
+                    <div class="flex justify-between items-center py-2 border-b border-gray-100">
+                      <span class="text-gray-600 flex items-center gap-2">
+                        <i class="fas fa-box text-blue-500"></i>
+                        <span>Tạm tính (<strong class="text-gray-900">{{ selectedItems.length }}</strong> SP):</span>
+                      </span>
+                      <span class="font-bold text-gray-900">{{ formatPrice(selectedSubtotal) }}₫</span>
                     </div>
-                    <h4 class="text-lg font-bold text-gray-900">Tùy chọn giao hàng</h4>
-                  </div>
-                </div>
-                
-                <div class="delivery-options p-6 space-y-4">
-                  <div class="delivery-option group cursor-pointer p-4 border-2 border-gray-200 hover:border-blue-300 rounded-xl transition-all duration-300 hover:shadow-md">
-                    <div class="flex items-center justify-between">
-                      <div class="flex items-center">
-                        <div class="w-12 h-12 bg-blue-100 group-hover:bg-blue-200 rounded-lg flex items-center justify-center mr-4 transition-colors">
-                          <i class="fas fa-truck text-blue-600 text-lg"></i>
-                        </div>
-                        <div>
-                          <div class="font-semibold text-gray-900">Giao hàng tiêu chuẩn</div>
-                          <div class="text-sm text-gray-600">2-3 ngày làm việc</div>
-                        </div>
+                    
+                    <!-- Discount -->
+                    <div v-if="selectedDiscount > 0" class="flex justify-between items-center py-2 border-b border-gray-100">
+                      <span class="text-gray-600 flex items-center gap-2">
+                        <i class="fas fa-tag text-green-500"></i>
+                        <span>Giảm giá:</span>
+                      </span>
+                      <span class="font-bold text-green-600">-{{ formatPrice(selectedDiscount) }}₫</span>
+                    </div>
+                    
+                    <!-- Coupon Discount -->
+                    <div v-if="appliedCoupon" class="flex justify-between items-center py-2 border-b border-gray-100">
+                      <span class="text-gray-600 flex items-center gap-2">
+                        <i class="fas fa-ticket-alt text-green-500"></i>
+                        <span>Mã giảm giá:</span>
+                      </span>
+                      <span class="font-bold text-green-600">-{{ formatPrice(selectedCouponDiscount) }}₫</span>
+                    </div>
+                    
+                    <!-- Shipping -->
+                    <div class="flex justify-between items-center py-2 border-b border-gray-100">
+                      <span class="text-gray-600 flex items-center gap-2">
+                        <i class="fas fa-shipping-fast text-purple-500"></i>
+                        <span>Vận chuyển:</span>
+                      </span>
+                      <span class="font-semibold">
+                        <span v-if="isSelectedEligibleForFreeShipping" class="text-green-600 flex items-center gap-1">
+                          <i class="fas fa-check-circle"></i>
+                          <span>Miễn phí</span>
+                        </span>
+                        <span v-else class="text-gray-900">{{ formatPrice(selectedShippingFee) }}₫</span>
+                      </span>
+                    </div>
+                    
+                    <!-- Free Shipping Progress -->
+                    <div v-if="!isSelectedEligibleForFreeShipping && selectedItems.length > 0" 
+                         class="bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-xl p-3 my-3">
+                      <div class="flex items-center justify-between mb-2">
+                        <span class="text-green-700 font-medium text-xs flex items-center gap-1.5">
+                          <i class="fas fa-truck"></i>
+                          <span>Mua thêm <strong class="text-sm">{{ formatPrice(selectedAmountForFreeShipping) }}₫</strong></span>
+                        </span>
                       </div>
-                      <div class="text-right">
-                        <div class="font-bold text-lg">
-                          <span v-if="isEligibleForFreeShipping" class="text-green-600">Miễn phí</span>
-                          <span v-else class="text-gray-900">${{ formatPrice(shippingFee) }}</span>
-                        </div>
-                        <div class="text-xs text-gray-500">Mặc định</div>
+                      <div class="w-full bg-green-200 rounded-full h-2 overflow-hidden">
+                        <div class="bg-gradient-to-r from-green-500 to-emerald-600 h-2 rounded-full transition-all duration-500 shadow-sm" 
+                             :style="{ width: Math.min(100, (selectedAfterCouponTotal / FREE_SHIPPING_THRESHOLD) * 100) + '%' }"></div>
+                      </div>
+                      <p class="text-xs text-green-600 mt-1.5 text-center font-medium">
+                        để được miễn phí vận chuyển
+                      </p>
+                    </div>
+                    
+                    <!-- Total -->
+                    <div class="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-4 mt-4 border-2 border-blue-200">
+                      <div class="flex justify-between items-center">
+                        <span class="text-lg font-bold text-gray-900 flex items-center gap-2">
+                          <i class="fas fa-calculator text-blue-600"></i>
+                          <span>Tổng cộng:</span>
+                        </span>
+                        <span class="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                          {{ formatPrice(selectedTotal) }}₫
+                        </span>
                       </div>
                     </div>
-                  </div>
-                  
-                  <div class="delivery-option group cursor-pointer p-4 border-2 border-gray-200 hover:border-orange-300 rounded-xl transition-all duration-300 hover:shadow-md">
-                    <div class="flex items-center justify-between">
-                      <div class="flex items-center">
-                        <div class="w-12 h-12 bg-orange-100 group-hover:bg-orange-200 rounded-lg flex items-center justify-center mr-4 transition-colors">
-                          <i class="fas fa-bolt text-orange-600 text-lg"></i>
-                        </div>
-                        <div>
-                          <div class="font-semibold text-gray-900">Giao hàng nhanh</div>
-                          <div class="text-sm text-gray-600">1-2 ngày làm việc</div>
-                        </div>
-                      </div>
-                      <div class="text-right">
-                        <div class="font-bold text-lg text-gray-900">${{ formatPrice(50000) }}</div>
-                        <div class="text-xs text-gray-500">Express</div>
-                      </div>
+                    
+                    <!-- Checkout Button -->
+                    <button 
+                      @click="proceedToCheckout"
+                      :disabled="selectedItems.length === 0 || hasItemsWithoutVariant"
+                      class="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold py-3.5 px-4 rounded-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 disabled:hover:scale-100">
+                      <i class="fas fa-lock"></i>
+                      <span v-if="hasItemsWithoutVariant">⚠️ Cần xử lý sản phẩm chưa chọn variant</span>
+                      <span v-else-if="selectedItems.length > 0">Thanh toán {{ selectedItems.length }} sản phẩm</span>
+                      <span v-else>Chọn sản phẩm để thanh toán</span>
+                      <i class="fas fa-arrow-right"></i>
+                    </button>
+                    
+                    <!-- Security Badge -->
+                    <div class="flex items-center justify-center gap-2 text-xs text-gray-500 mt-3">
+                      <i class="fas fa-shield-check text-green-500"></i>
+                      <span>Thanh toán bảo mật SSL</span>
                     </div>
-                  </div>
-                  
-                  <div class="delivery-option group cursor-pointer p-4 border-2 border-gray-200 hover:border-purple-300 rounded-xl transition-all duration-300 hover:shadow-md">
-                    <div class="flex items-center justify-between">
-                      <div class="flex items-center">
-                        <div class="w-12 h-12 bg-purple-100 group-hover:bg-purple-200 rounded-lg flex items-center justify-center mr-4 transition-colors">
-                          <i class="fas fa-clock text-purple-600 text-lg"></i>
-                        </div>
-                        <div>
-                          <div class="font-semibold text-gray-900">Giao hàng trong ngày</div>
-                          <div class="text-sm text-gray-600">Trong vòng 24h</div>
-                        </div>
-                      </div>
-                      <div class="text-right">
-                        <div class="font-bold text-lg text-gray-900">${{ formatPrice(100000) }}</div>
-                        <div class="text-xs text-gray-500">Premium</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                
-                <!-- Delivery Notice -->
-                <div class="px-6 py-4 bg-blue-50 border-t border-gray-100">
-                  <div class="flex items-center text-sm text-blue-700">
-                    <i class="fas fa-info-circle mr-2"></i>
-                    Đặt hàng trước 16:00 để được giao trong ngày làm việc tiếp theo
                   </div>
                 </div>
               </div>
@@ -478,7 +462,7 @@
     </section>
 
     <!-- Recently Viewed -->
-    <section v-if="recentlyViewed.length > 0" class="recently-viewed py-5">
+    <section v-if="recentlyViewed.length > 0" class="py-5 bg-white">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <h2 class="section-title">Sản phẩm đã xem gần đây</h2>
         <div class="products-grid">
@@ -491,46 +475,46 @@
         </div>
       </div>
     </section>
-
-    <!-- Remove Item Modal -->
-    <div v-if="showRemoveModal" class="modal-overlay" @click="showRemoveModal = false">
-      <div class="bg-white rounded-lg shadow-xl" @click.stop>
-        <h3>Xác nhận xóa sản phẩm</h3>
-        <p>Bạn có chắc chắn muốn xóa sản phẩm này khỏi giỏ hàng?</p>
-        <div class="modal-actions">
-          <button @click="showRemoveModal = false" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md transition-colors duration-200 bg-gray-600 hover:bg-gray-700 text-white">Hủy</button>
-          <button @click="confirmRemoveItem" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md transition-colors duration-200">Xóa</button>
-        </div>
-      </div>
-    </div>
   </div>
 </template>
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { useCart } from '@/composables'
 import ProductCard from '../components/Product/ProductCard.vue'
 import Swal from 'sweetalert2'
+import toast from '@/services/toast'
 
 const router = useRouter()
 
-// Reactive data
-const cartItems = ref([])
+// Use Cart Composable
+const {
+  cartItems,
+  loading,
+  fetchCart,
+  updateQuantity,
+  removeItem: removeFromCart,
+  clearCart: clearAllCart,
+  validateCart,
+  totalItems,
+  selectedItems,
+  selectedSubtotal,
+  selectedTotal,
+  isEligibleForFreeShipping,
+  amountForFreeShipping,
+  FREE_SHIPPING_THRESHOLD,
+  STANDARD_SHIPPING_FEE
+} = useCart()
+
+// Local state
 const recentlyViewed = ref([])
 const couponCode = ref('')
 const appliedCoupon = ref(null)
 const showRemoveModal = ref(false)
 const itemToRemove = ref(null)
 
-// Constants
-const FREE_SHIPPING_THRESHOLD = 500000
-const STANDARD_SHIPPING_FEE = 30000
-
 // Computed properties
-const totalItems = computed(() => {
-  return cartItems.value.reduce((total, item) => total + item.quantity, 0)
-})
-
 const subtotal = computed(() => {
   return cartItems.value.reduce((total, item) => {
     return total + (getItemPrice(item) * item.quantity)
@@ -547,44 +531,6 @@ const totalDiscount = computed(() => {
   }, 0)
 })
 
-const couponDiscount = computed(() => {
-  if (appliedCoupon.value) {
-    return subtotal.value * (appliedCoupon.value.discount / 100)
-  }
-  return 0
-})
-
-const afterCouponTotal = computed(() => {
-  return subtotal.value - couponDiscount.value
-})
-
-const isEligibleForFreeShipping = computed(() => {
-  return afterCouponTotal.value >= FREE_SHIPPING_THRESHOLD
-})
-
-const shippingFee = computed(() => {
-  return isEligibleForFreeShipping.value ? 0 : STANDARD_SHIPPING_FEE
-})
-
-const amountForFreeShipping = computed(() => {
-  return Math.max(0, FREE_SHIPPING_THRESHOLD - afterCouponTotal.value)
-})
-
-const finalTotal = computed(() => {
-  return afterCouponTotal.value + shippingFee.value
-})
-
-// Selected items computed properties
-const selectedItems = computed(() => {
-  return cartItems.value.filter(item => item.selected)
-})
-
-const selectedSubtotal = computed(() => {
-  return selectedItems.value.reduce((total, item) => {
-    return total + (getItemPrice(item) * item.quantity)
-  }, 0)
-})
-
 const selectedDiscount = computed(() => {
   return selectedItems.value.reduce((total, item) => {
     if (item.discount && item.originalPrice) {
@@ -595,35 +541,49 @@ const selectedDiscount = computed(() => {
   }, 0)
 })
 
-const selectedCouponDiscount = computed(() => {
+const couponDiscount = computed(() => {
   if (appliedCoupon.value) {
     return selectedSubtotal.value * (appliedCoupon.value.discount / 100)
   }
   return 0
 })
 
+const selectedCouponDiscount = computed(() => {
+  return couponDiscount.value
+})
+
+const afterCouponTotal = computed(() => {
+  return selectedSubtotal.value - couponDiscount.value
+})
+
 const selectedAfterCouponTotal = computed(() => {
-  return selectedSubtotal.value - selectedCouponDiscount.value
+  return afterCouponTotal.value
 })
 
 const isSelectedEligibleForFreeShipping = computed(() => {
-  return selectedAfterCouponTotal.value >= FREE_SHIPPING_THRESHOLD
+  return isEligibleForFreeShipping.value
 })
 
 const selectedShippingFee = computed(() => {
-  return isSelectedEligibleForFreeShipping.value ? 0 : STANDARD_SHIPPING_FEE
+  return isEligibleForFreeShipping.value ? 0 : STANDARD_SHIPPING_FEE
 })
 
 const selectedAmountForFreeShipping = computed(() => {
-  return Math.max(0, FREE_SHIPPING_THRESHOLD - selectedAfterCouponTotal.value)
+  return amountForFreeShipping.value
 })
 
-const selectedTotal = computed(() => {
-  return selectedAfterCouponTotal.value + selectedShippingFee.value
+const shippingFee = computed(() => {
+  return selectedShippingFee.value
 })
 
 const isAllSelected = computed(() => {
   return cartItems.value.length > 0 && cartItems.value.every(item => item.selected)
+})
+
+const hasItemsWithoutVariant = computed(() => {
+  // Check variantId instead of selectedColor/selectedSize
+  // Because backend requires variant_id in database
+  return cartItems.value.some(item => !item.variantId)
 })
 
 // Methods
@@ -642,35 +602,45 @@ const getItemTotal = (item) => {
   return getItemPrice(item) * item.quantity
 }
 
-const increaseQuantity = (item) => {
+const increaseQuantity = async (item) => {
   if (item.quantity < item.stockQuantity) {
-    item.quantity++
-    saveCartToStorage()
+    const newQuantity = item.quantity + 1
+    await updateQuantity(item.id, newQuantity)
   }
 }
 
-const decreaseQuantity = (item) => {
+const decreaseQuantity = async (item) => {
   if (item.quantity > 1) {
-    item.quantity--
-    saveCartToStorage()
+    const newQuantity = item.quantity - 1
+    await updateQuantity(item.id, newQuantity)
   }
 }
 
-const removeItem = (item) => {
-  itemToRemove.value = item
-  showRemoveModal.value = true
+const removeItem = async (item) => {
+  const result = await Swal.fire({
+    title: 'Xóa sản phẩm?',
+    html: `Bạn có chắc chắn muốn xóa <strong>${item.name}</strong> khỏi giỏ hàng?`,
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#ef4444',
+    cancelButtonColor: '#6b7280',
+    confirmButtonText: 'Xóa sản phẩm',
+    cancelButtonText: 'Hủy bỏ',
+    customClass: {
+      popup: 'rounded-2xl',
+      confirmButton: 'rounded-xl px-6 py-3 font-semibold',
+      cancelButton: 'rounded-xl px-6 py-3 font-semibold'
+    }
+  })
+
+  if (result.isConfirmed) {
+    await removeFromCart(item.id)
+  }
 }
 
-const confirmRemoveItem = () => {
-  const index = cartItems.value.findIndex(item => 
-    item.id === itemToRemove.value.id && 
-    item.selectedSize === itemToRemove.value.selectedSize &&
-    item.selectedColor?.name === itemToRemove.value.selectedColor?.name
-  )
-  
-  if (index > -1) {
-    cartItems.value.splice(index, 1)
-    saveCartToStorage()
+const confirmRemoveItem = async () => {
+  if (itemToRemove.value) {
+    await removeFromCart(itemToRemove.value.id)
   }
   
   showRemoveModal.value = false
@@ -695,25 +665,12 @@ const clearCart = async () => {
   })
 
   if (result.isConfirmed) {
-    cartItems.value = []
+    await clearAllCart()
     appliedCoupon.value = null
-    saveCartToStorage()
-    
-    Swal.fire({
-      title: 'Đã xóa thành công!',
-      text: 'Tất cả sản phẩm đã được xóa khỏi giỏ hàng',
-      icon: 'success',
-      timer: 2000,
-      showConfirmButton: false,
-      customClass: {
-        popup: 'rounded-2xl'
-      }
-    })
   }
 }
 
 const addToWishlist = (item) => {
-  console.log('Add to wishlist:', item)
   // Handle add to wishlist logic
   Swal.fire({
     title: 'Thành công!',
@@ -727,8 +684,11 @@ const addToWishlist = (item) => {
   })
 }
 
-const applyCoupon = () => {
-  // Mock coupon validation
+const applyCoupon = async () => {
+  // TODO: Validate coupon with API
+  // const response = await validateCoupon(couponCode.value)
+  
+  // Mock implementation - Replace with API call
   const validCoupons = {
     'SAVE10': { code: 'SAVE10', discount: 10 },
     'SAVE20': { code: 'SAVE20', discount: 20 },
@@ -739,27 +699,9 @@ const applyCoupon = () => {
   
   if (coupon) {
     appliedCoupon.value = coupon
-    Swal.fire({
-      title: 'Thành công!',
-      text: `Đã áp dụng mã giảm giá ${coupon.code} - Giảm ${coupon.discount}%`,
-      icon: 'success',
-      timer: 2500,
-      showConfirmButton: false,
-      customClass: {
-        popup: 'rounded-2xl'
-      }
-    })
+    await toast.success(`Đã áp dụng mã ${coupon.code} - Giảm ${coupon.discount}%`)
   } else {
-    Swal.fire({
-      title: 'Lỗi!',
-      text: 'Mã giảm giá không hợp lệ',
-      icon: 'error',
-      timer: 2500,
-      showConfirmButton: false,
-      customClass: {
-        popup: 'rounded-2xl'
-      }
-    })
+    await toast.error('Mã giảm giá không hợp lệ')
   }
 }
 
@@ -784,232 +726,49 @@ const selectAllItems = () => {
 
 const updateSelectedItems = () => {
   // This method is called when individual checkboxes change
-  saveCartToStorage()
+  // No need to save to storage anymore as cart is in database
 }
 
-const proceedToCheckout = () => {
+const proceedToCheckout = async () => {
   if (selectedItems.value.length === 0) {
-    Swal.fire({
-      title: 'Chưa chọn sản phẩm!',
-      text: 'Vui lòng chọn ít nhất một sản phẩm để thanh toán',
-      icon: 'warning',
-      confirmButtonText: 'Đồng ý',
-      customClass: {
-        popup: 'rounded-2xl'
-      }
-    })
+    await toast.warning('Vui lòng chọn ít nhất một sản phẩm để thanh toán')
     return
   }
   
-  // Save cart state and navigate to checkout
-  saveCartToStorage()
-  router.push('/checkout')
+  // Get selected cart item IDs
+  const selectedIds = selectedItems.value.map(item => item.id)
+  
+  // Validate before checkout
+  const validation = await validateCart()
+  
+  if (validation && validation.success) {
+    // Navigate to checkout with cart item IDs as query params
+    router.push({
+      path: '/checkout',
+      query: {
+        items: selectedIds.join(',')
+      }
+    })
+  }
 }
 
 const handleAddToCart = (product) => {
-  // Add product to cart
-  const existingItem = cartItems.value.find(item => item.id === product.id)
-  
-  if (existingItem) {
-    existingItem.quantity++
-  } else {
-    cartItems.value.push({
-      ...product,
-      quantity: 1,
-      selectedSize: null,
-      selectedColor: null,
-      stockQuantity: 10,
-      selected: false
-    })
-  }
-  
-  saveCartToStorage()
-  
-  Swal.fire({
-    title: 'Thành công!',
-    text: 'Đã thêm sản phẩm vào giỏ hàng',
-    icon: 'success',
-    timer: 2000,
-    showConfirmButton: false,
-    customClass: {
-      popup: 'rounded-2xl'
-    }
-  })
-}
-
-const saveCartToStorage = () => {
-  localStorage.setItem('cart', JSON.stringify(cartItems.value))
-  localStorage.setItem('appliedCoupon', JSON.stringify(appliedCoupon.value))
-}
-
-const loadCartFromStorage = () => {
-  const savedCart = localStorage.getItem('cart')
-  const savedCoupon = localStorage.getItem('appliedCoupon')
-  
-  if (savedCart) {
-    cartItems.value = JSON.parse(savedCart)
-  }
-  
-  if (savedCoupon && savedCoupon !== 'null') {
-    appliedCoupon.value = JSON.parse(savedCoupon)
-  }
+  // This is called from recently viewed products
+  // Redirect to product detail page to select variant
+  router.push(`/product/${product.slug}`)
 }
 
 // Load data on mount
-onMounted(() => {
-  loadCartFromStorage()
+onMounted(async () => {
+  await fetchCart()
   
-  // Mock cart items if empty (for demo)
-  if (cartItems.value.length === 0) {
-    cartItems.value = [
-      {
-        id: 1,
-        name: 'Smartphone XYZ Pro',
-        category: 'Điện tử',
-        price: 12990000,
-        originalPrice: 14990000,
-        discount: 13,
-        image: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400',
-        quantity: 1,
-        selectedSize: '256GB',
-        selectedColor: { name: 'Đen', value: '#000000' },
-        stockQuantity: 5,
-        selected: false
-      },
-      {
-        id: 2,
-        name: 'Áo thun Premium',
-        category: 'Thời trang',
-        price: 299000,
-        originalPrice: 399000,
-        discount: 25,
-        image: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=400',
-        quantity: 2,
-        selectedSize: 'L',
-        selectedColor: { name: 'Xanh', value: '#1E3A8A' },
-        stockQuantity: 10,
-        selected: false
-      },
-      {
-        id: 3,
-        name: 'Giày sneaker thể thao',
-        category: 'Giày dép',
-        price: 890000,
-        image: 'https://images.unsplash.com/photo-1549298916-b41d501d3772?w=400',
-        quantity: 1,
-        selectedSize: '42',
-        selectedColor: { name: 'Trắng', value: '#FFFFFF' },
-        stockQuantity: 3,
-        selected: false
-      }
-    ]
-  }
-  
-  // Mock recently viewed products
-  recentlyViewed.value = [
-    {
-      id: 101,
-      name: 'Laptop Gaming ABC',
-      category: 'Điện tử',
-      price: 25990000,
-      originalPrice: 29990000,
-      discount: 13,
-      image: 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=400',
-      rating: 4.9,
-      reviewCount: 234,
-      inStock: true
-    },
-    {
-      id: 102,
-      name: 'Đồng hồ thông minh',
-      category: 'Điện tử',
-      price: 4990000,
-      image: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400',
-      rating: 4.2,
-      reviewCount: 156,
-      inStock: true
-    }
-  ]
+  // TODO: Load recently viewed products from API
+  // fetchRecentlyViewedProducts()
 })
 </script>
 
 <style scoped>
-/* Cart Layout Styles */
-.cart-layout {
-  display: grid;
-  grid-template-columns: 1fr 420px;
-  gap: 2rem;
-  align-items: start;
-}
-
-.cart-item {
-  display: grid;
-  grid-template-columns: 120px 1fr 140px 120px 80px;
-  gap: 1.5rem;
-  align-items: center;
-}
-
-.item-image {
-  width: 120px;
-  height: 120px;
-}
-
-/* Responsive Adjustments */
-@media (max-width: 1200px) {
-  .cart-layout {
-    grid-template-columns: 1fr 380px;
-    gap: 1.5rem;
-  }
-}
-
-@media (max-width: 1024px) {
-  .cart-layout {
-    grid-template-columns: 1fr;
-    gap: 2rem;
-  }
-  
-  .order-summary {
-    order: -1;
-  }
-}
-
-@media (max-width: 768px) {
-  .cart-item {
-    grid-template-columns: 100px 1fr;
-    grid-template-areas: 
-      "image details"
-      "quantity total"  
-      "actions actions";
-    gap: 1rem;
-  }
-  
-  .item-image {
-    grid-area: image;
-    width: 100px;
-    height: 100px;
-  }
-  
-  .item-details {
-    grid-area: details;
-  }
-  
-  .item-quantity {
-    grid-area: quantity;
-  }
-  
-  .item-total {
-    grid-area: total;
-  }
-  
-  .item-actions {
-    grid-area: actions;
-    flex-direction: row;
-    justify-content: center;
-    gap: 1rem;
-  }
-}
-
-/* Animations */
+/* Only keep animations that Tailwind doesn't provide out of the box */
 @keyframes fadeInUp {
   from {
     opacity: 0;
@@ -1021,83 +780,7 @@ onMounted(() => {
   }
 }
 
-@keyframes pulse {
-  0%, 100% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.05);
-  }
-}
-
-.cart-item {
+.animate-fade-in-up {
   animation: fadeInUp 0.5s ease-out;
-}
-
-.checkout-btn:hover {
-  animation: pulse 0.5s ease-in-out;
-}
-
-/* Modal styles */
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-}
-
-.modal-overlay .bg-white {
-  background: white;
-  padding: 2rem;
-  border-radius: 1rem;
-  max-width: 400px;
-  width: 90%;
-  text-align: center;
-}
-
-.modal-overlay h3 {
-  margin-bottom: 1rem;
-  color: #333;
-  font-size: 1.5rem;
-  font-weight: 700;
-}
-
-.modal-overlay p {
-  margin-bottom: 1.5rem;
-  color: #666;
-  line-height: 1.6;
-}
-
-.modal-actions {
-  display: flex;
-  justify-content: center;
-  gap: 1rem;
-}
-
-/* Recently viewed section */
-.recently-viewed {
-  background: white;
-  margin-top: 3rem;
-  padding: 3rem 0;
-}
-
-.section-title {
-  font-size: 2rem;
-  text-align: center;
-  margin-bottom: 2.5rem;
-  color: #333;
-  font-weight: 700;
-}
-
-.products-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 1.5rem;
 }
 </style>

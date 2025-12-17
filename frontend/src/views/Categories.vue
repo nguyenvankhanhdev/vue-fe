@@ -541,20 +541,13 @@ const viewProducts = (category) => {
   router.push(`/products?category=${category.id}`)
 }
 
-const addToFavorites = (category) => {
+const toggleFavorite = (category) => {
   category.isFavorite = !category.isFavorite
-  if (category.isFavorite) {
-    // Add to favorites logic
-    console.log(`Added ${category.name} to favorites`)
-  } else {
-    // Remove from favorites logic
-    console.log(`Removed ${category.name} from favorites`)
-  }
+  // Add/remove from favorites logic
 }
 
 onMounted(() => {
   // Load categories data
-  console.log('Categories page loaded')
 })
 </script>
 

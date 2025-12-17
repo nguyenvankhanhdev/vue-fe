@@ -332,8 +332,10 @@
 </template>
 
 <script setup>
-import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
+import { ref, computed, watch, onMounted, onUnmounted, nextTick } from 'vue'
 import Swal from 'sweetalert2'
+import variantManagerService from '@/services/VariantManagerService'
+import toast from '@/services/toast'
 
 // Props
 const props = defineProps({
@@ -406,51 +408,54 @@ onUnmounted(() => {
 const loadProductData = async () => {
   if (!props.selectedProduct?.id) return
 
-  // Load mock data từ selectedProduct hoặc API
-  productColors.value = props.selectedProduct.colors || []
-  productCapacities.value = props.selectedProduct.capacities || []
-  productVariants.value = props.selectedProduct.variants || []
+  try {
+    // Load colors
+    const colorsResponse = await variantManagerService.getProductColors(props.selectedProduct.id)
+    productColors.value = [...(colorsResponse.data?.colors || [])]
+
+    // Load capacities
+    const capacitiesResponse = await variantManagerService.getProductCapacities(props.selectedProduct.id)
+    productCapacities.value = [...(capacitiesResponse.data?.capacities || [])]
+
+    // Load variants
+    const variantsResponse = await variantManagerService.getProductVariants(props.selectedProduct.id)
+    productVariants.value = [...(variantsResponse.data?.variants || [])]
+  } catch (error) {
+    console.error('Error loading product data:', error)
+    toast.error('Không thể tải dữ liệu biến thể')
+  }
 }
 
 // Color Management
 const addColor = async () => {
   if (!newColor.value.name.trim()) {
-    Swal.fire({
-      icon: 'warning',
-      title: 'Vui lòng nhập tên màu',
-      timer: 1500
-    })
+    toast.warning('Vui lòng nhập tên màu')
     return
   }
 
   try {
-    const color = {
-      id: Date.now(), // Mock ID
+    const colorData = {
       name: newColor.value.name,
       color_code: newColor.value.color_code,
-      status: 1, // 1 = active, 0 = inactive (integer)
-      product_id: props.selectedProduct.id
+      status: 1 // 1 = active
     }
 
-    productColors.value.push(color)
+    // Call API to create color
+    const response = await variantManagerService.createProductColor(props.selectedProduct.id, colorData)
+    
+    // Add to list
+    const colorToAdd = response.data?.color || response.data || response.color
+    if (colorToAdd) {
+      productColors.value = [...productColors.value, colorToAdd]
+    }
 
     // Reset form
     newColor.value = { name: '', color_code: '#000000' }
 
-    Swal.fire({
-      icon: 'success',
-      title: 'Đã thêm màu!',
-      timer: 1500,
-      showConfirmButton: false
-    })
+    toast.success('Đã thêm màu thành công!')
   } catch (error) {
     console.error('Error adding color:', error)
-    Swal.fire({
-      icon: 'error',
-      title: 'Lỗi thêm màu',
-      text: 'Không thể thêm màu. Vui lòng thử lại.',
-      confirmButtonColor: '#3B82F6'
-    })
+    toast.error(error.response?.data?.message || 'Không thể thêm màu')
   }
 }
 
@@ -491,25 +496,25 @@ const editColor = async (color) => {
 
   if (formValues) {
     try {
-      const index = productColors.value.findIndex(c => c.id === color.id)
-      if (index !== -1) {
-        Object.assign(productColors.value[index], formValues)
+      // Call API to update color
+      const response = await variantManagerService.updateProductColor(
+        props.selectedProduct.id,
+        color.id,
+        formValues
+      )
+
+      // Update in list
+      if (response.data?.color) {
+        const index = productColors.value.findIndex(c => c.id === color.id)
+        if (index !== -1) {
+          productColors.value[index] = response.data.color
+        }
       }
 
-      Swal.fire({
-        icon: 'success',
-        title: 'Đã cập nhật màu!',
-        timer: 1500,
-        showConfirmButton: false
-      })
+      toast.success('Đã cập nhật màu thành công!')
     } catch (error) {
       console.error('Error updating color:', error)
-      Swal.fire({
-        icon: 'error',
-        title: 'Lỗi cập nhật màu',
-        text: 'Không thể cập nhật màu.',
-        confirmButtonColor: '#3B82F6'
-      })
+      toast.error(error.response?.data?.message || 'Không thể cập nhật màu')
     }
   }
 }
@@ -528,51 +533,50 @@ const deleteColor = async (colorId) => {
 
   if (result.isConfirmed) {
     try {
+      // Call API to delete color
+      await variantManagerService.deleteProductColor(props.selectedProduct.id, colorId)
+
+      // Remove from list
       productColors.value = productColors.value.filter(c => c.id !== colorId)
 
-      Swal.fire({
-        icon: 'success',
-        title: 'Đã xóa màu!',
-        timer: 1500,
-        showConfirmButton: false
-      })
+      toast.success('Đã xóa màu thành công!')
     } catch (error) {
       console.error('Error deleting color:', error)
-      Swal.fire({
-        icon: 'error',
-        title: 'Lỗi xóa màu',
-        text: 'Không thể xóa màu.',
-        confirmButtonColor: '#3B82F6'
-      })
+      toast.error(error.response?.data?.message || 'Không thể xóa màu')
     }
   }
 }
 
 // Capacity Management
 const addCapacity = async () => {
-  if (!newCapacity.value.name.trim() || !newCapacity.value.price) {
-    Swal.fire({
-      icon: 'warning',
-      title: 'Vui lòng nhập đầy đủ thông tin',
-      timer: 1500
-    })
+  if (!newCapacity.value.name.trim()) {
+    toast.warning('Vui lòng nhập tên dung lượng')
+    return
+  }
+  
+  if (newCapacity.value.price === null || newCapacity.value.price === undefined || newCapacity.value.price === '') {
+    toast.warning('Vui lòng nhập giá')
     return
   }
 
   try {
-    const capacity = {
-      id: Date.now(), // Mock ID
+    const capacityData = {
       name: newCapacity.value.name,
       display_name: newCapacity.value.display_name || newCapacity.value.name,
       price: parseFloat(newCapacity.value.price),
       discount_price: newCapacity.value.discount_price ? parseFloat(newCapacity.value.discount_price) : null,
-      final_price: newCapacity.value.discount_price ? parseFloat(newCapacity.value.discount_price) : parseFloat(newCapacity.value.price),
       stock: parseInt(newCapacity.value.stock) || 0,
-      status: 1, // 1 = active, 0 = inactive (integer)
-      product_id: props.selectedProduct.id
+      status: 1 // 1 = active
     }
 
-    productCapacities.value.push(capacity)
+    // Call API to create capacity
+    const response = await variantManagerService.createProductCapacity(props.selectedProduct.id, capacityData)
+    
+    // Add to list
+    const capacityToAdd = response.data?.capacity || response.data || response.capacity
+    if (capacityToAdd) {
+      productCapacities.value = [...productCapacities.value, capacityToAdd]
+    }
 
     // Reset form
     newCapacity.value = {
@@ -583,20 +587,10 @@ const addCapacity = async () => {
       stock: 0
     }
 
-    Swal.fire({
-      icon: 'success',
-      title: 'Đã thêm dung lượng!',
-      timer: 1500,
-      showConfirmButton: false
-    })
+    toast.success('Đã thêm dung lượng thành công!')
   } catch (error) {
     console.error('Error adding capacity:', error)
-    Swal.fire({
-      icon: 'error',
-      title: 'Lỗi thêm dung lượng',
-      text: 'Không thể thêm dung lượng.',
-      confirmButtonColor: '#3B82F6'
-    })
+    toast.error(error.response?.data?.message || 'Không thể thêm dung lượng')
   }
 }
 
@@ -638,25 +632,25 @@ const editCapacity = async (capacity) => {
 
   if (formValues) {
     try {
-      const index = productCapacities.value.findIndex(c => c.id === capacity.id)
-      if (index !== -1) {
-        Object.assign(productCapacities.value[index], formValues)
+      // Call API to update capacity
+      const response = await variantManagerService.updateProductCapacity(
+        props.selectedProduct.id,
+        capacity.id,
+        formValues
+      )
+
+      // Update in list
+      if (response.data?.capacity) {
+        const index = productCapacities.value.findIndex(c => c.id === capacity.id)
+        if (index !== -1) {
+          productCapacities.value[index] = response.data.capacity
+        }
       }
 
-      Swal.fire({
-        icon: 'success',
-        title: 'Đã cập nhật dung lượng!',
-        timer: 1500,
-        showConfirmButton: false
-      })
+      toast.success('Đã cập nhật dung lượng thành công!')
     } catch (error) {
       console.error('Error updating capacity:', error)
-      Swal.fire({
-        icon: 'error',
-        title: 'Lỗi cập nhật dung lượng',
-        text: 'Không thể cập nhật dung lượng.',
-        confirmButtonColor: '#3B82F6'
-      })
+      toast.error(error.response?.data?.message || 'Không thể cập nhật dung lượng')
     }
   }
 }
@@ -675,22 +669,16 @@ const deleteCapacity = async (capacityId) => {
 
   if (result.isConfirmed) {
     try {
+      // Call API to delete capacity
+      await variantManagerService.deleteProductCapacity(props.selectedProduct.id, capacityId)
+
+      // Remove from list
       productCapacities.value = productCapacities.value.filter(c => c.id !== capacityId)
 
-      Swal.fire({
-        icon: 'success',
-        title: 'Đã xóa dung lượng!',
-        timer: 1500,
-        showConfirmButton: false
-      })
+      toast.success('Đã xóa dung lượng thành công!')
     } catch (error) {
       console.error('Error deleting capacity:', error)
-      Swal.fire({
-        icon: 'error',
-        title: 'Lỗi xóa dung lượng',
-        text: 'Không thể xóa dung lượng.',
-        confirmButtonColor: '#3B82F6'
-      })
+      toast.error(error.response?.data?.message || 'Không thể xóa dung lượng')
     }
   }
 }
@@ -720,70 +708,48 @@ const generateVariants = async () => {
 
   if (result.isConfirmed) {
     try {
-      const newVariants = []
+      loading.value = true
+      const createdVariants = []
 
-      productColors.value.forEach(color => {
-        productCapacities.value.forEach(capacity => {
+      // Tạo từng variant qua API
+      for (const color of productColors.value) {
+        for (const capacity of productCapacities.value) {
           const exists = productVariants.value.find(v =>
             v.color_id === color.id && v.capacity_id === capacity.id
           )
-          console.log(exists);
-          
 
           if (!exists) {
-            const variant = {
-              id: Date.now() + Math.random(), // Mock ID (sẽ được backend tạo ID thật)
+            const variantData = {
               color_id: color.id,
               capacity_id: capacity.id,
-              sku: `${props.selectedProduct.sku || 'PRD'}-${color.name.substring(0, 3).toUpperCase()}-${capacity.name}`.replace(/\s/g, ''),
-              stock: capacity.stock || 0, // Backend dùng 'stock' không phải 'stock_quantity'
-              status: 1, // 1 = active, 0 = inactive (integer)
-              product_id: props.selectedProduct.id,
-              
-              // Mock nested objects giống backend response
-              color: {
-                id: color.id,
-                name: color.name,
-                color_code: color.color_code
-              },
-              capacity: {
-                id: capacity.id,
-                name: capacity.name,
-                display_name: capacity.display_name || capacity.name,
-                price: capacity.price,
-                discount_price: capacity.discount_price,
-                final_price: capacity.discount_price || capacity.price,
-                stock: capacity.stock || 0,
-                status: capacity.status ?? 1
-              },
-              price_info: {
-                price: capacity.price,
-                discount_price: capacity.discount_price,
-                final_price: capacity.discount_price || capacity.price,
-                has_discount: !!capacity.discount_price,
-                price_formatted: new Intl.NumberFormat('vi-VN').format(capacity.price) + ' VNĐ',
-                final_price_formatted: new Intl.NumberFormat('vi-VN').format(capacity.discount_price || capacity.price) + ' VNĐ'
-              },
-              stock_status: {
-                in_stock: (capacity.stock || 0) > 0,
-                stock_level: (capacity.stock || 0) > 20 ? 'high' : ((capacity.stock || 0) > 5 ? 'medium' : ((capacity.stock || 0) > 0 ? 'low' : 'out')),
-                stock_message: (capacity.stock || 0) > 20 ? 'Còn hàng' : ((capacity.stock || 0) > 5 ? 'Sắp hết hàng' : ((capacity.stock || 0) > 0 ? 'Còn ít' : 'Hết hàng'))
-              }
+              stock: capacity.stock || 0,
+              status: true
             }
-            newVariants.push(variant)
+
+            try {
+              const response = await variantManagerService.createProductVariant(
+                props.selectedProduct.id,
+                variantData
+              )
+              
+              if (response.data?.variant) {
+                createdVariants.push(response.data.variant)
+              }
+            } catch (error) {
+              console.error('Error creating variant:', error)
+            }
           }
-        })
-      })
+        }
+      }
 
-      productVariants.value.push(...newVariants)
+      // Update local array with created variants
+      if (createdVariants.length > 0) {
+        productVariants.value = [...productVariants.value, ...createdVariants]
+      }
 
-      Swal.fire({
-        icon: 'success',
-        title: 'Đã tạo variants!',
-        text: `Tạo thành công ${newVariants.length} variant mới.`,
-        timer: 2000,
-        showConfirmButton: false
-      })
+      loading.value = false
+
+      toast.success(`Đã tạo thành công ${createdVariants.length} biến thể!`)
     } catch (error) {
       console.error('Error generating variants:', error)
       Swal.fire({
@@ -858,25 +824,30 @@ const editVariant = async (variant) => {
 
   if (formValues) {
     try {
-      const index = productVariants.value.findIndex(v => v.id === variant.id)
-      if (index !== -1) {
-        Object.assign(productVariants.value[index], formValues)
+      // Call API to update variant
+      const updateData = {
+        sku: formValues.sku,
+        stock: formValues.stock,
+        status: formValues.status
+      }
+      
+      const response = await variantManagerService.updateProductVariant(
+        props.selectedProduct.id,
+        variant.id,
+        updateData
+      )
+
+      // Update in list
+      if (response.data?.variant) {
+        const index = productVariants.value.findIndex(v => v.id === variant.id)
+        if (index !== -1) {
+          productVariants.value[index] = response.data.variant
+        }
       }
 
-      Swal.fire({
-        icon: 'success',
-        title: 'Đã cập nhật variant!',
-        timer: 1500,
-        showConfirmButton: false
-      })
+      toast.success('Đã cập nhật biến thể thành công!')
     } catch (error) {
-      console.error('Error updating variant:', error)
-      Swal.fire({
-        icon: 'error',
-        title: 'Lỗi cập nhật variant',
-        text: 'Không thể cập nhật variant.',
-        confirmButtonColor: '#3B82F6'
-      })
+      toast.error(error.response?.data?.message || 'Không thể cập nhật biến thể')
     }
   }
 }
@@ -895,37 +866,27 @@ const deleteVariant = async (variantId) => {
 
   if (result.isConfirmed) {
     try {
+      // Call API to delete variant
+      await variantManagerService.deleteProductVariant(props.selectedProduct.id, variantId)
+
+      // Remove from list
       productVariants.value = productVariants.value.filter(v => v.id !== variantId)
 
-      Swal.fire({
-        icon: 'success',
-        title: 'Đã xóa variant!',
-        timer: 1500,
-        showConfirmButton: false
-      })
+      toast.success('Đã xóa biến thể thành công!')
     } catch (error) {
-      console.error('Error deleting variant:', error)
-      Swal.fire({
-        icon: 'error',
-        title: 'Lỗi xóa variant',
-        text: 'Không thể xóa variant.',
-        confirmButtonColor: '#3B82F6'
-      })
+      toast.error(error.response?.data?.message || 'Không thể xóa biến thể')
     }
   }
 }
 
 // Helper methods
 const isVariantActive = (variant) => {
-  // Backend trả về status = 0 (inactive) hoặc 1 (active)
-  // Chấp nhận cả: 1, true, 'active' (để tương thích mock data)
   const statusValue = variant.status ?? variant.is_active
   
   if (statusValue === undefined || statusValue === null) {
-    return true // Mặc định là active nếu không có field
+    return true
   }
   
-  // Status = 1 (active) hoặc = 0 (inactive)
   return statusValue === 1 || statusValue === true || statusValue === 'active'
 }
 

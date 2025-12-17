@@ -29,15 +29,15 @@
         class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-all duration-200 group">
         <div class="flex items-center justify-between">
           <div>
-            <p class="text-gray-500 text-sm font-medium mb-1">{{ stat.label }}</p>
-            <p class="text-2xl font-bold text-gray-900">{{ stat.value }}</p>
+            <p class="text-gray-500 text-sm font-semibold mb-2">{{ stat.label }}</p>
+            <p class="text-4xl font-extrabold text-gray-900 mb-1">{{ stat.value }}</p>
             <div class="flex items-center mt-2">
               <i class="fas fa-arrow-up text-xs text-green-500 mr-1"></i>
-              <span class="text-xs text-green-600">+12% từ tháng trước</span>
+              <span class="text-xs text-green-600 font-medium">+12% từ tháng trước</span>
             </div>
           </div>
-          <div :class="stat.iconClass + ' rounded-lg p-3 bg-opacity-10'">
-            <i :class="stat.icon + ' text-2xl'"></i>
+          <div :class="stat.iconClass + ' rounded-xl p-4 bg-opacity-10 group-hover:scale-110 transition-transform duration-200'">
+            <i :class="stat.icon + ' text-3xl'"></i>
           </div>
         </div>
       </div>
@@ -50,11 +50,13 @@
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">Tìm kiếm</label>
             <div class="relative">
-              <input type="text" placeholder="Tìm theo tên, SKU..."
+              <input 
+                type="text" 
+                placeholder="Tìm theo tên, SKU..."
                 v-model="searchQuery"
-                @input="searchProducts"
+                @keyup.enter="searchProducts"
                 class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
-              <div class="absolute inset-y-0 left-0 pl-3 flex items-center">
+              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <i class="fas fa-search text-gray-400"></i>
               </div>
             </div>
@@ -83,16 +85,18 @@
               <option value="out-of-stock">Hết hàng</option>
             </select>
           </div>
-          <div class="flex items-end">
+          <div class="flex items-end gap-2">
             <button
               @click="searchProducts"
-              class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg transition-colors duration-200 mr-2">
-              <i class="fas fa-filter mr-2"></i>Lọc
+              class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md flex items-center gap-2">
+              <i class="fas fa-filter"></i>
+              <span>Lọc</span>
             </button>
             <button 
               @click="clearFilters"
-              class="text-gray-500 hover:text-gray-700 px-4 py-2 rounded-lg transition-colors duration-200">
-              <i class="fas fa-times mr-2"></i>Xóa bộ lọc
+              class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-5 py-2 rounded-lg transition-colors duration-200 border border-gray-300 flex items-center gap-2">
+              <i class="fas fa-times"></i>
+              <span>Xóa</span>
             </button>
           </div>
         </div>
@@ -123,17 +127,57 @@
         </div>
       </div>
 
+      <!-- Bulk Actions Bar -->
+      <Transition name="slide-down">
+        <div v-if="selectedProducts.length > 0" 
+          class="px-6 py-3 bg-gradient-to-r from-blue-50 to-purple-50 border-b border-blue-200 flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-blue-600 text-white rounded-lg flex items-center justify-center font-bold">
+              {{ selectedProducts.length }}
+            </div>
+            <span class="text-sm font-semibold text-gray-700">
+              Đã chọn {{ selectedProducts.length }} sản phẩm
+            </span>
+          </div>
+          <div class="flex items-center gap-2">
+            <button 
+              @click="bulkUpdateStatus(true)"
+              class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm font-semibold transition-colors flex items-center gap-2">
+              <i class="fas fa-check-circle"></i>
+              <span>Kích hoạt</span>
+            </button>
+            <button 
+              @click="bulkUpdateStatus(false)"
+              class="px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white rounded-lg text-sm font-semibold transition-colors flex items-center gap-2">
+              <i class="fas fa-pause-circle"></i>
+              <span>Vô hiệu hóa</span>
+            </button>
+            <button 
+              @click="bulkDelete"
+              class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm font-semibold transition-colors flex items-center gap-2">
+              <i class="fas fa-trash"></i>
+              <span>Xóa hàng loạt</span>
+            </button>
+            <button 
+              @click="clearSelection"
+              class="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-lg text-sm font-semibold transition-colors">
+              <i class="fas fa-times mr-1"></i>
+              Hủy
+            </button>
+          </div>
+        </div>
+      </Transition>
+
       <!-- Table Content -->
       <div class="overflow-x-auto">
         <table class="w-full">
           <thead style="background: linear-gradient(135deg, #2563eb 0%, #9333ea 100%);">
             <tr>
-              <th class="px-6 py-4 text-left">
-                <div class="flex items-center">
-                  <input type="checkbox"
-                    class="rounded border-white/50 bg-white/20 text-blue-500 focus:ring-0 focus:ring-offset-0 hover:bg-white/30 transition-colors">
-                  <span class="ml-3 text-xs font-semibold uppercase tracking-wider" style="color: white;">Chọn tất cả</span>
-                </div>
+              <th class="px-6 py-4 text-center w-16">
+                <input type="checkbox"
+                  v-model="selectAll"
+                  @change="toggleSelectAll"
+                  class="w-4 h-4 rounded border-white/50 bg-white/20 text-blue-500 focus:ring-0 focus:ring-offset-0 hover:bg-white/30 transition-colors cursor-pointer">
               </th>
               <th class="px-6 py-4 text-left text-sm font-semibold uppercase tracking-wider" style="color: white;">
                 <div class="flex items-center gap-2">
@@ -202,11 +246,11 @@
             <tr v-else v-for="p in products" :key="p.id"
               class="hover:bg-gradient-to-r hover:from-blue-50/70 hover:to-purple-50/70 transition-all duration-300 group hover:shadow-sm">
               
-              <td class="px-6 py-5 whitespace-nowrap">
-                <div class="flex items-center">
-                  <input type="checkbox"
-                    class="rounded border-gray-300 text-blue-600 focus:ring-0 focus:ring-offset-0 hover:border-blue-400 transition-colors">
-                </div>
+              <td class="px-6 py-5 whitespace-nowrap text-center">
+                <input type="checkbox"
+                  v-model="selectedProducts"
+                  :value="p.id"
+                  class="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-0 focus:ring-offset-0 hover:border-blue-400 transition-colors cursor-pointer">
               </td>
 
               <!-- Product Info -->
@@ -255,9 +299,11 @@
                       ₫{{ Number(p.price_range?.min_price || 0).toLocaleString('vi-VN') }}
                     </div>
                   </div>
-                  <div v-if="p.price_range?.has_variants" class="text-xs text-gray-500 mt-1 flex items-center">
+                  <div v-if="p.price_range?.has_variants" 
+                    class="text-xs text-blue-600 hover:text-blue-700 mt-1 flex items-center cursor-pointer hover:underline"
+                    :title="'Click để xem ' + (p.capacities?.length || 0) + ' biến thể'">
                     <i class="fas fa-layer-group mr-1"></i>
-                    <span>{{ p.capacities?.length || 0 }} biến thể</span>
+                    <span class="font-semibold">{{ p.capacities?.length || 0 }} biến thể</span>
                   </div>
                 </div>
               </td>
@@ -265,22 +311,22 @@
               <!-- Stock -->
               <td class="px-6 py-5 whitespace-nowrap">
                 <div class="flex flex-col">
-                  <div class="flex items-center gap-3 mb-1">
-                    <div class="text-sm font-bold text-gray-900">{{ Number(p.stock || 0) }}</div>
+                  <div class="flex items-center gap-2">
+                    <div class="text-xl font-bold"
+                      :class="{
+                        'text-red-600': Number(p.stock || 0) === 0,
+                        'text-orange-600': Number(p.stock || 0) > 0 && Number(p.stock || 0) < 10,
+                        'text-green-600': Number(p.stock || 0) >= 10
+                      }">
+                      {{ Number(p.stock || 0) }}
+                    </div>
                     <span v-if="Number(p.stock || 0) === 0"
-                      class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold border-2"
-                      style="background: linear-gradient(135deg, #fee2e2, #fed7aa); color: #dc2626; border-color: #fca5a5;">
-                      <i class="fas fa-times-circle mr-1" style="color: #ef4444;"></i>Hết hàng
+                      class="inline-flex items-center px-2 py-1 rounded-full text-xs font-bold bg-red-100 text-red-700 border border-red-300">
+                      <i class="fas fa-times-circle mr-1"></i>Hết hàng
                     </span>
-                    <span v-else-if="Number(p.stock || 0) <= 10"
-                      class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold border-2"
-                      style="background: linear-gradient(135deg, #fef3c7, #fed7aa); color: #d97706; border-color: #fbbf24;">
-                      <i class="fas fa-exclamation-triangle mr-1" style="color: #f59e0b;"></i>Sắp hết
-                    </span>
-                    <span v-else
-                      class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold border-2"
-                      style="background: linear-gradient(135deg, #dcfce7, #d1fae5); color: #059669; border-color: #6ee7b7;">
-                      <i class="fas fa-check-circle mr-1" style="color: #10b981;"></i>Còn hàng
+                    <span v-else-if="Number(p.stock || 0) < 10"
+                      class="inline-flex items-center px-2 py-1 rounded-full text-xs font-bold bg-orange-100 text-orange-700 border border-orange-300">
+                      <i class="fas fa-exclamation-triangle mr-1"></i>Sắp hết
                     </span>
                   </div>
                 </div>
@@ -299,41 +345,55 @@
 
               <!-- Actions -->
               <td class="px-6 py-5 whitespace-nowrap text-right">
-                <div class="flex items-center justify-end space-x-2 opacity-0 group-hover:opacity-100 transition-all duration-500">
-                  <!-- View Detail -->
-                  <button
-                    class="p-3 rounded-xl transition-all duration-200 shadow-sm hover:shadow-md transform hover:scale-105 bg-gradient-to-r from-gray-100 to-gray-200 text-gray-700 hover:from-gray-200 hover:to-gray-300"
-                    @click="openDetail(p)"
-                    title="Xem chi tiết">
-                    <i class="fas fa-eye text-sm"></i>
-                  </button>
+                <div class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300">
+                  
+                  <!-- More Options Dropdown -->
+                  <div class="relative" @click.stop>
+                    <button
+                      @click="toggleActionMenu(p.id)"
+                      class="p-2.5 rounded-lg transition-all duration-200 bg-gray-100 hover:bg-gray-200 text-gray-600 hover:text-gray-800"
+                      title="Thêm tùy chọn">
+                      <i class="fas fa-ellipsis-v"></i>
+                    </button>
+                    
+                    <!-- Dropdown Menu -->
+                    <div v-if="activeActionMenu === p.id"
+                      class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl border border-gray-200 py-1 z-50 animate-fade-in">
+                      <button
+                        @click="openDetail(p); activeActionMenu = null"
+                        class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-3">
+                        <i class="fas fa-eye w-4 text-gray-500"></i>
+                        <span>Xem chi tiết</span>
+                      </button>
+                      <button
+                        @click="openImageManager(p); activeActionMenu = null"
+                        class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-3">
+                        <i class="fas fa-images w-4 text-yellow-600"></i>
+                        <span>Quản lý ảnh</span>
+                      </button>
+                      <button
+                        @click="openVariantManager(p); activeActionMenu = null"
+                        class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-3">
+                        <i class="fas fa-palette w-4 text-purple-600"></i>
+                        <span>Quản lý biến thể</span>
+                      </button>
+                    </div>
+                  </div>
 
                   <!-- Edit -->
                   <button
-                    class="p-3 rounded-xl transition-all duration-200 shadow-sm hover:shadow-md transform hover:scale-105 bg-gradient-to-r from-blue-100 to-blue-200 text-blue-700 hover:from-blue-200 hover:to-blue-300"
-                    @click="openEdit(p)" title="Chỉnh sửa">
-                    <i class="fas fa-pen text-sm"></i>
-                  </button>
-
-                  <!-- Manage Images -->
-                  <button
-                    class="p-3 rounded-xl transition-all duration-200 shadow-sm hover:shadow-md transform hover:scale-105 bg-gradient-to-r from-yellow-100 to-yellow-200 text-yellow-700 hover:from-yellow-200 hover:to-yellow-300"
-                    @click="openImageManager(p)" title="Quản lý ảnh">
-                    <i class="fas fa-images text-sm"></i>
-                  </button>
-
-                  <!-- Manage Variants -->
-                  <button
-                    class="p-3 rounded-xl transition-all duration-200 shadow-sm hover:shadow-md transform hover:scale-105 bg-gradient-to-r from-purple-100 to-purple-200 text-purple-700 hover:from-purple-200 hover:to-purple-300"
-                    @click="openVariantManager(p)" title="Quản lý biến thể">
-                    <i class="fas fa-palette text-sm"></i>
+                    class="p-2.5 rounded-lg transition-all duration-200 bg-blue-100 hover:bg-blue-200 text-blue-700 hover:text-blue-800"
+                    @click="openEdit(p)" 
+                    title="Chỉnh sửa">
+                    <i class="fas fa-pen"></i>
                   </button>
 
                   <!-- Delete -->
                   <button
-                    class="p-3 rounded-xl transition-all duration-200 shadow-sm hover:shadow-md transform hover:scale-105 bg-gradient-to-r from-red-100 to-red-200 text-red-700 hover:from-red-200 hover:to-red-300"
-                    @click="remove(p)" title="Xóa">
-                    <i class="fas fa-trash text-sm"></i>
+                    class="p-2.5 rounded-lg transition-all duration-200 bg-red-100 hover:bg-red-200 text-red-700 hover:text-red-800"
+                    @click="remove(p)" 
+                    title="Xóa">
+                    <i class="fas fa-trash"></i>
                   </button>
                 </div>
               </td>
@@ -574,7 +634,7 @@
                 </div>
 
                 <!-- Image Preview -->
-                <div v-if="form.image || imagePreview" class="mt-4">
+                <div v-if="imagePreview || form.image" class="mt-4">
                   <div class="relative w-24 h-24 border-2 border-gray-200 rounded-lg overflow-hidden bg-gray-100">
                     <img :src="getImageSrc(imagePreview || form.image)" alt="Preview" class="w-full h-full object-cover"
                       @error="handleImageError" />
@@ -640,7 +700,7 @@
 </template>
 
 <script>
-import { ref, computed, onMounted, nextTick } from 'vue'
+import { ref, computed, onMounted, onBeforeUnmount, nextTick } from 'vue'
 import { useProducts } from '@/composables'
 import { useImageManager } from '@/composables'
 import { useVariantManager } from '@/composables'
@@ -704,6 +764,12 @@ export default {
     const uploadingImage = ref(false)
     const imagePreview = ref(null)
     const imageUrl = ref('')
+    const uploadedFile = ref(null) // Store the actual file object
+    
+    // Bulk actions state
+    const selectedProducts = ref([])
+    const selectAll = ref(false)
+    const activeActionMenu = ref(null)
 
     // Form data
     const form = ref({
@@ -792,6 +858,7 @@ export default {
       }
       imagePreview.value = null
       imageUrl.value = ''
+      uploadedFile.value = null
     }
 
     const openAdd = () => {
@@ -903,7 +970,7 @@ export default {
       }
 
       uploadingImage.value = true
-      form.value.image = file
+      uploadedFile.value = file // Lưu file vào biến riêng
 
       // Create preview
       const reader = new FileReader()
@@ -925,6 +992,7 @@ export default {
       form.value.image = null
       imagePreview.value = null
       imageUrl.value = ''
+      uploadedFile.value = null
     }
 
     const handleImageError = (event) => {
@@ -958,10 +1026,19 @@ export default {
         formData.append('category_id', form.value.category_id)
         formData.append('status', form.value.status) // Đã là 1 hoặc 0 từ checkbox
 
-        if (form.value.image && typeof form.value.image === 'object') {
+        // Handle image upload - backend expects 'image_file' for file, 'image' for URL
+        if (uploadedFile.value) {
+          // File was uploaded via file input
+          console.log('Uploading file:', uploadedFile.value)
+          formData.append('image_file', uploadedFile.value)
+        } else if (imageUrl.value) {
+          // URL was provided
+          console.log('Using image URL:', imageUrl.value)
+          formData.append('image', imageUrl.value)
+        } else if (form.value.image && typeof form.value.image === 'string') {
+          // Existing image path (for update)
+          console.log('Keeping existing image:', form.value.image)
           formData.append('image', form.value.image)
-        } else if (typeof form.value.image === 'string' && form.value.image.startsWith('http')) {
-          formData.append('image_url', form.value.image)
         }
 
         let response
@@ -1029,6 +1106,101 @@ export default {
       await loadProducts(currentPage.value, true) // Reset để load fresh data
       updateStats()
     }
+    
+    // Bulk Actions Methods
+    const toggleSelectAll = () => {
+      if (selectAll.value) {
+        selectedProducts.value = products.value.map(p => p.id)
+      } else {
+        selectedProducts.value = []
+      }
+    }
+    
+    const clearSelection = () => {
+      selectedProducts.value = []
+      selectAll.value = false
+    }
+    
+    const bulkUpdateStatus = async (status) => {
+      if (selectedProducts.value.length === 0) {
+        toast.warning('Vui lòng chọn ít nhất một sản phẩm')
+        return
+      }
+      
+      try {
+        const result = await Swal.fire({
+          title: 'Xác nhận cập nhật',
+          text: `Bạn muốn ${status ? 'kích hoạt' : 'vô hiệu hóa'} ${selectedProducts.value.length} sản phẩm đã chọn?`,
+          icon: 'question',
+          showCancelButton: true,
+          confirmButtonColor: status ? '#10b981' : '#f59e0b',
+          cancelButtonColor: '#6b7280',
+          confirmButtonText: 'Xác nhận',
+          cancelButtonText: 'Hủy'
+        })
+        
+        if (result.isConfirmed) {
+          // Call API to bulk update status
+          await Promise.all(
+            selectedProducts.value.map(id => 
+              productService.updateProduct(id, { status: status ? 1 : 0 })
+            )
+          )
+          
+          toast.success(`Đã ${status ? 'kích hoạt' : 'vô hiệu hóa'} ${selectedProducts.value.length} sản phẩm`)
+          clearSelection()
+          await loadProducts(currentPage.value, true)
+          updateStats()
+        }
+      } catch (error) {
+        console.error('Bulk update status error:', error)
+        toast.error('Có lỗi xảy ra khi cập nhật trạng thái')
+      }
+    }
+    
+    const bulkDelete = async () => {
+      if (selectedProducts.value.length === 0) {
+        toast.warning('Vui lòng chọn ít nhất một sản phẩm')
+        return
+      }
+      
+      try {
+        const result = await Swal.fire({
+          title: 'Xác nhận xóa',
+          html: `<p>Bạn có chắc chắn muốn xóa <strong>${selectedProducts.value.length}</strong> sản phẩm đã chọn?</p><p class="text-red-600 text-sm mt-2">Hành động này không thể hoàn tác!</p>`,
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#dc2626',
+          cancelButtonColor: '#6b7280',
+          confirmButtonText: 'Xóa tất cả',
+          cancelButtonText: 'Hủy',
+          reverseButtons: true
+        })
+        
+        if (result.isConfirmed) {
+          await Promise.all(
+            selectedProducts.value.map(id => productService.deleteProduct(id))
+          )
+          
+          toast.success(`Đã xóa ${selectedProducts.value.length} sản phẩm`)
+          clearSelection()
+          await loadProducts(currentPage.value, true)
+          updateStats()
+        }
+      } catch (error) {
+        console.error('Bulk delete error:', error)
+        toast.error('Có lỗi xảy ra khi xóa sản phẩm')
+      }
+    }
+    
+    const toggleActionMenu = (productId) => {
+      activeActionMenu.value = activeActionMenu.value === productId ? null : productId
+    }
+    
+    // Close action menu when clicking outside
+    const handleClickOutside = () => {
+      activeActionMenu.value = null
+    }
 
     // Initialize
     onMounted(async () => {
@@ -1038,6 +1210,14 @@ export default {
       ])
     
       updateStats()
+      
+      // Add click outside listener for action menu
+      document.addEventListener('click', handleClickOutside)
+    })
+    
+    // Cleanup
+    onBeforeUnmount(() => {
+      document.removeEventListener('click', handleClickOutside)
     })
 
     return {
@@ -1080,8 +1260,14 @@ export default {
       uploadingImage,
       imagePreview,
       imageUrl,
+      uploadedFile,
       form,
       stats,
+      
+      // Bulk actions state
+      selectedProducts,
+      selectAll,
+      activeActionMenu,
       
       // Methods
       getPageNumbers,
@@ -1101,7 +1287,15 @@ export default {
       save,
       remove,
       updateStats,
-      handleRefresh
+      handleRefresh,
+      
+      // Bulk actions methods
+      toggleSelectAll,
+      clearSelection,
+      bulkUpdateStatus,
+      bulkDelete,
+      toggleActionMenu,
+      handleClickOutside
     }
   }
 }
@@ -1110,5 +1304,41 @@ export default {
 <style scoped>
 .pagination-active {
   background: linear-gradient(135deg, #2563eb, #9333ea);
+}
+
+/* Slide down animation for bulk actions bar */
+.slide-down-enter-active {
+  animation: slideDown 0.3s ease-out;
+}
+
+.slide-down-leave-active {
+  animation: slideDown 0.3s ease-in reverse;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Fade in animation for dropdown menu */
+.animate-fade-in {
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 </style>
