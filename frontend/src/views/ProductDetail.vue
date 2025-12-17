@@ -360,6 +360,7 @@
                   
                 <!-- All Capacities with Prices -->
                 <div v-if="product.capacities && product.capacities.length" class="space-y-4">
+
                   <h3 class="text-2xl font-bold text-gray-900 flex items-center">
                     <i class="fas fa-microchip text-blue-600 mr-3"></i>
                     Các tùy chọn dung lượng
@@ -685,9 +686,11 @@ import ProductCard from '../components/Product/ProductCard.vue'
 import { useProductDetail } from '@/composables'
 import toast from '@/services/toast'
 
+
 const modules = [Navigation]
 const route = useRoute()
 const router = useRouter()
+const { success, error: showError, warning, info } = useToast()
 
 // Use composable
 const {
@@ -732,6 +735,51 @@ const allImages = computed(() => {
   }
   return images
 })
+
+// Use composable
+const {
+  product,
+  loading,
+  error,
+  selectedColor,
+  selectedCapacity,
+  selectedVariant,
+  quantity,
+  mainImage,
+  currentPrice,
+  originalPrice,
+  discountPercent,
+  isInStock,
+  availableStock,
+  isInitialLoad,
+  loadProductBySlug,
+  selectColor,
+  selectCapacity,
+  changeMainImage,
+  increaseQuantity,
+  decreaseQuantity,
+  formatPrice,
+  toAbs
+} = useProductDetail()
+
+// Lightbox state
+const showLightbox = ref(false)
+const currentLightboxIndex = ref(0)
+
+// Get all images for lightbox
+const allImages = computed(() => {
+  const images = []
+  if (product.value?.image_url) {
+    images.push(toAbs(product.value.image_url))
+  }
+  if (product.value?.product_images) {
+    product.value.product_images.forEach(img => {
+      images.push(toAbs(img.url || img.image_url))
+    })
+  }
+  return images
+})
+
 
 // Additional UI state
 const isWishlisted = ref(false)
@@ -905,6 +953,7 @@ const shareProduct = () => {
     // Fallback: copy to clipboard
     navigator.clipboard.writeText(window.location.href)
     toast.success('Đã copy link sản phẩm!')
+
   }
 }
 
@@ -921,6 +970,7 @@ const submitReview = () => {
   console.log('Submit review:', newReview)
   // TODO: Implement review submission
   toast.success('Cảm ơn bạn đã đánh giá!')
+
   showReviewForm.value = false
   reviewTitle.value = ''
   reviewContent.value = ''
