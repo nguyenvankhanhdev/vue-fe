@@ -686,11 +686,9 @@ import ProductCard from '../components/Product/ProductCard.vue'
 import { useProductDetail } from '@/composables'
 import toast from '@/services/toast'
 
-
 const modules = [Navigation]
 const route = useRoute()
 const router = useRouter()
-const { success, error: showError, warning, info } = useToast()
 
 // Use composable
 const {
@@ -953,7 +951,6 @@ const shareProduct = () => {
     // Fallback: copy to clipboard
     navigator.clipboard.writeText(window.location.href)
     toast.success('Đã copy link sản phẩm!')
-
   }
 }
 
@@ -970,7 +967,6 @@ const submitReview = () => {
   console.log('Submit review:', newReview)
   // TODO: Implement review submission
   toast.success('Cảm ơn bạn đã đánh giá!')
-
   showReviewForm.value = false
   reviewTitle.value = ''
   reviewContent.value = ''
