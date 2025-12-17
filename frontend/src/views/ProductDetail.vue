@@ -734,50 +734,6 @@ const allImages = computed(() => {
   return images
 })
 
-// Use composable
-const {
-  product,
-  loading,
-  error,
-  selectedColor,
-  selectedCapacity,
-  selectedVariant,
-  quantity,
-  mainImage,
-  currentPrice,
-  originalPrice,
-  discountPercent,
-  isInStock,
-  availableStock,
-  isInitialLoad,
-  loadProductBySlug,
-  selectColor,
-  selectCapacity,
-  changeMainImage,
-  increaseQuantity,
-  decreaseQuantity,
-  formatPrice,
-  toAbs
-} = useProductDetail()
-
-// Lightbox state
-const showLightbox = ref(false)
-const currentLightboxIndex = ref(0)
-
-// Get all images for lightbox
-const allImages = computed(() => {
-  const images = []
-  if (product.value?.image_url) {
-    images.push(toAbs(product.value.image_url))
-  }
-  if (product.value?.product_images) {
-    product.value.product_images.forEach(img => {
-      images.push(toAbs(img.url || img.image_url))
-    })
-  }
-  return images
-})
-
 
 // Additional UI state
 const isWishlisted = ref(false)

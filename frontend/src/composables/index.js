@@ -13,6 +13,9 @@ export { useVariantManager } from './admin/useVariantManager'
 // For customer-facing features
 export { useClientProducts } from './client/useClientProducts'
 export { useProductDetail } from './client/useProductDetail'
+export { useCart } from './client/useCart'
+export { useCheckout } from './client/useCheckout'
+export { useOrders } from './client/useOrders'
 
 // ============ SHARED COMPOSABLES ============
 // Used by both admin and client
