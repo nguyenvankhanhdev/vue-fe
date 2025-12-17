@@ -67,6 +67,16 @@
           </li>
           
           <li>
+            <a @click="navigateWithLoading('/admin/coupons', 'Đang tải mã giảm giá...')" 
+              class="flex items-center p-3 text-gray-300 rounded-lg hover:bg-gray-700 hover:text-white transition-all duration-200 group cursor-pointer"
+              :class="{ 'bg-blue-600 text-white shadow-lg': route.path === '/admin/coupons' }">
+              <i class="fas fa-ticket-alt w-5 h-5 text-gray-400 transition duration-75 group-hover:text-white"
+                 :class="{ 'text-white': route.path === '/admin/coupons' }"></i>
+              <span class="ms-3">Mã giảm giá</span>
+            </a>
+          </li>
+          
+          <li>
             <a @click="navigateWithLoading('/admin/reports', 'Đang tải báo cáo...')" 
               class="flex items-center p-3 text-gray-300 rounded-lg hover:bg-gray-700 hover:text-white transition-all duration-200 group cursor-pointer"
               :class="{ 'bg-blue-600 text-white shadow-lg': route.path === '/admin/reports' }">
@@ -87,26 +97,41 @@
           </li>
         </ul>
 
+        <!-- Divider -->
+        <div class="my-4 border-t border-gray-700"></div>
+
+        <!-- Back to User Site Button -->
+        <div class="px-3">
+          <a @click="goToUserSite" 
+            class="flex items-center p-3 text-green-300 bg-gradient-to-r from-green-600/20 to-emerald-600/20 border border-green-600/30 rounded-lg hover:from-green-600 hover:to-emerald-600 hover:text-white hover:border-green-500 transition-all duration-200 group cursor-pointer shadow-lg">
+            <i class="fas fa-home w-5 h-5 transition duration-75"></i>
+            <span class="ms-3 font-semibold">Quay lại trang User</span>
+            <i class="fas fa-arrow-right ml-auto opacity-0 group-hover:opacity-100 transition-opacity duration-200"></i>
+          </a>
+        </div>
+
         <!-- User Section -->
         <div class="absolute bottom-4 left-3 right-3">
-          <div class="p-4 bg-gradient-to-br from-gray-700 to-gray-800 rounded-xl shadow-lg border border-gray-600">
-            <div class="flex items-center mb-3">
-              <div class="relative">
-                <img src="/src/assets/img/avatar.jpg" alt="User" class="w-10 h-10 rounded-full mr-3 ring-2 ring-blue-400">
-                <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-green-400 rounded-full border-2 border-gray-800"></div>
+          <div class="p-3 bg-gradient-to-br from-gray-700 to-gray-800 rounded-xl shadow-lg border border-gray-600">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center flex-1 min-w-0 mr-2">
+                <div class="relative">
+                  <img src="/src/assets/img/avatar.jpg" alt="User" class="w-9 h-9 rounded-full mr-2 ring-2 ring-blue-400">
+                  <div class="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-400 rounded-full border-2 border-gray-800"></div>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <p class="text-sm font-semibold text-white truncate">Admin User</p>
+                  <p class="text-xs text-blue-200 truncate">Quản trị viên</p>
+                </div>
               </div>
-              <div class="flex-1 min-w-0">
-                <p class="text-sm font-semibold text-white truncate">Admin User</p>
-                <p class="text-xs text-blue-200 truncate">Quản trị viên</p>
+              <div class="flex space-x-1.5">
+                <button @click="goToProfile" class="p-2 text-gray-300 hover:text-white bg-gray-600 hover:bg-gray-500 rounded-lg transition-all duration-200" title="Hồ sơ">
+                  <i class="fas fa-user-cog text-sm"></i>
+                </button>
+                <button @click="handleLogout" class="p-2 text-gray-300 hover:text-white bg-red-600 hover:bg-red-500 rounded-lg transition-all duration-200" title="Đăng xuất">
+                  <i class="fas fa-sign-out-alt text-sm"></i>
+                </button>
               </div>
-            </div>
-            <div class="flex space-x-2">
-              <button @click="goToProfile" class="flex-1 px-3 py-2 text-xs text-gray-300 hover:text-white bg-gray-600 hover:bg-gray-500 rounded-lg transition-all duration-200 flex items-center justify-center">
-                <i class="fas fa-user-cog mr-1"></i>Hồ sơ
-              </button>
-              <button @click="handleLogout" class="flex-1 px-3 py-2 text-xs text-gray-300 hover:text-white bg-red-600 hover:bg-red-500 rounded-lg transition-all duration-200 flex items-center justify-center">
-                <i class="fas fa-sign-out-alt mr-1"></i>Đăng xuất
-              </button>
             </div>
           </div>
         </div>
@@ -220,6 +245,7 @@ const pageTitle = computed(() => {
     'AdminCategories': 'Danh mục sản phẩm', 
     'AdminOrders': 'Quản lý đơn hàng',
     'AdminUsers': 'Quản lý người dùng',
+    'AdminCoupons': 'Quản lý mã giảm giá',
     'AdminReports': 'Báo cáo thống kê',
     'AdminSettings': 'Cài đặt hệ thống'
   }
@@ -233,6 +259,11 @@ function getPageTitle() {
 function navigateWithLoading(path, message) {
   startLoading(message)
   router.push(path)
+}
+
+function goToUserSite() {
+  startLoading('Đang chuyển về trang User...')
+  router.push('/')
 }
 
 function goToProfile() {
@@ -277,6 +308,15 @@ function handleLogout() {
 </script>
 
 <style scoped>
+/* Remove underline from links */
+a {
+  text-decoration: none !important;
+}
+
+a:hover {
+  text-decoration: none !important;
+}
+
 /* Page Transitions */
 .fade-enter-active,
 .fade-leave-active {

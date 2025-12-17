@@ -201,10 +201,9 @@ import { ref } from 'vue'
 
 const email = ref('')
 
-const subscribeNewsletter = () => {
+const subscribe = () => {
   if (email.value) {
     // Handle newsletter subscription
-    console.log('Subscribe:', email.value)
     // Show success message
     alert(`Cảm ơn bạn đã đăng ký! Chúng tôi sẽ gửi tin tức mới nhất đến ${email.value}`)
     email.value = ''
