@@ -123,7 +123,7 @@
                       type="checkbox" 
                       :checked="isAllSelected"
                       @change="toggleSelectAll"
-                      class="w-5 h-5 text-blue-600 border-2 border-gray-300 rounded focus:ring-blue-500 focus:ring-2 cursor-pointer transition-all"
+                      class="w-5 h-5 text-blue-600 border-2 border-gray-300 rounded-full focus:ring-blue-500 focus:ring-2 cursor-pointer transition-all"
                     />
                     <div class="flex items-center gap-2">
                       <i class="fas fa-check-double text-blue-600 group-hover:scale-110 transition-transform"></i>
@@ -159,7 +159,7 @@
                           type="checkbox"
                           v-model="item.selected"
                           @change="updateSelectedItems"
-                          class="w-5 h-5 text-blue-600 border-2 border-gray-300 rounded focus:ring-blue-500 focus:ring-2 cursor-pointer transition-all hover:scale-110"
+                          class="w-5 h-5 text-blue-600 border-2 border-gray-300 rounded-full focus:ring-blue-500 focus:ring-2 cursor-pointer transition-all hover:scale-110"
                         />
                       </div>
                       <div class="relative w-24 h-24 overflow-hidden rounded-xl flex-shrink-0 bg-gradient-to-br from-gray-50 to-gray-100 group-hover:shadow-lg transition-shadow">
